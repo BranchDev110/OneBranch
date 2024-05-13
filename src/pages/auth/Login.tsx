@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
-
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import FormHeader from "@/components/auth/FormHeader";
@@ -109,13 +109,22 @@ const Login = () => {
             />
           </div>
 
-          <div className="end my-2">
-            <Link to="/forgot" className="font-medium text-c3">
+          <div className="btwn  text-sm space-x-2 my-4">
+            <div className="space-x-1 start">
+              <Checkbox id="rem" />
+              <label
+                htmlFor="rem"
+                className="font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Remember me
+              </label>
+            </div>
+            <Link to="/forgot" className="font-medium text-black/80">
               Forgot Password
             </Link>
           </div>
 
-          <Button className="w-full mt-6" type="submit">
+          <Button className="w-full mt-5" type="submit">
             Submit
           </Button>
           <p className="text-sm font-light mt-6">
