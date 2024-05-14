@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
+
+// const defaultTheme = require("tailwindcss/defaultTheme");
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -19,6 +24,23 @@ module.exports = {
     },
     extend: {
       colors: {
+        c1: {
+          DEFAULT: "#0066CC",
+        },
+        c2: {
+          DEFAULT: "#00B894",
+          100: "#ccf1ea",
+        },
+        c3: {
+          DEFAULT: "#F2994A",
+        },
+        c4: {
+          DEFAULT: "#EB5757",
+        },
+        c5: {
+          DEFAULT: "#E0E0E0",
+        },
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -74,5 +96,42 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    plugin(function ({ addUtilities }) {
+      addUtilities({
+        ".max-w-unset": {
+          "max-width": "unset",
+        },
+        ".max-h-unset": {
+          "max-height": "unset",
+        },
+        ".h-unset": {
+          height: "unset",
+        },
+        ".w-unset": {
+          width: "unset",
+        },
+        ".center": {
+          display: "flex",
+          "justify-content": "center",
+          "align-items": "center",
+        },
+        ".btwn": {
+          display: "flex",
+          "justify-content": "space-between",
+          "align-items": "center",
+        },
+        ".end": {
+          display: "flex",
+          "justify-content": "flex-end",
+          "align-items": "center",
+        },
+        ".start": {
+          display: "flex",
+          "align-items": "center",
+        },
+      });
+    }),
+  ],
 };
