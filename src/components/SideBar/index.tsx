@@ -12,7 +12,7 @@ import SettingsIcon from "@/icons/SettingsIcon";
 
 import LogoutIcon from "@/icons/LogoutIcon";
 import useLogout from "@/hooks/useLogout";
-import ProjectSideBar from "./ProjectSideBar";
+// import ProjectSideBar from "./ProjectSideBar";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn("center rounded-md w-10 h-10 mx-auto transiiton-colors hover:text-c2", {
@@ -71,7 +71,7 @@ const SideBar = () => {
           </Button>
         </div>
       </nav>
-      <ProjectSideBar />
+      {/* <ProjectSideBar /> */}
     </>
   );
 };
