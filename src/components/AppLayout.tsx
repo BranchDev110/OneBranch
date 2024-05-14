@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 
 import ProtectedRoute from "./ProtectedRoute";
 
-const Layout = () => {
+const AppLayout = () => {
   return (
     <ProtectedRoute>
       <div>
@@ -18,4 +18,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+export default AppLayout;
