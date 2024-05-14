@@ -19,7 +19,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import FormHeader from "@/components/auth/FormHeader";
-import { fakeAPICall } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { useSignUpMutation } from "@/services/auth";
+import { useCreateUserMutation } from "@/services/users";
 
 const formSchema = z
   .object({
@@ -51,35 +53,42 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
+  const [signup, signupRes] = useSignUpMutation();
+  const [createUser, createUserRes] = useCreateUserMutation();
+
   const onSubmit = async (values: Schema) => {
     try {
-      console.log(values);
+      // console.log(values);
       toast.dismiss();
       toast.loading("Signing up...");
 
-      await fakeAPICall();
+      const res = await signup({
+        email: values.email,
+        password: values.password,
+      }).unwrap();
+
+      await createUser({ id: res.id, name: values.name }).unwrap();
 
       toast.dismiss();
-      toast.success("Registration successfull");
+      toast.success(`${values.name} has been registered.`);
       navigate("/signin");
     } catch (error: any) {
       toast.dismiss();
-
       const msg = error?.message || "Unable to register";
       toast.error(msg);
     }
   };
 
   return (
-    <main className="min-h-screen center flex-col p-1 bg-c2-100">
+    <main className="flex-col min-h-screen p-1 center bg-c2-100">
       <FormHeader />
 
       <Form {...form}>
         <form
-          className=" max-w-sm bg-white border-c5 w-full rounded-lg py-6 px-4"
+          className="w-full max-w-sm px-4 py-6 bg-white rounded-lg border-c5"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <h3 className="text-2xl font-bold leading-tight tracking-tight mb-5">
+          <h3 className="mb-5 text-2xl font-bold leading-tight tracking-tight">
             Sign in to your account
           </h3>
           <div className="space-y-6">
@@ -142,10 +151,17 @@ const SignUp = () => {
               )}
             />
           </div>
-          <Button className="w-full mt-6" type="submit">
+          <Button
+            disabled={signupRes.isLoading || createUserRes.isLoading}
+            className={cn("w-full mt-6", {
+              ["animate-pulse cursor-not-allowed"]:
+                signupRes.isLoading || createUserRes.isLoading,
+            })}
+            type="submit"
+          >
             Submit
           </Button>
-          <p className="text-sm font-light mt-6">
+          <p className="mt-6 text-sm font-light">
             Already have an account?{" "}
             <Link to="/signin" className="font-medium text-primary">
               Sign in
