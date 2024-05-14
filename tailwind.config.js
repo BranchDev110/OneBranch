@@ -4,7 +4,6 @@
 
 // const defaultTheme = require("tailwindcss/defaultTheme");
 const plugin = require("tailwindcss/plugin");
-
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -93,6 +92,15 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      zIndex: {
+        header: 1000,
+        nav: 10100,
+        overlay: 10500,
+        menu: 10700,
+        toggler: 10800,
+        modal: 10900,
+        notif: 11000,
       },
     },
   },

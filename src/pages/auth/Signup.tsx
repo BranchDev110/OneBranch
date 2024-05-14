@@ -128,7 +128,7 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput autoComplete="new-password" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -143,7 +143,7 @@ const SignUp = () => {
                 <FormItem>
                   <FormLabel>Confirm</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput autoComplete="new-password" {...field} />
                   </FormControl>
 
                   <FormMessage />

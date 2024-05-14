@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 
+import { useLoginMutation } from "@/services/auth";
+
 import {
   Form,
   FormControl,
@@ -19,7 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import FormHeader from "@/components/auth/FormHeader";
-import { fakeAPICall } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -39,18 +41,23 @@ const Login = () => {
     defaultValues,
   });
 
+  const [login, loginRes] = useLoginMutation();
+
   const navigate = useNavigate();
 
   const onSubmit = async (values: Schema) => {
     try {
-      console.log(values);
+      // console.log(values);
       toast.dismiss();
       toast.loading("Logging you in...");
 
-      await fakeAPICall();
+      await login({
+        email: values.email,
+        password: values.password,
+      }).unwrap();
 
       toast.dismiss();
-      toast.success("Login successfull");
+      toast.success("Login successful");
 
       navigate("/");
     } catch (error: any) {
@@ -62,15 +69,15 @@ const Login = () => {
   };
 
   return (
-    <main className="min-h-screen center flex-col p-1 bg-c2-100">
+    <main className="flex-col min-h-screen p-1 center bg-c2-100">
       <FormHeader />
 
       <Form {...form}>
         <form
-          className=" max-w-sm bg-white border-c5 w-full rounded-lg py-6 px-4"
+          className="w-full max-w-sm px-4 py-6 bg-white rounded-lg border-c5"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <h3 className="text-2xl font-bold leading-tight tracking-tight mb-5">
+          <h3 className="mb-5 text-2xl font-bold leading-tight tracking-tight">
             Sign in to your account
           </h3>
           <div className="space-y-6">
@@ -100,7 +107,7 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <PasswordInput {...field} />
+                    <PasswordInput autoComplete="current-password" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -109,7 +116,7 @@ const Login = () => {
             />
           </div>
 
-          <div className="btwn  text-sm space-x-2 my-4">
+          <div className="my-4 space-x-2 text-sm btwn">
             <div className="space-x-1 start">
               <Checkbox id="rem" />
               <label
@@ -124,10 +131,16 @@ const Login = () => {
             </Link>
           </div>
 
-          <Button className="w-full mt-5" type="submit">
+          <Button
+            disabled={loginRes.isLoading}
+            className={cn("w-full mt-6", {
+              ["animate-pulse cursor-not-allowed"]: loginRes.isLoading,
+            })}
+            type="submit"
+          >
             Submit
           </Button>
-          <p className="text-sm font-light mt-6">
+          <p className="mt-6 text-sm font-light">
             Don’t have an account yet?{" "}
             <Link to="/signup" className="font-medium text-primary">
               Sign up
