@@ -17,22 +17,25 @@ import AppLayout from "./components/AppLayout";
 import { store } from "./redux/store";
 
 import "./index.css";
+import AuthWrapper from "./components/AuthWrapper";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Home />} />
-          </Route>
+      <AuthWrapper>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<AppLayout />}>
+              <Route index element={<Home />} />
+            </Route>
 
-          <Route path="/signin" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/reset" element={<ResetPassword />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="/signin" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset" element={<ResetPassword />} />
+            <Route path="/forgot" element={<ForgotPassword />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthWrapper>
 
       <Toaster position="top-right" richColors toastOptions={{}} />
     </Provider>
