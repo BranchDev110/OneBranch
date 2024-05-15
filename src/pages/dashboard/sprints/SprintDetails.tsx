@@ -40,7 +40,7 @@ const SprintDetails = () => {
 
   const rem = avatars.length - 2;
   const columns = ["today", "upcoming", "completed"];
-  const keyMap = {
+  const keyMap: Record<string, string> = {
     today: "Today's Tasks",
     upcoming: "Upcoming Tasks",
     completed: "completed Tasks",
