@@ -2,17 +2,20 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 
 import { baseApi } from "./base";
 
-import { CreateNewUserBody } from "@/types/user.types";
+import { CreateNewUserBody, UserProfile } from "@/types/user.types";
 import { db } from "@/firebase/BaseConfig";
-import { UserProfile } from "firebase/auth";
 
 const usersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createUser: build.mutation<any, CreateNewUserBody>({
       queryFn: async ({ id, name }) => {
         try {
-          await setDoc(doc(db, "users", id), { name, role: "USER" });
-          return { data: { name, role: "USER" } };
+          await setDoc(doc(db, "users", id), {
+            name,
+            role: "USER",
+            avatarUrl: "",
+          });
+          return { data: { name } };
         } catch (e: any) {
           return {
             error: {
@@ -27,7 +30,7 @@ const usersApi = baseApi.injectEndpoints({
         try {
           const docSnap = await getDoc(doc(db, "users", userId));
           if (docSnap.exists()) {
-            const result = { id: userId, ...docSnap.data() };
+            const result = { id: userId, ...docSnap.data() } as UserProfile;
             return { data: result };
           } else {
             throw new Error("Unable to find profile info");
