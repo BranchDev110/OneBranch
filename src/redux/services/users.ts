@@ -8,14 +8,14 @@ import { db } from "@/firebase/BaseConfig";
 const usersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createUser: build.mutation<any, CreateNewUserBody>({
-      queryFn: async ({ id, name }) => {
+      queryFn: async ({ id, name, email }) => {
         try {
           await setDoc(doc(db, "users", id), {
             name,
             role: "USER",
             avatarUrl: "",
           });
-          return { data: { name } };
+          return { data: { name, email } };
         } catch (e: any) {
           return {
             error: {

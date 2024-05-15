@@ -16,15 +16,13 @@ import ProjectSideBar from "./ProjectSideBar";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn("center rounded-md w-10 h-10 mx-auto transiiton-colors hover:text-c2", {
-    ["bg-c2/10 text-c2"]:
-      isActive ||
-      window.location.href.includes(
-        "/sprints/78e6a2bf-c9cb-420b-967d-863d553021a3"
-      ),
+    ["bg-c2/10 text-c2"]: isActive,
   });
 
 const SideBar = () => {
   const { handleLogout } = useLogout();
+
+  console.log(window.location.href);
 
   return (
     <div className="fixed h-screen top-0 left-0 w-[72px]">

@@ -1,3 +1,4 @@
+import "react-truncatable/style.css";
 import "./index.css";
 
 import React from "react";

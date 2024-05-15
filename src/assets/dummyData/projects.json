@@ -1,5 +1,16 @@
 [
     {
+        "id": "78e6a2bf-c9cb-420b-967d-863d553021a3",
+        "name": "O'Conner Group",
+        "admin_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
+        "users": [
+            "enlIvehC9aNltJwlqobrg2mQy5v1",
+            "65a39c16-8e08-4100-8b11-ba1bef454713"
+        ],
+        "description": "bd7b3360-98f4-4ddd-b61e-e2ccac08f020",
+        "current_sprint_id": "36cd48c9-ab74-48b9-bb5a-a6c6fc2e8982"
+    },
+    {
         "id": "6139d3c1-e8ae-42b6-818b-c65d9340c34b",
         "name": "Hackett-Kunde",
         "admin_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
@@ -25,17 +36,6 @@
         ],
         "description": "72afc614-778b-4924-b18a-99964cccb15e",
         "current_sprint_id": "09539c52-0a16-43ff-a143-e84a218e4be6"
-    },
-    {
-        "id": "78e6a2bf-c9cb-420b-967d-863d553021a3",
-        "name": "O'Conner Group",
-        "admin_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
-        "users": [
-            "enlIvehC9aNltJwlqobrg2mQy5v1",
-            "65a39c16-8e08-4100-8b11-ba1bef454713"
-        ],
-        "description": "bd7b3360-98f4-4ddd-b61e-e2ccac08f020",
-        "current_sprint_id": "36cd48c9-ab74-48b9-bb5a-a6c6fc2e8982"
     },
     {
         "id": "c4cee6b5-0a86-4bec-8383-58e36bd5d8fe",

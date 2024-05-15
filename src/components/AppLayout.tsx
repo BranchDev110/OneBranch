@@ -12,7 +12,7 @@ const AppLayout = () => {
           <SideBar />
         </aside>
 
-        <main className="relative flex-1 min-h-screen">
+        <main className="relative flex-1 min-h-screen bg-c5">
           <div>
             <Outlet />
           </div>

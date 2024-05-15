@@ -71,10 +71,19 @@
     @apply border-border;
   }
   body {
-    @apply min-h-screen overflow-x-hidden bg-c2/10 text-foreground;
+    @apply min-h-screen overflow-x-hidden bg-c2/10 text-foreground text-c5-200;
   }
 
   button {
     @apply cursor-pointer;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
   }
 }
