@@ -8,7 +8,7 @@ const AppLayout = () => {
     <ProtectedRoute>
       <div className="items-start bg-white start">
         {/* SIDEBAR */}
-        <aside className="w-[72px]  min-h-screen relative">
+        <aside className="w-[72px] z-10  min-h-screen relative">
           <SideBar />
         </aside>
 

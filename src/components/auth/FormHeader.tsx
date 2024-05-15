@@ -1,4 +1,4 @@
-import React from "react";
+import {} from "react";
 import logo from "@/assets/water.png";
 
 const FormHeader = () => {

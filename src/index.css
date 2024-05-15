@@ -60,7 +60,7 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 14.9%;
+    --border: 0 0% 20%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
@@ -72,5 +72,9 @@
   }
   body {
     @apply min-h-screen overflow-x-hidden bg-c2/10 text-foreground;
+  }
+
+  button {
+    @apply cursor-pointer;
   }
 }

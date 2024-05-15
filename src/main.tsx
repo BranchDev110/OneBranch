@@ -1,3 +1,5 @@
+import "./index.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -16,8 +18,12 @@ import AppLayout from "./components/AppLayout";
 
 import { store } from "./redux/store";
 
-import "./index.css";
 import AuthWrapper from "./components/AuthWrapper";
+import AllSprints from "./pages/dashboard/sprints/AllSprints";
+import AllProjects from "./pages/dashboard/projects/AllProjects";
+import SprintDetails from "./pages/dashboard/sprints/SprintDetails";
+import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
+ProjectDetails;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -27,6 +33,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route path="/" element={<AppLayout />}>
               <Route index element={<Home />} />
+
+              <Route path="/sprints" element={<AllSprints />} />
+
+              <Route path="/sprints/:id" element={<SprintDetails />} />
+
+              <Route path="/projects" element={<AllProjects />} />
+
+              <Route path="/projects/:id" element={<ProjectDetails />} />
             </Route>
 
             <Route path="/signin" element={<Login />} />

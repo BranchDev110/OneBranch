@@ -38,6 +38,8 @@ module.exports = {
         },
         c5: {
           DEFAULT: "#E0E0E0",
+          50: "#F2F2F2",
+          100: "#333333",
         },
 
         border: "hsl(var(--border))",
@@ -94,7 +96,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       zIndex: {
-        header: 1000,
+        header: 10000,
         nav: 10100,
         overlay: 10500,
         menu: 10700,

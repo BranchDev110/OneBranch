@@ -12,26 +12,30 @@ import SettingsIcon from "@/icons/SettingsIcon";
 
 import LogoutIcon from "@/icons/LogoutIcon";
 import useLogout from "@/hooks/useLogout";
-// import ProjectSideBar from "./ProjectSideBar";
+import ProjectSideBar from "./ProjectSideBar";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn("center rounded-md w-10 h-10 mx-auto transiiton-colors hover:text-c2", {
-    ["bg-c2/10 text-c2"]: isActive,
+    ["bg-c2/10 text-c2"]:
+      isActive ||
+      window.location.href.includes(
+        "/sprints/78e6a2bf-c9cb-420b-967d-863d553021a3"
+      ),
   });
 
 const SideBar = () => {
   const { handleLogout } = useLogout();
 
   return (
-    <>
-      <nav className="fixed overflow-y-auto h-screen top-0 left-0 w-[72px]  px-2 py-8 border-r bg-white">
+    <div className="fixed h-screen top-0 left-0 w-[72px]">
+      <nav className="relative flex-col h-full px-2 py-8 bg-white border-r z-menu btwn">
         <div className="relative h-full">
           <NavLink className="pb-4 border-b center" to="/">
             <img className="w-10 h-10" src={logo} alt="logo" />
             <span className="sr-only">Dashboard</span>
           </NavLink>
 
-          <section className="mt-10 space-y-6">
+          <section className="flex-1 mt-10 space-y-6">
             <NavLink className={linkClass} to="/">
               <i className="block w-10 h-10 center">
                 <BoardIcon className="w-[18px] h-[18px]" />
@@ -71,8 +75,8 @@ const SideBar = () => {
           </Button>
         </div>
       </nav>
-      {/* <ProjectSideBar /> */}
-    </>
+      <ProjectSideBar />
+    </div>
   );
 };
 
