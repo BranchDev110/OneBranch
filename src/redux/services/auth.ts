@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 import { auth } from "@/firebase/BaseConfig";
 import { baseApi } from "./base";
@@ -30,8 +34,46 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    login: build.mutation<any, AuthBody>({
+      queryFn: async ({ email, password }) => {
+        try {
+          const result = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          const user = {
+            id: result.user.uid,
+          };
+
+          return { data: user };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not login user",
+            },
+          };
+        }
+      },
+    }),
+    logout: build.mutation<any, void>({
+      queryFn: async () => {
+        try {
+          await signOut(auth);
+
+          return { data: { message: "success" } };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not logout user",
+            },
+          };
+        }
+      },
+    }),
   }),
   overrideExisting: import.meta.env.DEV,
 });
-export const { useSignUpMutation } = authApi;
+export const { useSignUpMutation, useLoginMutation, useLogoutMutation } =
+  authApi;
 export { authApi };
