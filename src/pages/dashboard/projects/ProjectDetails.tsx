@@ -1,4 +1,4 @@
-import React from "react";
+import {} from "react";
 
 const ProjectDetails = () => {
   return <div>ProjectDetails</div>;
