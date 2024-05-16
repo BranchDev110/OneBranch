@@ -67,7 +67,11 @@ const SignUp = () => {
         password: values.password,
       }).unwrap();
 
-      await createUser({ id: res.id, name: values.name }).unwrap();
+      await createUser({
+        id: res.id,
+        name: values.name,
+        email: values.email,
+      }).unwrap();
 
       toast.dismiss();
       toast.success(`${values.name} has been registered.`);
