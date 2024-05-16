@@ -1,5 +1,9 @@
+import UnionIcon from "@/icons/UnionIcon";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
+
+import projects from "@/assets/dummyData/projects.json";
 
 const ProjectSideBar = () => {
   const [open, setOpen] = useState(false);
@@ -7,27 +11,50 @@ const ProjectSideBar = () => {
   const toggle = () => setOpen((s) => !s);
 
   return (
-    <aside className="fixed top-0 left-[72px] bottom-0 ">
-      <div className="relative h-full">
-        <button
-          className="absolute bg-white top-[20%] z-toggler -translate-x-1/2 border p-1 center"
-          onClick={toggle}
-          type="button"
-        >
-          open
-        </button>
+    <>
+      <button
+        aria-label="Open Projects"
+        className="absolute left-[72px]  bg-white top-1/4
+         -translate-x-1/2 border p-2.5  z-toggler center shadow-[0px_0px_4px_0px_rgba(0,0,0,0.15)] rounded-lg"
+        onClick={toggle}
+        type="button"
+      >
+        <UnionIcon className="w-3.5 h-2" />
+      </button>
 
-        <div
-          className={cn(
-            "sticky h-full overflow-y-auto top-0 left-0 transition-all w-[200px] bg-rose-200 border",
-            {
-              "translate-x-0 opacity-100 pointer-events-auto z-10": open,
-              "-translate-x-full opacity-0  pointer-events-none -z-10": !open,
-            }
-          )}
-        ></div>
+      <div
+        className={cn(
+          "fixed px-5 left-[72px] h-screen z-nav  overflow-y-auto top-0 transition-all w-[240px] bg-white border py-10",
+          {
+            "translate-x-0  pointer-events-auto": open,
+            "-translate-x-full pointer-events-none ": !open,
+          }
+        )}
+      >
+        <h4 className="text-lg font-semibold text-c5-100">Projects</h4>
+
+        <section className="mt-2 space-y-3">
+          {projects.slice(0, 4).map((p) => (
+            <NavLink
+              //TO DO CHANGE TO project later
+              to={`/sprints/${p.id}`}
+              className={({ isActive }) =>
+                cn(
+                  "block w-full border text-sm font-semibold border-c5-50 rounded-lg p-2 transition-colors hover:text-c2",
+                  {
+                    ["bg-c2/10 text-c2"]: isActive,
+                    ["bg-white text-c5-100"]: !isActive,
+                  }
+                )
+              }
+              key={p.id}
+            >
+              {p.name}
+            </NavLink>
+          ))}
+        </section>
       </div>
-    </aside>
+    </>
   );
 };
 

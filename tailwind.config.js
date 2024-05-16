@@ -25,10 +25,12 @@ module.exports = {
       colors: {
         c1: {
           DEFAULT: "#0066CC",
+          100: "#3C557A",
         },
         c2: {
           DEFAULT: "#00B894",
           100: "#ccf1ea",
+          200: "#1BE3A7",
         },
         c3: {
           DEFAULT: "#F2994A",
@@ -37,7 +39,12 @@ module.exports = {
           DEFAULT: "#EB5757",
         },
         c5: {
-          DEFAULT: "#E0E0E0",
+          DEFAULT: "#F9F9F9",
+          50: "#F2F2F2",
+          100: "#333333",
+          200: "#131313",
+          300: "#636E72",
+          400: "#BDBDBD",
         },
 
         border: "hsl(var(--border))",
@@ -94,7 +101,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       zIndex: {
-        header: 1000,
+        header: 10000,
         nav: 10100,
         overlay: 10500,
         menu: 10700,

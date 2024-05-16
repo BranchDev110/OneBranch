@@ -59,7 +59,8 @@ const Login = () => {
       toast.dismiss();
       toast.success("Login successful");
 
-      navigate("/");
+      //to home page later
+      navigate("/sprints/78e6a2bf-c9cb-420b-967d-863d553021a3");
     } catch (error: any) {
       toast.dismiss();
 
