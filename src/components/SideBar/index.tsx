@@ -22,8 +22,6 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 const SideBar = () => {
   const { handleLogout } = useLogout();
 
-  console.log(window.location.href);
-
   return (
     <div className="fixed h-screen top-0 left-0 w-[72px]">
       <nav className="relative flex-col h-full px-2 py-8 bg-white border-r z-menu btwn">
