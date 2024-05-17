@@ -8,6 +8,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 10,
     "column_id": "completed",
+    "status": "completed",
     "description": "Aliquid ipsum nisi architecto provident neque voluptatum distinctio ducimus itaque atque quo, maxime molestiae eos fuga, perspiciatis alias libero, dolore ullam ab voluptatibus natus voluptas ea quam sapiente. ",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": true
@@ -21,6 +22,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 8,
     "column_id": "completed",
+    "status": "completed",
     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores reiciendis eligendi tempora aut excepturi tenetur, reprehenderit laborum deserunt nam sunt asperiores officia ipsa, eaque modi obcaecati sapiente, magnam porro facere.",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": true
@@ -34,6 +36,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 7,
     "column_id": "completed",
+    "status": "completed",
     "description": "Qui saepe atque, molestiae aspernatur ipsam vitae aliquid, quae quibusdam officiis explicabo quia repellendus veritatis perferendis blanditiis molestias debitis harum nobis ullam. Exercitationem nulla minus totam ullam voluptatibus, placeat",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": true
@@ -47,6 +50,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 8,
     "column_id": "upcoming",
+    "status": "upcoming",
     "description": "Harum minima excepturi ut nostrum sunt laboriosam vitae eius eum itaque distinctio! Ullam qui possimus culpa ad, quaerat blanditiis maxime voluptates quis dolores minus laboriosam repudiandae nesciunt at aliquam, in nihil",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false
@@ -60,6 +64,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 3,
     "column_id": "today",
+    "status": "today",
     "description": "Voluptatum beatae, deserunt reprehenderit placeat dolor ipsam obcaecati expedita, nobis molestiae vel.lorem10  Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil, aliquid cum! Aliquid ipsum nisi architecto provident neque voluptatum distinctio ducimus itaque atque quo, maxime molestiae eos fuga, perspiciatis alias libero, dolore ullam ab voluptatibus natus voluptas ea quam sapiente.",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false
@@ -73,6 +78,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 4,
     "column_id": "upcoming",
+    "status": "upcoming",
     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores reiciendis eligendi tempora aut excepturi tenetur, reprehenderit laborum deserunt nam sunt asperiores officia ipsa, eaque modi obcaecati sapiente, magnam porro facere.",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false
@@ -86,6 +92,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 7,
     "column_id": "upcoming",
+    "status": "upcoming",
     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores reiciendis eligendi tempora aut excepturi tenetur, reprehenderit laborum deserunt nam sunt asperiores officia ipsa, eaque modi obcaecati sapiente, magnam porro facere.",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false
@@ -99,6 +106,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 6,
     "column_id": "completed",
+    "status": "completed",
     "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores reiciendis eligendi tempora aut excepturi tenetur, reprehenderit laborum deserunt nam sunt asperiores officia ipsa, eaque modi obcaecati sapiente, magnam porro facere.",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": true
@@ -112,6 +120,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 2,
     "column_id": "today",
+    "status": "today",
     "description": "Leligendi itaque omnis id quo! Sunt maiores quaerat possimus rem ducimus esse fugiat deleniti, vitae quisquam sequi. Veritatis repellat eius earum aliquid ipsum voluptatem reiciendis labore modi dicta provident, cumque dolore quidem, similique quia, culpa laudantium saepe accusantium vero vitae excepturi. Temporibus vero sunt aliquam, cupiditate ipsa consequuntur ducimus vel distinctio",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false
@@ -125,6 +134,7 @@
     "create_user_id": "enlIvehC9aNltJwlqobrg2mQy5v1",
     "story_point": 10,
     "column_id": "upcoming",
+    "status": "upcoming",
     "description": "Vel voluptas tempore, sit corporis veniam veritatis omnis nisi repellat totam corrupti soluta nam dolores adipisci, exercitationem quis rem debitis architecto molestiae. Fuga ipsam esse odit fugiat, tempora amet animi maxime eveniet sapiente obcaecati laborum molestias earum nulla at dicta commodi suscipit rerum libero",
     "due_date": "2024-06-15T21:09:34.506Z",
     "is_completed": false

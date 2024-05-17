@@ -26,6 +26,7 @@ module.exports = {
         c1: {
           DEFAULT: "#0066CC",
           100: "#3C557A",
+          200: "#2F80ED",
         },
         c2: {
           DEFAULT: "#00B894",
