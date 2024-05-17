@@ -24,6 +24,8 @@
     "paths": {
       "@/pages/*": ["./src/pages/*"],
       "@/types/*": ["./src/types/*"],
+      "@/icons/*": ["./src/components/icons/*"],
+      "@/ui/*": ["./src/components/ui/*"],
       "@/services/*": ["./src/redux/services/*"],
       "@/slices/*": ["./src/redux/slices/*"],
       "@/redux/*": ["./src/redux/*"],

@@ -1,12 +1,19 @@
 import { PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
+import useLoggedInUser from "@/hooks/useLoggedInUser";
 
 const ProtectedRoute = ({ children }: PropsWithChildren) => {
-  const user = null;
+  const { isLoading, user } = useLoggedInUser();
 
-  if (!user) return <Navigate to="/signin" />;
+  if (isLoading) {
+    return <></>;
+  }
 
-  return children;
+  if (!isLoading && user?.id) {
+    return children;
+  }
+
+  return <Navigate to="/signin" />;
 };
 
 export default ProtectedRoute;
