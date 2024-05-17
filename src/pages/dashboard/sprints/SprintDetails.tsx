@@ -25,9 +25,9 @@ import c from "@/assets/c.jpg";
 import { Button } from "@/ui/button";
 import TaskCard from "@/components/Tasks/TaskCard";
 import SortIcon from "@/icons/SortIcon";
-import NotifIcon from "@/icons/NotifIcon";
-import ChatIcon from "@/icons/ChatIcon";
-import AttachmentIcon from "@/icons/AttachmentIcon";
+// import NotifIcon from "@/icons/NotifIcon";
+// import ChatIcon from "@/icons/ChatIcon";
+// import AttachmentIcon from "@/icons/AttachmentIcon";
 
 const avatars = [
   { id: "1", src: b, name: "A" },
