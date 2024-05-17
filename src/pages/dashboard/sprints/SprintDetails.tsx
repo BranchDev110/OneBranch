@@ -24,6 +24,10 @@ import b from "@/assets/b.jpg";
 import c from "@/assets/c.jpg";
 import { Button } from "@/ui/button";
 import TaskCard from "@/components/Tasks/TaskCard";
+import SortIcon from "@/icons/SortIcon";
+// import NotifIcon from "@/icons/NotifIcon";
+// import ChatIcon from "@/icons/ChatIcon";
+// import AttachmentIcon from "@/icons/AttachmentIcon";
 
 const avatars = [
   { id: "1", src: b, name: "A" },
@@ -122,7 +126,30 @@ const SprintDetails = () => {
       <div className="p-8 py-3 ">
         <div className="space-x-3 start">
           <CreateEditTaskModal projectId="x" />
-          <div className="flex-1 p-4 bg-white rounded-xl min-h-12"></div>
+          <div className="flex-1 p-4 bg-white rounded-xl min-h-12 btwn spaxe-x-2">
+            <div className="space-x-2 text-sm font-semibold start ">
+              <button type="button" className="relative px-3 py-1 text-primary">
+                All
+                <span className="absolute top-0 inline-block w-1 -translate-x-1/2 -translate-y-1/2 rounded-full left-1/2 aspect-square bg-primary"></span>
+              </button>
+              {["Ongoing", "To Do", "Done"].map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="relative px-3 py-1 text-c5-300"
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+
+            <p className="space-x-1 start text-c5-300">
+              <span> Time</span>
+              <i>
+                <SortIcon className="w-6 h-6" />
+              </i>
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 py-6">
