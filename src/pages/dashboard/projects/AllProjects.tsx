@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/table";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Input } from "@/ui/input";
+import { cn } from "@/lib/utils";
+import { ROLES } from "@/constants/roles";
 
 const AllProjects = () => {
   const { user } = useLoggedInUser();
@@ -109,8 +111,14 @@ const AllProjects = () => {
       <div className="p-4">
         <div className="my-3 end">
           <Button asChild>
-            <NavLink to="/projects/new">
-              + New Project (Fix later to admin only)
+            <NavLink
+              className={cn("", {
+                ["pointer-events-none opacity-45 cursor-not-allowed"]:
+                  user?.role !== ROLES.ADMIN,
+              })}
+              to="/projects/new"
+            >
+              + New Project
             </NavLink>
           </Button>
         </div>
