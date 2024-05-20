@@ -1,4 +1,5 @@
 import "react-truncatable/style.css";
+import "react-datepicker/dist/react-datepicker.css";
 import "./index.css";
 
 import React from "react";
@@ -24,6 +25,7 @@ import AllSprints from "./pages/dashboard/sprints/AllSprints";
 import AllProjects from "./pages/dashboard/projects/AllProjects";
 import SprintDetails from "./pages/dashboard/sprints/SprintDetails";
 import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
+import CreateProject from "./pages/dashboard/projects/CreateProject";
 ProjectDetails;
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -40,6 +42,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
               <Route path="/sprints/:id" element={<SprintDetails />} />
 
               <Route path="/projects" element={<AllProjects />} />
+              <Route path="/projects/new" element={<CreateProject />} />
 
               <Route path="/projects/:id" element={<ProjectDetails />} />
             </Route>
