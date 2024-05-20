@@ -109,7 +109,8 @@ const AllProjects = () => {
       </AppHeaderNav>
 
       <div className="p-4">
-        <div className="my-3 end">
+        <div className="my-3 btwn">
+          <h1 className="text-xl font-bold">{projects.length} projects</h1>
           <Button asChild>
             <NavLink
               className={cn("", {
