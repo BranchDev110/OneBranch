@@ -3,10 +3,15 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import projects from "@/assets/dummyData/projects.json";
+import { useGetUsersProjectsQuery } from "@/services/projects";
+import useLoggedInUser from "@/hooks/useLoggedInUser";
 
 const ProjectSideBar = () => {
+  const { user } = useLoggedInUser();
   const [open, setOpen] = useState(false);
+  const { data: projects = [] } = useGetUsersProjectsQuery(user!.id as string, {
+    skip: !user?.id,
+  });
 
   const toggle = () => setOpen((s) => !s);
 
@@ -37,7 +42,7 @@ const ProjectSideBar = () => {
           {projects.slice(0, 4).map((p) => (
             <NavLink
               //TO DO CHANGE TO project later
-              to={`/sprints/${p.id}`}
+              to={`/projects/${p.id}`}
               className={({ isActive }) =>
                 cn(
                   "block w-full border text-sm font-semibold border-c5-50 rounded-lg p-2 transition-colors hover:text-c2",
