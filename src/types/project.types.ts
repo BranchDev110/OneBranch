@@ -1,3 +1,8 @@
+export interface ProjectColumn {
+  name: string;
+  id: string;
+}
+
 export interface CreateProjectBody {
   name: string;
   description: string;
@@ -7,10 +12,11 @@ export interface CreateProjectBody {
   members: string[];
   currentPoints: number;
   totalPoints: number;
-  columns: string[];
+  columns: ProjectColumn[];
   imageUrl: string;
 }
 
-export interface Project extends CreateProjectBody {
+export interface Project extends Omit<CreateProjectBody, "columns"> {
   id: string;
+  columns: string[];
 }

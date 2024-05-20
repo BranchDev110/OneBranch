@@ -3,7 +3,9 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 import { baseApi } from "./base";
 
 import { CreateNewUserBody, UserProfile } from "@/types/user.types";
+
 import { db } from "@/firebase/BaseConfig";
+import { ROLES } from "@/constants/roles";
 
 const usersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -12,7 +14,7 @@ const usersApi = baseApi.injectEndpoints({
         try {
           await setDoc(doc(db, "users", id), {
             name,
-            role: "USER",
+            role: ROLES.USER,
             avatarUrl: "",
           });
           return { data: { name, email } };

@@ -1,7 +1,7 @@
 import {
-  //   doc,
-  //   setDoc,
-  //   getDoc,
+  //getDocs,
+  doc,
+  getDoc,
   collection,
   addDoc,
   runTransaction,
@@ -16,7 +16,11 @@ import { baseApi } from "./base";
 
 import { db } from "@/firebase/BaseConfig";
 
-import { CreateProjectBody, Project } from "@/types/project.types";
+import {
+  CreateProjectBody,
+  Project,
+  ProjectColumn,
+} from "@/types/project.types";
 import omit from "lodash/omit";
 
 const projectsApi = baseApi.injectEndpoints({
@@ -46,7 +50,7 @@ const projectsApi = baseApi.injectEndpoints({
             const columnIds = await Promise.all(
               project.columns.map(async (column) => {
                 const newColRef = await addDoc(collection(db, "columns"), {
-                  name: column,
+                  name: column.name,
                   projectId,
                 });
                 return newColRef.id;
@@ -69,6 +73,19 @@ const projectsApi = baseApi.injectEndpoints({
           return {
             error: {
               message: e?.message || "Could not create project",
+            },
+          };
+        }
+      },
+    }),
+    editProject: build.mutation<any, CreateProjectBody>({
+      queryFn: async (project) => {
+        try {
+          return { data: {} };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not edit project",
             },
           };
         }
@@ -107,10 +124,71 @@ const projectsApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+    getProjectColumns: build.query<ProjectColumn[], string>({
+      queryFn: async () => ({ data: [] }),
+      async onCacheEntryAdded(
+        projectId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        let unsubscribe = () => {};
+        await cacheDataLoaded;
+
+        try {
+          const q = query(
+            collection(db, "columns"),
+            where("projectId", "==", projectId)
+          );
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData(() => {
+              return snapshot?.docs?.map((doc) => ({
+                id: doc.id,
+                name: doc.data().name,
+              })) as ProjectColumn[];
+            });
+          });
+        } catch (error) {
+          console.log(error);
+          throw new Error("Unable to find project");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
+      },
+    }),
+    getProject: build.query<Project, string>({
+      queryFn: async (projectId) => {
+        try {
+          const docRef = doc(db, "projects", projectId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            return {
+              data: {
+                id: projectId,
+                ...omit(docSnap.data(), "createdAt"),
+              } as Project,
+            };
+          } else {
+            throw new Error("Unable to find project");
+          }
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not find project",
+            },
+          };
+        }
+      },
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useCreateProjectMutation, useGetUsersProjectsQuery } =
-  projectsApi;
+export const {
+  useCreateProjectMutation,
+  useGetUsersProjectsQuery,
+  useGetProjectQuery,
+  useGetProjectColumnsQuery,
+  useEditProjectMutation,
+} = projectsApi;
 export { projectsApi };

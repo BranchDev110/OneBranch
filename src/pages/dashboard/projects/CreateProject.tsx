@@ -1,48 +1,52 @@
+import AppHeaderNav from "@/components/AppHeaderNav";
 import ProjectForm from "@/components/Projects/ProjectForm";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
-import {
-  useCreateProjectMutation,
-  useGetUsersProjectsQuery,
-} from "@/services/projects";
+import { useCreateProjectMutation } from "@/services/projects";
 import { CreateProjectBody } from "@/types/project.types";
-import { Button } from "@/ui/button";
-import React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const CreateProject = () => {
   const { user } = useLoggedInUser();
 
-  const [make] = useCreateProjectMutation();
+  const [make, res] = useCreateProjectMutation();
+  const navigate = useNavigate();
 
-  const { data = [] } = useGetUsersProjectsQuery(user!.id, { skip: !user?.id });
+  const handleCreate = async (values: CreateProjectBody) => {
+    try {
+      // console.log(values);
+      toast.dismiss();
+      toast.loading("Creating project...");
 
-  const handleCreate = async () => {
-    const body: CreateProjectBody = {
-      name: "Fake",
-      description: "test project",
-      startDate: new Date().toISOString(),
-      endDate: new Date().toISOString(),
-      admin: user?.id as string,
-      members: [user?.id as string],
-      currentPoints: 0,
-      totalPoints: 0,
-      columns: ["design", "wireframe", "build"],
-      imageUrl: "",
-    };
+      const res = await make(values).unwrap();
 
-    await make(body).unwrap();
+      toast.dismiss();
+      toast.success("Created project");
+
+      navigate(`/projects/${res.id}`);
+    } catch (error: any) {
+      toast.dismiss();
+
+      const msg = error?.message || "Unable to create project";
+      toast.error(msg);
+    }
   };
 
   return (
-    <div className="grid grid-cols-2 p-4">
-      <Button onClick={handleCreate}>Fake Create Project</Button>
+    <div className="">
+      <AppHeaderNav>
+        <NavLink className={"font-medium text-c5-300"} to={"/projects"}>
+          Back
+        </NavLink>{" "}
+      </AppHeaderNav>
 
-      <div>
-        {data.map((p) => (
-          <p>{p.name}</p>
-        ))}
+      <div className="p-4">
+        <ProjectForm
+          onSubmit={handleCreate}
+          submitRes={res}
+          adminId={user?.id as string}
+        />
       </div>
-
-      <ProjectForm />
     </div>
   );
 };
