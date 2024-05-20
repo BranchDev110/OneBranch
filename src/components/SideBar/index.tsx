@@ -45,11 +45,11 @@ const SideBar = () => {
               <span className="sr-only">Sprints</span>
             </NavLink>
 
-            <NavLink className={linkClass} to="/b">
+            <NavLink className={linkClass} to="/projects">
               <i className="block w-10 h-10 center">
                 <ChartIcon className="w-[18px] h-[18px]" />
               </i>
-              <span className="sr-only">Dashboard</span>
+              <span className="sr-only">Projects</span>
             </NavLink>
             <NavLink className={linkClass} to="/settings">
               <i className="block w-10 h-10 center">
