@@ -148,7 +148,7 @@ const projectsApi = baseApi.injectEndpoints({
           });
         } catch (error) {
           console.log(error);
-          throw new Error("Unable to find project");
+          throw new Error("Unable to find project columns");
         }
 
         await cacheEntryRemoved;

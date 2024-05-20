@@ -1,4 +1,13 @@
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  collection,
+  where,
+  onSnapshot,
+  documentId,
+} from "firebase/firestore";
 
 import { baseApi } from "./base";
 
@@ -42,6 +51,40 @@ const usersApi = baseApi.injectEndpoints({
         }
       },
     }),
+    getUsersInProject: build.query<UserProfile[], string[]>({
+      queryFn: async () => ({ data: [] }),
+      async onCacheEntryAdded(
+        members,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        // console.log({ members });
+
+        let unsubscribe = () => {};
+
+        try {
+          await cacheDataLoaded;
+          const q = query(
+            collection(db, "users"),
+            where(documentId(), "in", members)
+          );
+
+          unsubscribe = onSnapshot(q, (snapshot) => {
+            updateCachedData(() => {
+              return snapshot?.docs?.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              })) as UserProfile[];
+            });
+          });
+        } catch (error: any) {
+          console.log(error);
+          throw new Error("Something went wrong getting users");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
+      },
+    }),
   }),
   overrideExisting: import.meta.env.DEV,
 });
@@ -49,5 +92,6 @@ export const {
   useCreateUserMutation,
   useGetUserByIdQuery,
   useLazyGetUserByIdQuery,
+  useGetUsersInProjectQuery,
 } = usersApi;
 export { usersApi };
