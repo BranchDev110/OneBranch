@@ -56,7 +56,6 @@ import {
 const ProjectDetails = () => {
   const { id } = useParams();
   const [open, setOpen] = useState(false);
-
   const { user } = useLoggedInUser();
 
   const { handleDelete } = useDeleteImagesFromFirebase();
