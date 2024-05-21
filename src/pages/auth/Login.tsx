@@ -60,7 +60,7 @@ const Login = () => {
       toast.success("Login successful");
 
       //to home page later
-      navigate("/sprints/78e6a2bf-c9cb-420b-967d-863d553021a3");
+      navigate("/sprints/fake");
     } catch (error: any) {
       toast.dismiss();
 

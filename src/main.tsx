@@ -24,6 +24,8 @@ import AuthWrapper from "./components/AuthWrapper";
 import AllSprints from "./pages/dashboard/sprints/AllSprints";
 import AllProjects from "./pages/dashboard/projects/AllProjects";
 import SprintDetails from "./pages/dashboard/sprints/SprintDetails";
+import FakeSprintDetails from "./pages/dashboard/sprints/FakeSprintDetails";
+
 import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
 import CreateProject from "./pages/dashboard/projects/CreateProject";
 import AppErrorBoundary from "./components/AppErrorBoundary";
@@ -39,6 +41,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route index element={<Home />} />
 
                 <Route path="/sprints" element={<AllSprints />} />
+                <Route path="/sprints/demo" element={<FakeSprintDetails />} />
 
                 <Route path="/sprints/:id" element={<SprintDetails />} />
 

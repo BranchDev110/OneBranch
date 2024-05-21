@@ -3,6 +3,10 @@ import {
   collection,
   getDoc,
   serverTimestamp,
+  query,
+  onSnapshot,
+  where,
+  orderBy,
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
@@ -40,8 +44,99 @@ const sprintsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    //updatesprint
+    getSprintsInProject: build.query<Sprint[], string>({
+      queryFn: async () => ({ data: [] }),
+      async onCacheEntryAdded(
+        projectId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        let unsubscribe = () => {};
+
+        try {
+          await cacheDataLoaded;
+          const doc_refs = query(
+            collection(db, "sprints"),
+            where("projectId", "==", projectId),
+            orderBy("createdAt", "desc")
+          );
+
+          unsubscribe = onSnapshot(doc_refs, (snapshot) => {
+            updateCachedData(() => {
+              return snapshot?.docs?.map((doc) => ({
+                id: doc.id,
+                ...omit(doc.data(), "createdAt"),
+              })) as Sprint[];
+            });
+          });
+        } catch (error: any) {
+          console.log(error);
+          throw new Error("Something went wrong getting sprints");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
+      },
+    }),
+
+    getAllUserSprints: build.query<Sprint[], string>({
+      queryFn: async () => ({ data: [] }),
+      async onCacheEntryAdded(
+        userId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        let unsubscribe = () => {};
+
+        try {
+          await cacheDataLoaded;
+          const projectsQuery = query(
+            collection(db, "projects"),
+            where("members", "array-contains-any", [userId]),
+            orderBy("createdAt", "desc")
+          );
+
+          unsubscribe = onSnapshot(projectsQuery, (snapshot) => {
+            let sprints: Sprint[] = [];
+
+            snapshot.forEach((projectDoc) => {
+              const projectId = projectDoc.id;
+              const sprintsQuery = query(
+                collection(db, "sprints"),
+                where("projectId", "==", projectId)
+              );
+
+              onSnapshot(sprintsQuery, (sprintsSnapshot) => {
+                sprintsSnapshot.forEach((sprintDoc) => {
+                  // console.log(sprintDoc.data());
+                  const body = omit(sprintDoc.data(), "createdAt") as Sprint;
+
+                  //   console.log(body);
+                  sprints = sprints.concat([body]);
+                  //   console.log(sprints);
+                });
+
+                updateCachedData(() => {
+                  return sprints;
+                });
+              });
+            });
+          });
+        } catch (error: any) {
+          console.log(error);
+          throw new Error("Something went wrong getting sprints");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
+      },
+    }),
+    //getsprintbyid
   }),
   overrideExisting: true,
 });
-export const { useCreateSprintMutation } = sprintsApi;
+export const {
+  useCreateSprintMutation,
+  useGetSprintsInProjectQuery,
+  useGetAllUserSprintsQuery,
+} = sprintsApi;
 export { sprintsApi };
