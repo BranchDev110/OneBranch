@@ -4,13 +4,11 @@ export interface Task {
   id: string | number;
   name: string;
   description: string;
-  sprint_id: string;
-  project_id: string;
-  //maybe string[] to support multiple assignees
-  assignee_id: string;
-  create_user_id: string;
-  story_point: number;
-  is_completed: boolean;
-  due_date: string;
+  sprintId: string;
+  projectId: string;
+  assignees: string[];
+  createdBy: string;
+  storyPoint: number;
+  dueDate: string;
   status: TASK_STATUS | string;
 }

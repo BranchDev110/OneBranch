@@ -111,7 +111,7 @@ const ProjectForm = ({
     },
     maxSize: maxFileSize,
 
-    onDrop: (acceptedFiles, fileRejections) => {
+    onDrop: (_acceptedFiles, fileRejections) => {
       //   console.log({ acceptedFiles, fileRejections });
       //   console.log(fileRejections?.[0]?.errors);
       if (fileRejections.length) {
@@ -184,10 +184,12 @@ const ProjectForm = ({
     console.log(args);
   };
 
+  const cols = form.watch("columns");
+
   return (
     <Form {...form}>
       <form
-        className="max-w-3xl p-4 mx-auto bg-white"
+        className="p-4 mx-auto bg-white"
         onSubmit={form.handleSubmit(handleSubmit, handleErrors)}
       >
         <h1 className="my-3 text-3xl font-bold text-center">
@@ -324,14 +326,18 @@ const ProjectForm = ({
                   {form?.formState?.errors?.columns?.[index]?.name?.message}
                 </small>
 
-                <Button
-                  className="absolute top-0 p-1 right-1 h-unset w-unset"
-                  onClick={() => remove(index)}
-                  variant={"destructive"}
-                  size={"icon"}
-                >
-                  <DeleteIcon />
-                </Button>
+                {cols?.[index]?.id === "new" ? (
+                  <Button
+                    className="absolute top-0 p-1 right-1 h-unset w-unset"
+                    onClick={() => remove(index)}
+                    variant={"destructive"}
+                    size={"icon"}
+                  >
+                    <DeleteIcon />
+                  </Button>
+                ) : (
+                  <></>
+                )}
               </div>
             ))}
 

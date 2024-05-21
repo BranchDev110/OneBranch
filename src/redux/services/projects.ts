@@ -1,5 +1,4 @@
 import {
-  //getDocs,
   doc,
   getDoc,
   collection,
@@ -10,6 +9,7 @@ import {
   where,
   query,
   orderBy,
+  writeBatch,
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
@@ -18,6 +18,7 @@ import { db } from "@/firebase/BaseConfig";
 
 import {
   CreateProjectBody,
+  EditProjectBody,
   Project,
   ProjectColumn,
 } from "@/types/project.types";
@@ -43,7 +44,7 @@ const projectsApi = baseApi.injectEndpoints({
             const docRef = await transaction.get(projectRef);
 
             if (!docRef.exists()) {
-              throw "Project does not exist!";
+              throw new Error("Project does not exist!");
             }
 
             //create columns
@@ -78,16 +79,99 @@ const projectsApi = baseApi.injectEndpoints({
         }
       },
     }),
-    editProject: build.mutation<any, CreateProjectBody>({
+    editProject: build.mutation<any, EditProjectBody>({
       queryFn: async (project) => {
         try {
-          return { data: {} };
+          const batch = writeBatch(db);
+          const projectRef = doc(db, "projects", project.id);
+          const docRef = await getDoc(projectRef);
+
+          if (!docRef.exists()) {
+            throw new Error("Project does not exist!");
+          }
+
+          let columns = docRef.data().columns as string[];
+
+          if (project.newColumns.length) {
+            const columnIds = await Promise.all(
+              project.newColumns.map(async (column) => {
+                const newColRef = await addDoc(collection(db, "columns"), {
+                  name: column.name,
+                  projectId: project.id,
+                });
+                return newColRef.id;
+              })
+            );
+
+            columns = [...columns, ...columnIds];
+
+            batch.update(projectRef, {
+              columns,
+            });
+          }
+
+          if (project.oldColumns.length) {
+            await Promise.all(
+              project.oldColumns.map(async (column) => {
+                batch.update(doc(db, "columns", column.id), {
+                  name: column.name,
+                  projectId: project.id,
+                });
+
+                return column.id;
+              })
+            );
+          }
+
+          batch.update(doc(db, "projects", project.id), {
+            name: project.name,
+            description: project.description,
+            startDate: project.startDate,
+            endDate: project.endDate,
+            admin: project.admin,
+            members: project.members,
+            currentPoints: project.currentPoints,
+            totalPoints: project.totalPoints,
+            columns,
+            imageUrl: project.imageUrl,
+            createdAt: docRef.data().createdAt,
+          });
+
+          await batch.commit();
+
+          return {
+            data: {
+              id: project.id,
+              name: project.name,
+              description: project.description,
+              startDate: project.startDate,
+              endDate: project.endDate,
+              admin: project.admin,
+              members: project.members,
+              currentPoints: project.currentPoints,
+              totalPoints: project.totalPoints,
+              columns,
+              imageUrl: project.imageUrl,
+            },
+          };
         } catch (e: any) {
           return {
             error: {
               message: e?.message || "Could not edit project",
             },
           };
+        }
+      },
+      async onQueryStarted({ id }, { dispatch, queryFulfilled }) {
+        try {
+          const { data: updatedProject } = await queryFulfilled;
+          dispatch(
+            projectsApi.util.updateQueryData("getProject", id, (draft) => {
+              Object.assign(draft, updatedProject);
+            })
+          );
+        } catch (e) {
+          console.error(e);
         }
       },
     }),

@@ -36,7 +36,7 @@ const avatars = [
 
 interface Props extends Task {}
 
-const TaskCard = ({ description, name, due_date, status }: Props) => {
+const TaskCard = ({ description, name, dueDate, status }: Props) => {
   const [val, setVal] = useState(status);
 
   const rem = 2;
@@ -85,7 +85,7 @@ const TaskCard = ({ description, name, due_date, status }: Props) => {
       />
       <p className="text-xs font-semibold">
         <span className="text-c3">Deadline</span>
-        <span>: {format(new Date(due_date), "eo LLLL yyyy")}</span>
+        <span>: {format(new Date(dueDate), "eo LLLL yyyy")}</span>
       </p>
       <footer className="btwn">
         <div className="start">
