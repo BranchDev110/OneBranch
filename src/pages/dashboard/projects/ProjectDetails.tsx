@@ -1,29 +1,58 @@
-import AppHeaderNav from "@/components/AppHeaderNav";
-import CaseRender from "@/components/CaseRender";
-import ProjectForm from "@/components/Projects/ProjectForm";
-import SpinnerIcon from "@/icons/SpinnerIcon";
+import { useMemo, useState } from "react";
+
+import { NavLink, useParams } from "react-router-dom";
+import {
+  CalendarIcon,
+  ClockIcon,
+  DotsHorizontalIcon,
+} from "@radix-ui/react-icons";
+
+import isEqual from "lodash/isEqual";
+import differenceWith from "lodash/differenceWith";
+import { serializeError } from "serialize-error";
+import { format } from "date-fns/format";
+import { isValid } from "date-fns/isValid";
+import { toast } from "sonner";
+
 import {
   useEditProjectMutation,
   useGetProjectColumnsQuery,
   useGetProjectQuery,
 } from "@/services/projects";
-import { NavLink, useParams } from "react-router-dom";
-
-import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
-import { Button } from "@/ui/button";
-import { ScrollArea } from "@/ui/scroll-area";
-import { useMemo } from "react";
-import { CalendarIcon, ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
-import { format } from "date-fns/format";
-import { isValid } from "date-fns/isValid";
-import TeamIcon from "@/icons/TeamIcon";
-import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import { useGetUsersInProjectQuery } from "@/services/users";
-import { Progress } from "@/ui/progress";
-import { toast } from "sonner";
+
+import AppHeaderNav from "@/components/AppHeaderNav";
+import CaseRender from "@/components/CaseRender";
+import ProjectForm from "@/components/Projects/ProjectForm";
+import LoadingComponent from "@/components/LoadingComponent";
+import ErrorComponent from "@/components/ErrorComponent";
+
+import { Button } from "@/ui/button";
+//import { Progress } from "@/ui/progress";
+import { ScrollArea } from "@/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
+import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import TeamIcon from "@/icons/TeamIcon";
+
+import { CreateProjectBody, EditProjectBody } from "@/types/project.types";
+
+import useDeleteImagesFromFirebase from "@/hooks/useDeleteImagesFromFirebase";
+import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { ROLES } from "@/constants/roles";
 
 const ProjectDetails = () => {
   const { id } = useParams();
+  const [open, setOpen] = useState(false);
+  const { user } = useLoggedInUser();
+
+  const { handleDelete } = useDeleteImagesFromFirebase();
   const [edit, editRes] = useEditProjectMutation();
 
   const {
@@ -31,12 +60,14 @@ const ProjectDetails = () => {
     isLoading: projectLoading,
     isSuccess: projectSuccess,
     isError: projectError,
+    error: projError,
   } = useGetProjectQuery(id as string, { skip: !id });
   const {
     data: columns = [],
     isLoading: colLoading,
     isSuccess: colSuccess,
-    isError: colError,
+    isError: colIsError,
+    error: colError,
   } = useGetProjectColumnsQuery(id as string, {
     skip: !id,
   });
@@ -45,21 +76,59 @@ const ProjectDetails = () => {
     data: team = [],
     isLoading: teamLoading,
     isSuccess: teamSuccess,
-    isError: teamError,
+    isError: teamIsError,
+    error: teamError,
   } = useGetUsersInProjectQuery(project?.members as string[], {
     skip: !project?.members?.length,
   });
 
-  const onSubmit = (values: any) => {
-    console.log(values);
+  const onSubmit = async (values: CreateProjectBody) => {
+    // console.log(values);
     toast.dismiss();
-    toast.loading("coming soon...");
+    toast.loading("Editing project...");
+
+    try {
+      const newColumns = values.columns.filter((c) => c.id === "new");
+      const oldColumns = values.columns.filter((c) => c.id !== "new");
+
+      const oldUrl = project?.imageUrl;
+
+      const diff = differenceWith(oldColumns, columns, isEqual);
+
+      const body: EditProjectBody = {
+        ...values,
+        id: id as string,
+        oldColumns: diff,
+        newColumns,
+      };
+      // console.log(body);
+      await edit(body).unwrap();
+
+      toast.dismiss();
+      toast.success("Edited project");
+      setOpen(false);
+
+      if (oldUrl && oldUrl !== body?.imageUrl) {
+        handleDelete([oldUrl]);
+      }
+    } catch (error: any) {
+      toast.dismiss();
+
+      const msg = error?.message || "Unable to edit project";
+      toast.error(msg);
+    }
   };
   // console.log({ columns, project, team });
 
   const isLoading = colLoading || projectLoading || teamLoading;
   const isSuccess = colSuccess && projectSuccess && teamSuccess;
-  const isError = colError || projectError || teamError;
+  const isError = colIsError || projectError || teamIsError;
+
+  const error = serializeError({
+    team: teamError,
+    projectDetails: projError,
+    projectColumns: colError,
+  });
 
   const orderedColumns = useMemo(() => {
     if (project?.columns?.length && columns?.length) {
@@ -79,36 +148,81 @@ const ProjectDetails = () => {
         </NavLink>
       </AppHeaderNav>
 
-      <CaseRender condition={isLoading}>
-        <div className="center">
-          <SpinnerIcon className="w-12 h-12 stroke-c2-100" />
-        </div>
-      </CaseRender>
+      <div className="p-4">
+        <LoadingComponent show={isLoading} />
+
+        <ErrorComponent
+          show={isError}
+          message={
+            <code className="block w-full">
+              <pre className="max-w-full text-sm break-all whitespace-break-spaces ">
+                {JSON.stringify(error, null, 2)}
+              </pre>
+            </code>
+          }
+        />
+      </div>
 
       <CaseRender condition={isSuccess}>
         <div className="grid gap-2 grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
           <div className="px-4">
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold">{project?.name}</h1>
+              <div className="flex items-center gap-4">
+                {project?.imageUrl ? (
+                  <img
+                    alt="Project Avatar"
+                    className="object-cover object-center w-16 rounded-full aspect-square"
+                    height={64}
+                    src={project?.imageUrl}
+                  />
+                ) : (
+                  <></>
+                )}
+                <h1 className="text-2xl font-bold">{project?.name}</h1>
+              </div>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="space-x-2 rounded-sm h-unset">
-                    <Pencil1Icon /> <span>Edit Project</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl h-[80vh]">
-                  <ScrollArea className="h-full">
-                    <ProjectForm
-                      submitRes={editRes}
-                      onSubmit={onSubmit}
-                      adminId={project?.admin as string}
-                      project={project}
-                      columns={orderedColumns}
-                    />
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className="p-2 space-x-1 font-semibold btwn"
+                  aria-label="Dropdown Menu"
+                >
+                  <span>Actions</span>
+                  <DotsHorizontalIcon />
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="">
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogTrigger
+                      disabled={
+                        user?.role !== ROLES.ADMIN ||
+                        project?.admin !== user?.id
+                      }
+                      asChild
+                    >
+                      <Button
+                        variant={"ghost"}
+                        className="block w-full pl-2 font-normal text-start h-unset"
+                      >
+                        <span>Edit Project</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl pt-10 px-8 h-[80vh]">
+                      <ScrollArea className="h-full">
+                        <ProjectForm
+                          submitRes={editRes}
+                          onSubmit={onSubmit}
+                          adminId={project?.admin as string}
+                          project={project}
+                          columns={orderedColumns}
+                        />
+                      </ScrollArea>
+                    </DialogContent>
+                  </Dialog>
+                  <DropdownMenuItem>Create Task</DropdownMenuItem>
+                  <DropdownMenuItem>Create Sprint</DropdownMenuItem>
+                  <DropdownMenuItem>Set Active Sprint</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="grid gap-6">
               <div>

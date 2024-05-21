@@ -26,36 +26,38 @@ import AllProjects from "./pages/dashboard/projects/AllProjects";
 import SprintDetails from "./pages/dashboard/sprints/SprintDetails";
 import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
 import CreateProject from "./pages/dashboard/projects/CreateProject";
-ProjectDetails;
+import AppErrorBoundary from "./components/AppErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <AuthWrapper>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route index element={<Home />} />
+    <AppErrorBoundary>
+      <Provider store={store}>
+        <AuthWrapper>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<AppLayout />}>
+                <Route index element={<Home />} />
 
-              <Route path="/sprints" element={<AllSprints />} />
+                <Route path="/sprints" element={<AllSprints />} />
 
-              <Route path="/sprints/:id" element={<SprintDetails />} />
+                <Route path="/sprints/:id" element={<SprintDetails />} />
 
-              <Route path="/projects" element={<AllProjects />} />
-              <Route path="/projects/new" element={<CreateProject />} />
+                <Route path="/projects" element={<AllProjects />} />
+                <Route path="/projects/new" element={<CreateProject />} />
 
-              <Route path="/projects/:id" element={<ProjectDetails />} />
-            </Route>
+                <Route path="/projects/:id" element={<ProjectDetails />} />
+              </Route>
 
-            <Route path="/signin" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/reset" element={<ResetPassword />} />
-            <Route path="/forgot" element={<ForgotPassword />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthWrapper>
+              <Route path="/signin" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/reset" element={<ResetPassword />} />
+              <Route path="/forgot" element={<ForgotPassword />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthWrapper>
 
-      <Toaster position="top-right" richColors toastOptions={{}} />
-    </Provider>
+        <Toaster position="top-right" richColors toastOptions={{}} />
+      </Provider>
+    </AppErrorBoundary>
   </React.StrictMode>
 );

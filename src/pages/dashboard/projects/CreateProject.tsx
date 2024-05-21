@@ -40,7 +40,7 @@ const CreateProject = () => {
         </NavLink>{" "}
       </AppHeaderNav>
 
-      <div className="p-4">
+      <div className="p-4 [&_form]:max-w-3xl">
         <ProjectForm
           onSubmit={handleCreate}
           submitRes={res}
