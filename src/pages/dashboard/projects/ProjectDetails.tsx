@@ -100,6 +100,7 @@ const ProjectDetails = () => {
         id: id as string,
         oldColumns: diff,
         newColumns,
+        imageUrl: values.imageUrl || project?.imageUrl || "",
       };
       // console.log(body);
       await edit(body).unwrap();
