@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import UnionIcon from "@/icons/UnionIcon";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { NavLink } from "react-router-dom";
 
 import { useGetUsersProjectsQuery } from "@/services/projects";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 const ProjectSideBar = () => {
   const { user } = useLoggedInUser();
@@ -13,7 +15,11 @@ const ProjectSideBar = () => {
     skip: !user?.id,
   });
 
+  const sideBarRef = useRef<null | HTMLDivElement>(null);
+
   const toggle = () => setOpen((s) => !s);
+
+  useOnClickOutside(sideBarRef, () => setOpen(false));
 
   return (
     <>
@@ -28,6 +34,7 @@ const ProjectSideBar = () => {
       </button>
 
       <div
+        ref={sideBarRef}
         className={cn(
           "fixed px-5 left-[72px] h-screen z-nav  overflow-y-auto top-0 transition-all w-[240px] bg-white border py-10",
           {
