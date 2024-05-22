@@ -2,7 +2,7 @@ import SprintForm from "@/components/Sprints/SprintForm";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { UserProfile } from "@/types/user.types";
+import { AppUserProfile } from "@/types/user.types";
 import { useCreateSprintMutation } from "@/services/sprints";
 import { CreateSprintBody } from "@/types/sprint.types";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ import ErrorComponent from "../ErrorComponent";
 import CaseRender from "../CaseRender";
 
 interface Props {
-  user: UserProfile;
+  user: AppUserProfile;
 }
 
 const CreateNewSprint = ({ user }: Props) => {
@@ -53,12 +53,7 @@ const CreateNewSprint = ({ user }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant={"ghost"}
-          className="block w-full pl-2 font-normal text-start h-unset"
-        >
-          + New Sprint
-        </Button>
+        <Button className="font-normal text-start h-unset">+ New Sprint</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">

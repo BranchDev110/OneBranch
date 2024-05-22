@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { UserProfile } from "firebase/auth";
+import { AppUserProfile } from "firebase/auth";
 import { ROLES } from "@/constants/roles";
 import { useUpdateSprintMutation } from "@/services/sprints";
 import SprintForm from "./SprintForm";
@@ -12,7 +12,7 @@ import { Thing } from "@/types/generic.types";
 
 interface Props {
   sprint: Sprint;
-  user: UserProfile;
+  user: AppUserProfile;
   closeModal?: (val: boolean) => void;
   projects: Thing[];
 }

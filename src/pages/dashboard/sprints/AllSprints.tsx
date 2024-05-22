@@ -5,12 +5,9 @@ import LoadingComponent from "@/components/LoadingComponent";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { useGetUsersProjectsQuery } from "@/services/projects";
 import { useGetAllUserSprintsQuery } from "@/services/sprints";
-import {} from "react";
 import SprintsContainer from "@/components/Sprints/SprintsContainer";
-import { Button } from "@/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import CreateNewSprint from "@/components/Sprints/CreateNewSprint";
-import { UserProfile } from "@/types/user.types";
+import { AppUserProfile } from "@/types/user.types";
 
 const AllSprints = () => {
   const { user } = useLoggedInUser();
@@ -61,9 +58,11 @@ const AllSprints = () => {
         />
 
         <CaseRender condition={isSuccess}>
-          <div className="my-3 btwn">
-            <h1 className="text-xl font-bold">{sprints.length} sprints</h1>
-            <CreateNewSprint user={user as UserProfile} />
+          <div className="w-full my-3 btwn">
+            <h1 className="text-xl font-bold">
+              Total sprints: {sprints.length}
+            </h1>
+            <CreateNewSprint user={user as AppUserProfile} />
           </div>
           <SprintsContainer sprints={sprints} getProject={getProject} />
         </CaseRender>

@@ -15,7 +15,7 @@ import { isValid } from "date-fns/isValid";
 import { Thing } from "@/types/generic.types";
 import { round } from "@/lib/round";
 import { NavLink } from "react-router-dom";
-import { UserProfile } from "firebase/auth";
+import { AppUserProfile } from "firebase/auth";
 import DeleteSprintModal from "./DeleteSprintModal";
 import EditSprintModal from "./EditSprintModal";
 
@@ -23,7 +23,7 @@ interface Props {
   sprint: Sprint;
   projects?: Thing[];
   closeModal?: (val: boolean) => void;
-  user: UserProfile;
+  user: AppUserProfile;
 }
 
 const SprintCard = ({ sprint, projects = [], closeModal, user }: Props) => {

@@ -9,7 +9,7 @@ import {
   ProjectColumn,
 } from "@/types/project.types";
 import { useEditProjectMutation } from "@/services/projects";
-import { UserProfile } from "@/types/user.types";
+import { AppUserProfile } from "@/types/user.types";
 import { ROLES } from "@/constants/roles";
 import differenceWith from "lodash/differenceWith";
 import isEqual from "lodash/isEqual";
@@ -19,7 +19,7 @@ import { ScrollArea } from "@/ui/scroll-area";
 import ProjectForm from "@/components/Projects/ProjectForm";
 
 interface Props {
-  user?: UserProfile;
+  user?: AppUserProfile;
   project: Project;
   orderedColumns: ProjectColumn[];
   columns: ProjectColumn[];

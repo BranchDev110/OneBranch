@@ -2,7 +2,7 @@ import SprintForm from "@/components/Sprints/SprintForm";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { UserProfile } from "@/types/user.types";
+import { AppUserProfile } from "@/types/user.types";
 import { Project } from "@/types/project.types";
 import { useCreateSprintMutation } from "@/services/sprints";
 import { CreateSprintBody } from "@/types/sprint.types";
@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
-  user?: UserProfile;
+  user?: AppUserProfile;
   project: Project;
 }
 
