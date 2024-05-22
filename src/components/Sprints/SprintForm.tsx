@@ -38,6 +38,7 @@ import { Textarea } from "@/ui/textarea";
 import { Label } from "@/ui/label";
 import { PartialBy } from "@/types/generic.types";
 import { CheckIcon, TriangleDownIcon } from "@radix-ui/react-icons";
+import { CommandList } from "cmdk";
 
 interface Props {
   sprint?: Sprint;
@@ -185,7 +186,6 @@ const SprintForm = ({
             </div>
 
             <div className="[&_.react-datepicker-wrapper]:block [&_.react-datepicker-wrapper_input]:date-input">
-              {" "}
               <FormField
                 control={form.control}
                 name="endDate"
@@ -212,7 +212,7 @@ const SprintForm = ({
           {!projectId ? (
             <div className="space-y-2">
               <Popover open={open} onOpenChange={setOpen}>
-                <Label>Choose Project</Label>
+                <Label className="block">Choose Project</Label>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -221,9 +221,7 @@ const SprintForm = ({
                     className="w-[200px] justify-between"
                   >
                     {selectedProject
-                      ? projectList.find(
-                          (framework) => framework.id === selectedProject
-                        )?.name
+                      ? projectList?.find((p) => p.id === selectedProject)?.name
                       : "Select project..."}
                     <TriangleDownIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                   </Button>
@@ -234,26 +232,28 @@ const SprintForm = ({
 
                     <CommandEmpty>No project found.</CommandEmpty>
                     <CommandGroup>
-                      {projectList.map((p) => (
-                        <CommandItem
-                          key={p.id}
-                          value={p.id}
-                          onSelect={(val) => {
-                            form.setValue("projectId", val);
-                            setOpen(false);
-                          }}
-                        >
-                          <CheckIcon
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              p.id === selectedProject
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                          {p.name}
-                        </CommandItem>
-                      ))}
+                      <CommandList>
+                        {projectList?.map((p) => (
+                          <CommandItem
+                            key={p.id}
+                            value={p.id}
+                            onSelect={(val) => {
+                              form.setValue("projectId", val);
+                              setOpen(false);
+                            }}
+                          >
+                            <CheckIcon
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                p.id === selectedProject
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {p.name}
+                          </CommandItem>
+                        ))}
+                      </CommandList>
                     </CommandGroup>
                   </Command>
                 </PopoverContent>
