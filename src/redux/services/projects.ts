@@ -31,6 +31,7 @@ const projectsApi = baseApi.injectEndpoints({
         try {
           const projectBody = omit(project, ["columns"]);
           (projectBody as any).createdAt = serverTimestamp();
+          (projectBody as any).isRemoved = false;
 
           //Create project
           const projectRef = await addDoc(
@@ -187,6 +188,7 @@ const projectsApi = baseApi.injectEndpoints({
           await cacheDataLoaded;
           const doc_refs = query(
             collection(db, "projects"),
+            where("isRemoved", "==", false),
             where("members", "array-contains-any", [userId]),
             orderBy("createdAt", "desc")
           );

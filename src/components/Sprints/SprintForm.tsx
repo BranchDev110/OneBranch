@@ -52,6 +52,7 @@ const formSchema = z.object({
   name: z.string().min(3),
   description: z.string(),
   endDate: z.string(),
+  startDate: z.string(),
   createdBy: z.string(),
   projectId: z.string(),
   currentPoints: z.number().nonnegative().optional().default(0),
@@ -64,6 +65,7 @@ const defaultValues: Schema = {
   name: "",
   description: "",
   endDate: add(new Date(), { days: 21 }).toISOString(),
+  startDate: new Date().toISOString(),
   createdBy: "",
   currentPoints: 0,
   totalPoints: 0,
@@ -160,6 +162,29 @@ const SprintForm = ({
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="[&_.react-datepicker-wrapper]:block [&_.react-datepicker-wrapper_input]:date-input">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          dateFormat="yyyy-MM-dd"
+                          selected={new Date(field.value)}
+                          onChange={(d: Date) =>
+                            form.setValue(field.name, d.toISOString())
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+
+            <div className="[&_.react-datepicker-wrapper]:block [&_.react-datepicker-wrapper_input]:date-input">
               {" "}
               <FormField
                 control={form.control}
@@ -182,70 +207,68 @@ const SprintForm = ({
                 }}
               />
             </div>
-
-            <div>
-              {!projectId ? (
-                <div className="space-y-2">
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <Label>Choose Project</Label>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-[200px] justify-between"
-                      >
-                        {selectedProject
-                          ? projectList.find(
-                              (framework) => framework.id === selectedProject
-                            )?.name
-                          : "Select project..."}
-                        <TriangleDownIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
-                      <Command>
-                        <CommandInput placeholder="Search project..." />
-
-                        <CommandEmpty>No project found.</CommandEmpty>
-                        <CommandGroup>
-                          {projectList.map((p) => (
-                            <CommandItem
-                              key={p.id}
-                              value={p.id}
-                              onSelect={(val) => {
-                                form.setValue("projectId", val);
-                                setOpen(false);
-                              }}
-                            >
-                              <CheckIcon
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  p.id === selectedProject
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {p.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <Label>Project</Label>
-                  <Input
-                    className="cursor-not-allowed pointer-events-none"
-                    disabled
-                    value={projectList?.[0]?.name}
-                  />
-                </div>
-              )}
-            </div>
           </div>
+
+          {!projectId ? (
+            <div className="space-y-2">
+              <Popover open={open} onOpenChange={setOpen}>
+                <Label>Choose Project</Label>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[200px] justify-between"
+                  >
+                    {selectedProject
+                      ? projectList.find(
+                          (framework) => framework.id === selectedProject
+                        )?.name
+                      : "Select project..."}
+                    <TriangleDownIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[200px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search project..." />
+
+                    <CommandEmpty>No project found.</CommandEmpty>
+                    <CommandGroup>
+                      {projectList.map((p) => (
+                        <CommandItem
+                          key={p.id}
+                          value={p.id}
+                          onSelect={(val) => {
+                            form.setValue("projectId", val);
+                            setOpen(false);
+                          }}
+                        >
+                          <CheckIcon
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              p.id === selectedProject
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {p.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <Label>Project</Label>
+              <Input
+                className="cursor-not-allowed pointer-events-none"
+                disabled
+                value={projectList?.[0]?.name}
+              />
+            </div>
+          )}
 
           <div className="flex justify-end gap-2">
             <Button

@@ -7,6 +7,8 @@ import {
   onSnapshot,
   where,
   orderBy,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
@@ -21,6 +23,7 @@ const sprintsApi = baseApi.injectEndpoints({
       queryFn: async (sprint) => {
         try {
           (sprint as any).createdAt = serverTimestamp();
+          (sprint as any).isRemoved = false;
 
           const docRef = await addDoc(collection(db, "sprints"), sprint);
           const newDoc = await getDoc(docRef);
@@ -45,6 +48,34 @@ const sprintsApi = baseApi.injectEndpoints({
       },
     }),
     //updatesprint
+
+    updateSprint: build.mutation<Sprint, Sprint>({
+      queryFn: async (sprint) => {
+        try {
+          const sprintRef = doc(db, "sprints", sprint.id);
+
+          await updateDoc(sprintRef, omit(sprint, "id"));
+
+          const updatedSprint = await getDoc(sprintRef);
+
+          return {
+            data: {
+              id: updatedSprint.id,
+              ...omit(updatedSprint.data(), "createdAt"),
+            } as Sprint,
+          };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not update sprint",
+            },
+          };
+        }
+      },
+    }),
+
+    //getsprintbyid
+
     getSprintsInProject: build.query<Sprint[], string>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
@@ -85,52 +116,62 @@ const sprintsApi = baseApi.injectEndpoints({
         userId,
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
       ) {
-        let unsubscribe = () => {};
+        let unsubscribeProjects = () => {};
+        let unsubscribeSprints = () => {};
 
         try {
           await cacheDataLoaded;
           const projectsQuery = query(
             collection(db, "projects"),
-            where("members", "array-contains-any", [userId]),
-            orderBy("createdAt", "desc")
+            where("isRemoved", "==", false),
+            where("members", "array-contains-any", [userId])
           );
 
-          unsubscribe = onSnapshot(projectsQuery, (snapshot) => {
-            let sprints: Sprint[] = [];
+          unsubscribeProjects = onSnapshot(
+            projectsQuery,
+            (projectsSnapshot) => {
+              const projectIds: string[] = [];
+              projectsSnapshot.forEach((doc) => {
+                projectIds.push(doc.id);
+              });
 
-            snapshot.forEach((projectDoc) => {
-              const projectId = projectDoc.id;
+              if (projectIds.length === 0) {
+                updateCachedData(() => []);
+                return;
+              }
+
               const sprintsQuery = query(
                 collection(db, "sprints"),
-                where("projectId", "==", projectId)
+                where("projectId", "in", projectIds),
+                orderBy("createdAt", "desc")
               );
 
-              onSnapshot(sprintsQuery, (sprintsSnapshot) => {
-                sprintsSnapshot.forEach((sprintDoc) => {
-                  // console.log(sprintDoc.data());
-                  const body = omit(sprintDoc.data(), "createdAt") as Sprint;
+              unsubscribeSprints = onSnapshot(
+                sprintsQuery,
+                (sprintsSnapshot) => {
+                  const sprints: Sprint[] = [];
+                  sprintsSnapshot.forEach((doc) => {
+                    sprints.push({
+                      id: doc.id,
+                      ...omit(doc.data(), "createdAt"),
+                    } as Sprint);
+                  });
 
-                  //   console.log(body);
-                  sprints = sprints.concat([body]);
-                  //   console.log(sprints);
-                });
-
-                updateCachedData(() => {
-                  return sprints;
-                });
-              });
-            });
-          });
+                  updateCachedData(() => sprints);
+                }
+              );
+            }
+          );
         } catch (error: any) {
           console.log(error);
           throw new Error("Something went wrong getting sprints");
         }
 
         await cacheEntryRemoved;
-        unsubscribe && unsubscribe();
+        unsubscribeProjects();
+        unsubscribeSprints();
       },
     }),
-    //getsprintbyid
   }),
   overrideExisting: true,
 });
@@ -138,5 +179,6 @@ export const {
   useCreateSprintMutation,
   useGetSprintsInProjectQuery,
   useGetAllUserSprintsQuery,
+  useUpdateSprintMutation,
 } = sprintsApi;
 export { sprintsApi };

@@ -3,3 +3,8 @@ export type Prettify<T> = {
 } & Record<any, any>;
 
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
+export interface Thing {
+  id: string;
+  name: string;
+}

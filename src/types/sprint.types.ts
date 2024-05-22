@@ -3,6 +3,8 @@ export interface Sprint {
   name: string;
   description: string;
   endDate: string;
+  startDate: string;
+
   projectId: string;
   currentPoints: number;
   totalPoints: number;
@@ -13,6 +15,7 @@ export interface CreateSprintBody {
   name: string;
   description: string;
   endDate: string;
+  startDate: string;
   projectId: string;
   currentPoints: number;
   totalPoints: number;
