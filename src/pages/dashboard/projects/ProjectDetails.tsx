@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import {
   CalendarIcon,
   ClockIcon,
@@ -46,6 +46,12 @@ import { CreateProjectBody, EditProjectBody } from "@/types/project.types";
 import useDeleteImagesFromFirebase from "@/hooks/useDeleteImagesFromFirebase";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { ROLES } from "@/constants/roles";
+import SprintForm from "@/components/Sprints/SprintForm";
+import { CreateSprintBody } from "@/types/sprint.types";
+import {
+  useCreateSprintMutation,
+  useGetSprintsInProjectQuery,
+} from "@/services/sprints";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -54,6 +60,9 @@ const ProjectDetails = () => {
 
   const { handleDelete } = useDeleteImagesFromFirebase();
   const [edit, editRes] = useEditProjectMutation();
+  const [createSprint, createRes] = useCreateSprintMutation();
+
+  const navigate = useNavigate();
 
   const {
     data: project,
@@ -81,6 +90,14 @@ const ProjectDetails = () => {
   } = useGetUsersInProjectQuery(project?.members as string[], {
     skip: !project?.members?.length,
   });
+
+  const {
+    data: sprints = [],
+    isLoading: sprintsLoading,
+    isSuccess: sprintsSuccess,
+    isError: sprintsIsError,
+    error: sprintsError,
+  } = useGetSprintsInProjectQuery(id as string, { skip: !id });
 
   const onSubmit = async (values: CreateProjectBody) => {
     // console.log(values);
@@ -119,16 +136,38 @@ const ProjectDetails = () => {
       toast.error(msg);
     }
   };
+
+  const onCreateSprint = async (values: CreateSprintBody) => {
+    // console.log(values);
+
+    toast.dismiss();
+    toast.loading("Creating sprint...");
+    try {
+      const res = await createSprint(values).unwrap();
+      toast.dismiss();
+      toast.success("Created sprint");
+
+      // navigate(`/sprints/${res.id}`);
+    } catch (error: any) {
+      toast.dismiss();
+
+      const msg = error?.message || "Unable to create sprint for project";
+      toast.error(msg);
+    }
+  };
   // console.log({ columns, project, team });
 
-  const isLoading = colLoading || projectLoading || teamLoading;
-  const isSuccess = colSuccess && projectSuccess && teamSuccess;
-  const isError = colIsError || projectError || teamIsError;
+  const isLoading =
+    colLoading || projectLoading || teamLoading || sprintsLoading;
+  const isSuccess =
+    colSuccess && projectSuccess && teamSuccess && sprintsSuccess;
+  const isError = colIsError || projectError || teamIsError || sprintsIsError;
 
   const error = serializeError({
     team: teamError,
     projectDetails: projError,
     projectColumns: colError,
+    sprintDetails: sprintsError,
   });
 
   const orderedColumns = useMemo(() => {
@@ -220,7 +259,32 @@ const ProjectDetails = () => {
                     </DialogContent>
                   </Dialog>
                   <DropdownMenuItem>Create Task</DropdownMenuItem>
-                  <DropdownMenuItem>Create Sprint</DropdownMenuItem>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant={"ghost"}
+                        className="block w-full pl-2 font-normal text-start h-unset"
+                      >
+                        <span>Create Sprint</span>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">
+                      <ScrollArea className="h-full">
+                        <SprintForm
+                          userId={user!.id}
+                          submitRes={createRes}
+                          onSubmit={onCreateSprint}
+                          projectId={project?.id}
+                          projectList={[
+                            {
+                              id: project?.id as string,
+                              name: project?.name as string,
+                            },
+                          ]}
+                        />
+                      </ScrollArea>
+                    </DialogContent>
+                  </Dialog>
                   <DropdownMenuItem>Set Active Sprint</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -279,6 +343,16 @@ const ProjectDetails = () => {
                     <li key={col.id}>{col.name}</li>
                   ))}
                 </ol>
+              </div>
+
+              <div>
+                <h2 className="mb-2 text-lg font-semibold">Project Sprints</h2>
+
+                <code className="w-full">
+                  <pre className="text-xs break-words break-all whitespace-break-spaces ">
+                    {JSON.stringify(sprints, null, 2)}
+                  </pre>
+                </code>
               </div>
             </div>
           </div>
