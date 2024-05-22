@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import {
   CalendarIcon,
   ClockIcon,
@@ -78,7 +78,6 @@ const ProjectDetails = () => {
     isError: sprintsIsError,
     error: sprintsError,
   } = useGetSprintsInProjectQuery(id as string, { skip: !id });
-
   // console.log({ columns, project, team });
 
   const isLoading =

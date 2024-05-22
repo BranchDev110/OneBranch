@@ -16,6 +16,7 @@ import { baseApi } from "./base";
 import { db } from "@/firebase/BaseConfig";
 import { Sprint, CreateSprintBody } from "@/types/sprint.types";
 import omit from "lodash/omit";
+import { COLLECTIONS } from "@/constants/collections";
 
 const sprintsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -25,7 +26,10 @@ const sprintsApi = baseApi.injectEndpoints({
           (sprint as any).createdAt = serverTimestamp();
           (sprint as any).isRemoved = false;
 
-          const docRef = await addDoc(collection(db, "sprints"), sprint);
+          const docRef = await addDoc(
+            collection(db, COLLECTIONS.SPRINTS),
+            sprint
+          );
           const newDoc = await getDoc(docRef);
 
           if (!newDoc.exists()) {
@@ -47,12 +51,11 @@ const sprintsApi = baseApi.injectEndpoints({
         }
       },
     }),
-    //updatesprint
 
     updateSprint: build.mutation<Sprint, Sprint>({
       queryFn: async (sprint) => {
         try {
-          const sprintRef = doc(db, "sprints", sprint.id);
+          const sprintRef = doc(db, COLLECTIONS.SPRINTS, sprint.id);
 
           await updateDoc(sprintRef, omit(sprint, "id"));
 
@@ -74,7 +77,31 @@ const sprintsApi = baseApi.injectEndpoints({
       },
     }),
 
-    //getsprintbyid
+    getSprint: build.query<Sprint, string>({
+      queryFn: async (sprintId) => {
+        try {
+          const docRef = doc(db, COLLECTIONS.SPRINTS, sprintId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            return {
+              data: {
+                id: sprintId,
+                ...omit(docSnap.data(), "createdAt"),
+              } as Sprint,
+            };
+          } else {
+            throw new Error("Unable to find sprint");
+          }
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not find sprint",
+            },
+          };
+        }
+      },
+    }),
 
     getSprintsInProject: build.query<Sprint[], string>({
       queryFn: async () => ({ data: [] }),
@@ -87,7 +114,7 @@ const sprintsApi = baseApi.injectEndpoints({
         try {
           await cacheDataLoaded;
           const doc_refs = query(
-            collection(db, "sprints"),
+            collection(db, COLLECTIONS.SPRINTS),
             where("projectId", "==", projectId),
             orderBy("createdAt", "desc")
           );
@@ -122,7 +149,7 @@ const sprintsApi = baseApi.injectEndpoints({
         try {
           await cacheDataLoaded;
           const projectsQuery = query(
-            collection(db, "projects"),
+            collection(db, COLLECTIONS.PROJECTS),
             where("isRemoved", "==", false),
             where("members", "array-contains-any", [userId])
           );
@@ -141,7 +168,7 @@ const sprintsApi = baseApi.injectEndpoints({
               }
 
               const sprintsQuery = query(
-                collection(db, "sprints"),
+                collection(db, COLLECTIONS.SPRINTS),
                 where("projectId", "in", projectIds),
                 orderBy("createdAt", "desc")
               );
