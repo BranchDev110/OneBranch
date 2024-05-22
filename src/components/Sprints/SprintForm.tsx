@@ -51,11 +51,11 @@ interface Props {
 
 const formSchema = z.object({
   name: z.string().min(3),
-  description: z.string(),
+  description: z.string().min(1),
   endDate: z.string(),
   startDate: z.string(),
   createdBy: z.string(),
-  projectId: z.string(),
+  projectId: z.string({ message: "Please select a project" }),
   currentPoints: z.number().nonnegative().optional().default(0),
   totalPoints: z.number().nonnegative().optional().default(0),
 });
@@ -212,13 +212,20 @@ const SprintForm = ({
           {!projectId ? (
             <div className="space-y-2">
               <Popover open={open} onOpenChange={setOpen}>
-                <Label className="block">Choose Project</Label>
+                <Label
+                  className={cn("block", {
+                    ["text-destructive"]:
+                      form?.formState?.errors?.projectId?.message,
+                  })}
+                >
+                  Choose Project
+                </Label>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-[200px] justify-between"
+                    className="justify-between w-full"
                   >
                     {selectedProject
                       ? projectList?.find((p) => p.id === selectedProject)?.name
@@ -226,7 +233,10 @@ const SprintForm = ({
                     <TriangleDownIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <small className="text-[0.8rem] text-destructive italic block">
+                  {form?.formState?.errors?.projectId?.message}
+                </small>
+                <PopoverContent className="p-0">
                   <Command>
                     <CommandInput placeholder="Search project..." />
 
