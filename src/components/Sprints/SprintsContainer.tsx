@@ -62,7 +62,7 @@ const SprintsContainer = ({
           <>
             {data.map((sprint) => (
               <SprintCard
-                user={user}
+                user={user as AppUserProfile}
                 key={sprint.id}
                 sprint={sprint}
                 projects={[
