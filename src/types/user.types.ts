@@ -5,7 +5,7 @@ export interface CreateNewUserBody {
   //   TO DO: Add other fields
 }
 
-export interface UserProfile {
+export interface AppUserProfile {
   name: string;
   id: string;
   role: string;

@@ -110,7 +110,9 @@ const AllProjects = () => {
 
       <div className="p-4">
         <div className="my-3 btwn">
-          <h1 className="text-xl font-bold">{projects.length} projects</h1>
+          <h1 className="text-xl font-bold">
+            {projects.length} project{projects.length > 1 ? "s" : ""}
+          </h1>
           <Button asChild>
             <NavLink
               className={cn("", {
