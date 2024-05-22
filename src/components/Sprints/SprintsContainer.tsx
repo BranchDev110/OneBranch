@@ -5,6 +5,8 @@ import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Thing } from "@/types/generic.types";
 import SprintCard from "@/components/Sprints/SprintCard";
+import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { UserProfile } from "@/types/user.types";
 
 interface Props {
   sprints: Sprint[];
@@ -17,6 +19,7 @@ const SprintsContainer = ({
   defaultProject,
   getProject,
 }: Props) => {
+  const { user } = useLoggedInUser();
   const [query, setQuery] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,6 +62,7 @@ const SprintsContainer = ({
           <>
             {data.map((sprint) => (
               <SprintCard
+                user={user}
                 key={sprint.id}
                 sprint={sprint}
                 projects={[

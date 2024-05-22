@@ -10,6 +10,7 @@ import {
   query,
   orderBy,
   writeBatch,
+  updateDoc,
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
@@ -24,6 +25,8 @@ import {
 } from "@/types/project.types";
 import omit from "lodash/omit";
 
+import { COLLECTIONS } from "@/constants/collections";
+
 const projectsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createProject: build.mutation<Project, CreateProjectBody>({
@@ -32,10 +35,11 @@ const projectsApi = baseApi.injectEndpoints({
           const projectBody = omit(project, ["columns"]);
           (projectBody as any).createdAt = serverTimestamp();
           (projectBody as any).isRemoved = false;
+          (projectBody as any).activeSprintId = "";
 
           //Create project
           const projectRef = await addDoc(
-            collection(db, "projects"),
+            collection(db, COLLECTIONS.PROJECTS),
             projectBody
           );
 
@@ -51,10 +55,13 @@ const projectsApi = baseApi.injectEndpoints({
             //create columns
             const columnIds = await Promise.all(
               project.columns.map(async (column) => {
-                const newColRef = await addDoc(collection(db, "columns"), {
-                  name: column.name,
-                  projectId,
-                });
+                const newColRef = await addDoc(
+                  collection(db, COLLECTIONS.COLUMNS),
+                  {
+                    name: column.name,
+                    projectId,
+                  }
+                );
                 return newColRef.id;
               })
             );
@@ -80,11 +87,28 @@ const projectsApi = baseApi.injectEndpoints({
         }
       },
     }),
+
+    deleteProject: build.mutation<boolean, string>({
+      queryFn: async (projecttId) => {
+        try {
+          const projRef = doc(db, COLLECTIONS.PROJECTS, projecttId);
+          await updateDoc(projRef, { isRemoved: true });
+          return { data: true };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not delete project",
+            },
+          };
+        }
+      },
+    }),
+
     editProject: build.mutation<any, EditProjectBody>({
       queryFn: async (project) => {
         try {
           const batch = writeBatch(db);
-          const projectRef = doc(db, "projects", project.id);
+          const projectRef = doc(db, COLLECTIONS.PROJECTS, project.id);
           const docRef = await getDoc(projectRef);
 
           if (!docRef.exists()) {
@@ -96,10 +120,13 @@ const projectsApi = baseApi.injectEndpoints({
           if (project.newColumns.length) {
             const columnIds = await Promise.all(
               project.newColumns.map(async (column) => {
-                const newColRef = await addDoc(collection(db, "columns"), {
-                  name: column.name,
-                  projectId: project.id,
-                });
+                const newColRef = await addDoc(
+                  collection(db, COLLECTIONS.COLUMNS),
+                  {
+                    name: column.name,
+                    projectId: project.id,
+                  }
+                );
                 return newColRef.id;
               })
             );
@@ -114,7 +141,7 @@ const projectsApi = baseApi.injectEndpoints({
           if (project.oldColumns.length) {
             await Promise.all(
               project.oldColumns.map(async (column) => {
-                batch.update(doc(db, "columns", column.id), {
+                batch.update(doc(db, COLLECTIONS.COLUMNS, column.id), {
                   name: column.name,
                   projectId: project.id,
                 });
@@ -124,7 +151,7 @@ const projectsApi = baseApi.injectEndpoints({
             );
           }
 
-          batch.update(doc(db, "projects", project.id), {
+          batch.update(doc(db, COLLECTIONS.PROJECTS, project.id), {
             name: project.name,
             description: project.description,
             startDate: project.startDate,
@@ -187,7 +214,7 @@ const projectsApi = baseApi.injectEndpoints({
         try {
           await cacheDataLoaded;
           const doc_refs = query(
-            collection(db, "projects"),
+            collection(db, COLLECTIONS.PROJECTS),
             where("isRemoved", "==", false),
             where("members", "array-contains-any", [userId]),
             orderBy("createdAt", "desc")
@@ -221,7 +248,7 @@ const projectsApi = baseApi.injectEndpoints({
 
         try {
           const q = query(
-            collection(db, "columns"),
+            collection(db, COLLECTIONS.COLUMNS),
             where("projectId", "==", projectId)
           );
           unsubscribe = onSnapshot(q, (snapshot) => {
@@ -244,7 +271,7 @@ const projectsApi = baseApi.injectEndpoints({
     getProject: build.query<Project, string>({
       queryFn: async (projectId) => {
         try {
-          const docRef = doc(db, "projects", projectId);
+          const docRef = doc(db, COLLECTIONS.PROJECTS, projectId);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
@@ -276,5 +303,6 @@ export const {
   useGetProjectQuery,
   useGetProjectColumnsQuery,
   useEditProjectMutation,
+  useDeleteProjectMutation,
 } = projectsApi;
 export { projectsApi };

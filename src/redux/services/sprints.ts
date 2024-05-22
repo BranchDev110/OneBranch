@@ -103,6 +103,22 @@ const sprintsApi = baseApi.injectEndpoints({
       },
     }),
 
+    deleteSprint: build.mutation<boolean, string>({
+      queryFn: async (sprintId) => {
+        try {
+          const sprintRef = doc(db, COLLECTIONS.SPRINTS, sprintId);
+          await updateDoc(sprintRef, { isRemoved: true });
+          return { data: true };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not delete sprint",
+            },
+          };
+        }
+      },
+    }),
+
     getSprintsInProject: build.query<Sprint[], string>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
@@ -115,6 +131,7 @@ const sprintsApi = baseApi.injectEndpoints({
           await cacheDataLoaded;
           const doc_refs = query(
             collection(db, COLLECTIONS.SPRINTS),
+            where("isRemoved", "==", false),
             where("projectId", "==", projectId),
             orderBy("createdAt", "desc")
           );
@@ -169,6 +186,7 @@ const sprintsApi = baseApi.injectEndpoints({
 
               const sprintsQuery = query(
                 collection(db, COLLECTIONS.SPRINTS),
+                where("isRemoved", "==", false),
                 where("projectId", "in", projectIds),
                 orderBy("createdAt", "desc")
               );
@@ -207,5 +225,6 @@ export const {
   useGetSprintsInProjectQuery,
   useGetAllUserSprintsQuery,
   useUpdateSprintMutation,
+  useDeleteSprintMutation,
 } = sprintsApi;
 export { sprintsApi };

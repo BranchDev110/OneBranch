@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { NavLink, useParams, useNavigate } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import {
   CalendarIcon,
   ClockIcon,
@@ -163,7 +163,6 @@ const ProjectDetails = () => {
                   />
                   <DropdownMenuItem>Create Task</DropdownMenuItem>
                   <CreateProjectSprintModal
-                    //@ts-expect-error: not sure
                     user={user}
                     project={project as Project}
                   />
@@ -237,6 +236,12 @@ const ProjectDetails = () => {
                     name: project?.name as string,
                   }}
                 />
+              </div>
+
+              <div>
+                <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
+
+                <h3 className="text-center ">COMING SOON</h3>
               </div>
             </div>
           </div>

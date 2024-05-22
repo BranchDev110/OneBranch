@@ -1,67 +1,48 @@
 import { useState } from "react";
 import { Progress } from "@/ui/progress";
-import { DialogTrigger, DialogContent, Dialog } from "@/components/ui/dialog";
 import {
   DropdownMenuTrigger,
-  //   DropdownMenuItem,
+  DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/ui/button";
 
 import { Sprint } from "@/types/sprint.types";
 import { CalendarIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns/format";
 import { isValid } from "date-fns/isValid";
-import SprintForm from "./SprintForm";
-import { ScrollArea } from "@/ui/scroll-area";
+
 import { Thing } from "@/types/generic.types";
-import { useUpdateSprintMutation } from "@/services/sprints";
 import { round } from "@/lib/round";
-import { toast } from "sonner";
+import { NavLink } from "react-router-dom";
+import { UserProfile } from "firebase/auth";
+import DeleteSprintModal from "./DeleteSprintModal";
+import EditSprintModal from "./EditSprintModal";
 
 interface Props {
   sprint: Sprint;
   projects?: Thing[];
   closeModal?: (val: boolean) => void;
+  user: UserProfile;
 }
 
-const SprintCard = ({ sprint, projects = [], closeModal }: Props) => {
+const SprintCard = ({ sprint, projects = [], closeModal, user }: Props) => {
   const [openMenu, setOpenMenu] = useState(false);
 
-  const [open, setOpen] = useState(false);
-
-  const { name, endDate, startDate, description, totalPoints, currentPoints } =
-    sprint;
-
-  const [edit, editRes] = useUpdateSprintMutation();
+  const {
+    id,
+    name,
+    endDate,
+    startDate,
+    description,
+    totalPoints,
+    currentPoints,
+  } = sprint;
 
   const handleDialogChange = (val: boolean) => {
-    setOpen(val);
-
     if (!val) {
       closeModal && closeModal(false);
       setOpenMenu(false);
-    }
-  };
-
-  const onEditSprint = async (values: any) => {
-    // console.log(values);
-
-    toast.dismiss();
-    toast.loading("Editing sprint...");
-
-    try {
-      await edit({ ...sprint, id: sprint.id, ...values }).unwrap();
-
-      toast.dismiss();
-      toast.success("Edited sprint");
-      handleDialogChange(false);
-    } catch (error: any) {
-      toast.dismiss();
-
-      const msg = error?.message || "Unable to edit sprint";
-      toast.error(msg);
     }
   };
 
@@ -92,28 +73,23 @@ const SprintCard = ({ sprint, projects = [], closeModal }: Props) => {
             <DotsHorizontalIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <Dialog open={open} onOpenChange={handleDialogChange}>
-              <DialogTrigger asChild>
-                <Button
-                  variant={"ghost"}
-                  className="block w-full pl-2 font-normal text-start h-unset"
-                >
-                  <span>Edit Sprint</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">
-                <ScrollArea className="h-full">
-                  <SprintForm
-                    userId={sprint.createdBy}
-                    submitRes={editRes}
-                    onSubmit={onEditSprint}
-                    projectId={sprint.projectId}
-                    projectList={projects}
-                    sprint={sprint}
-                  />
-                </ScrollArea>
-              </DialogContent>
-            </Dialog>
+            <DropdownMenuItem asChild>
+              <NavLink className={""} to={`/sprints/${id}`}>
+                View Sprint
+              </NavLink>
+            </DropdownMenuItem>
+
+            <EditSprintModal
+              user={user}
+              closeModal={handleDialogChange}
+              sprint={sprint}
+              projects={projects}
+            />
+            <DeleteSprintModal
+              user={user}
+              closeModal={handleDialogChange}
+              sprint={sprint}
+            />
           </DropdownMenuContent>
         </DropdownMenu>
       </header>

@@ -3,21 +3,33 @@ import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
 import { UserProfile } from "@/types/user.types";
-import { Project } from "@/types/project.types";
 import { useCreateSprintMutation } from "@/services/sprints";
 import { CreateSprintBody } from "@/types/sprint.types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useGetUsersProjectsQuery } from "@/services/projects";
+import LoadingComponent from "../LoadingComponent";
+import ErrorComponent from "../ErrorComponent";
+import CaseRender from "../CaseRender";
 
 interface Props {
-  user?: UserProfile;
-  project: Project;
+  user: UserProfile;
 }
 
-const CreateProjectSprintModal = ({ user, project }: Props) => {
+const CreateNewSprint = ({ user }: Props) => {
   const navigate = useNavigate();
 
   const [createSprint, createRes] = useCreateSprintMutation();
+
+  const {
+    data: projects = [],
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetUsersProjectsQuery(user!.id as string, {
+    skip: !user?.id,
+  });
 
   const onCreateSprint = async (values: CreateSprintBody) => {
     // console.log(values);
@@ -45,27 +57,36 @@ const CreateProjectSprintModal = ({ user, project }: Props) => {
           variant={"ghost"}
           className="block w-full pl-2 font-normal text-start h-unset"
         >
-          <span>Create Sprint</span>
+          + New Sprint
         </Button>
       </DialogTrigger>
+
       <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">
         <ScrollArea className="h-full">
-          <SprintForm
-            userId={user!.id as string}
-            submitRes={createRes}
-            onSubmit={onCreateSprint}
-            projectId={project?.id}
-            projectList={[
-              {
-                id: project?.id as string,
-                name: project?.name as string,
-              },
-            ]}
+          <LoadingComponent show={isLoading} />
+          <ErrorComponent
+            show={isError}
+            message={
+              <code className="block w-full">
+                <pre className="max-w-full text-sm break-all whitespace-break-spaces ">
+                  {JSON.stringify(error, null, 2)}
+                </pre>
+              </code>
+            }
           />
+
+          <CaseRender condition={isSuccess}>
+            <SprintForm
+              userId={user!.id as string}
+              submitRes={createRes}
+              onSubmit={onCreateSprint}
+              projectList={projects}
+            />
+          </CaseRender>
         </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default CreateProjectSprintModal;
+export default CreateNewSprint;
