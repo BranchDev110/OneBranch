@@ -8,7 +8,7 @@
             "65a39c16-8e08-4100-8b11-ba1bef454713"
         ],
         "description": "bd7b3360-98f4-4ddd-b61e-e2ccac08f020",
-        "current_sprint_id": "36cd48c9-ab74-48b9-bb5a-a6c6fc2e8982"
+        "current_sprintId": "36cd48c9-ab74-48b9-bb5a-a6c6fc2e8982"
     },
     {
         "id": "6139d3c1-e8ae-42b6-818b-c65d9340c34b",
@@ -22,7 +22,7 @@
             "b1569954-3019-481f-91a6-ad840aba8434"
         ],
         "description": "432a8f35-2303-4406-ab41-87b4796c2a7c",
-        "current_sprint_id": "7241d4e6-c2e3-44ab-8899-7951ce1a88b7"
+        "current_sprintId": "7241d4e6-c2e3-44ab-8899-7951ce1a88b7"
     },
     {
         "id": "8b51c29c-690c-478c-bde2-6de653b25674",
@@ -35,7 +35,7 @@
             "74284a1d-ff73-48df-94e4-cc5d4b43a63d"
         ],
         "description": "72afc614-778b-4924-b18a-99964cccb15e",
-        "current_sprint_id": "09539c52-0a16-43ff-a143-e84a218e4be6"
+        "current_sprintId": "09539c52-0a16-43ff-a143-e84a218e4be6"
     },
     {
         "id": "c4cee6b5-0a86-4bec-8383-58e36bd5d8fe",
@@ -48,6 +48,6 @@
             "bc169305-9d4c-48c5-8ba0-29174bdade5e"
         ],
         "description": "27e78a62-e9d2-429a-be10-db17b5eda11f",
-        "current_sprint_id": "29a1417d-2860-4f0b-8eb6-f7fb4a5bad67"
+        "current_sprintId": "29a1417d-2860-4f0b-8eb6-f7fb4a5bad67"
     }
 ]
