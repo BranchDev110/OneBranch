@@ -19,7 +19,9 @@ const CreateProjectSprintModal = ({ user, project }: Props) => {
 
   const [createSprint, createRes] = useCreateSprintMutation();
 
-  const onCreateSprint = async (values: CreateSprintBody) => {
+  const onCreateSprint = async (
+    values: CreateSprintBody & { filesToRemove: string[] }
+  ) => {
     // console.log(values);
 
     toast.dismiss();
@@ -48,7 +50,7 @@ const CreateProjectSprintModal = ({ user, project }: Props) => {
           <span>Create Sprint</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-2xl w-11/12 pt-10 px-8 h-[80vh]">
         <ScrollArea className="h-full">
           <SprintForm
             userId={user!.id as string}

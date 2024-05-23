@@ -16,6 +16,7 @@ import { Command as CommandPrimitive } from "cmdk";
 
 import React, {
   KeyboardEvent,
+  ReactNode,
   createContext,
   forwardRef,
   useCallback,
@@ -153,10 +154,15 @@ const MultiSelector = ({
   );
 };
 
+interface MultiSelectorTriggerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  displayValue?: (value: string) => ReactNode;
+}
+
 const MultiSelectorTrigger = forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => {
+  MultiSelectorTriggerProps
+>(({ className, children, displayValue, ...props }, ref) => {
   const { value, onValueChange, activeIndex } = useMultiSelect();
 
   const mousePreventDefault = useCallback((e: React.MouseEvent) => {
@@ -173,28 +179,35 @@ const MultiSelectorTrigger = forwardRef<
       )}
       {...props}
     >
-      {value.map((item, index) => (
-        <Badge
-          key={item}
-          className={cn(
-            "px-1 rounded-xl flex items-center gap-1",
-            activeIndex === index && "ring-2 ring-muted-foreground "
-          )}
-          variant={"secondary"}
-        >
-          <span className="text-xs">{item}</span>
-          <button
-            aria-label={`Remove ${item} option`}
-            aria-roledescription="button to remove option"
-            type="button"
-            onMouseDown={mousePreventDefault}
-            onClick={() => onValueChange(item)}
+      {value.map((item, index) => {
+        return (
+          <Badge
+            key={item}
+            className={cn(
+              "px-1 rounded-xl flex items-center gap-1",
+              activeIndex === index && "ring-2 ring-muted-foreground "
+            )}
+            variant={"secondary"}
           >
-            <span className="sr-only">Remove {item} option</span>
-            <RemoveIcon className="w-4 h-4 hover:stroke-destructive" />
-          </button>
-        </Badge>
-      ))}
+            {displayValue ? (
+              displayValue(item)
+            ) : (
+              <span className="text-xs">{item}</span>
+            )}
+
+            <button
+              aria-label={`Remove ${item} option`}
+              aria-roledescription="button to remove option"
+              type="button"
+              onMouseDown={mousePreventDefault}
+              onClick={() => onValueChange(item)}
+            >
+              <span className="sr-only">Remove {item} option</span>
+              <RemoveIcon className="w-4 h-4 hover:stroke-destructive" />
+            </button>
+          </Badge>
+        );
+      })}
       {children}
     </div>
   );
@@ -255,8 +268,8 @@ const MultiSelectorList = forwardRef<
       )}
     >
       {children}
-      <CommandEmpty>
-        <span className="text-muted-foreground">No results found</span>
+      <CommandEmpty className="py-0 my-1">
+        <span className="text-muted-foreground ">No results found</span>
       </CommandEmpty>
     </CommandList>
   );

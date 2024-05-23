@@ -8,6 +8,7 @@ export interface Task {
   sprintId: string;
   projectId: string;
   assignees: string[];
+  fileUrls: string[];
   createdBy: string;
   storyPoint: number;
   dueDate: string;
@@ -20,5 +21,18 @@ export interface TaskWithPopulatedUsers extends Omit<Task, "assignees"> {
 
 export interface UpdateTaskStatusArgs {
   taskId: string;
+  status: TASK_STATUS;
+}
+
+export interface CreateTaskBody {
+  name: string;
+  description: string;
+  sprintId: string;
+  projectId: string;
+  assignees: string[];
+  fileUrls: string[];
+  createdBy: string;
+  storyPoint: number;
+  dueDate: string;
   status: TASK_STATUS;
 }

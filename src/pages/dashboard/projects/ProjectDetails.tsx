@@ -38,6 +38,8 @@ import EditProjectModal from "@/components/Projects/EditProjectModal";
 import { Project } from "@/types/project.types";
 import CreateProjectSprintModal from "@/components/Projects/CreateProjectSprintModal";
 import SprintsContainer from "@/components/Sprints/SprintsContainer";
+import CreateProjectTaskModal from "@/components/Projects/CreateProjectTaskModal";
+import { useGetTasksInProjectQuery } from "@/services/tasks";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -80,17 +82,35 @@ const ProjectDetails = () => {
   } = useGetSprintsInProjectQuery(id as string, { skip: !id });
   // console.log({ columns, project, team });
 
+  const {
+    data: tasks = [],
+    isLoading: tasksLoading,
+    isSuccess: tasksSuccess,
+    isError: tasksIsError,
+    error: tasksError,
+  } = useGetTasksInProjectQuery(id as string, { skip: !id });
+
   const isLoading =
-    colLoading || projectLoading || teamLoading || sprintsLoading;
+    colLoading ||
+    projectLoading ||
+    teamLoading ||
+    sprintsLoading ||
+    tasksLoading;
   const isSuccess =
-    colSuccess && projectSuccess && teamSuccess && sprintsSuccess;
-  const isError = colIsError || projectError || teamIsError || sprintsIsError;
+    colSuccess &&
+    projectSuccess &&
+    teamSuccess &&
+    sprintsSuccess &&
+    tasksSuccess;
+  const isError =
+    colIsError || projectError || teamIsError || sprintsIsError || tasksIsError;
 
   const error = serializeError({
     team: teamError,
     projectDetails: projError,
     projectColumns: colError,
     sprintDetails: sprintsError,
+    tasksList: tasksError,
   });
 
   const orderedColumns = useMemo(() => {
@@ -161,7 +181,12 @@ const ProjectDetails = () => {
                     user={user}
                     closeModal={setOpen}
                   />
-                  <DropdownMenuItem>Create Task</DropdownMenuItem>
+                  <CreateProjectTaskModal
+                    team={team}
+                    user={user}
+                    projectId={project?.id as string}
+                    closeModal={setOpen}
+                  />
                   <CreateProjectSprintModal
                     user={user}
                     project={project as Project}
@@ -241,7 +266,11 @@ const ProjectDetails = () => {
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
 
-                <h3 className="text-center ">COMING SOON</h3>
+                <code>
+                  <pre className="text-xs whitespace-break-spaces">
+                    {JSON.stringify(tasks, null, 2)}
+                  </pre>
+                </code>
               </div>
             </div>
           </div>
