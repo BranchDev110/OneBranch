@@ -152,7 +152,7 @@ const TaskForm = ({
     try {
       if (files.length) {
         toast.dismiss();
-        toast.loading("Uploading image...");
+        toast.loading("Uploading file(s)...");
         const filePromises = Array.from(files, (file) => uploadFile(file));
 
         const urls = await Promise.all(filePromises);

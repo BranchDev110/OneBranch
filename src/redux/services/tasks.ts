@@ -33,6 +33,7 @@ const tasksApi = baseApi.injectEndpoints({
           const batch = writeBatch(db);
           (task as any).createdAt = serverTimestamp();
           (task as any).isRemoved = false;
+          (task as any).order = Number.MAX_SAFE_INTEGER;
 
           const projectRef = doc(db, COLLECTIONS.PROJECTS, task.projectId);
           const docRef = await getDoc(projectRef);

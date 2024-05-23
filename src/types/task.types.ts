@@ -13,6 +13,7 @@ export interface Task {
   storyPoint: number;
   dueDate: string;
   status: TASK_STATUS | string;
+  order: number;
 }
 
 export interface TaskWithPopulatedUsers extends Omit<Task, "assignees"> {
