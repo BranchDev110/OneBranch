@@ -14,10 +14,12 @@ const usePopulateTasksWithUsers = ({ tasks = [], users = [] }: Props) => {
 
   const populatedTasks: TaskWithPopulatedUsers[] = useMemo(() => {
     return tasks.map((t) => {
-      (t as unknown as TaskWithPopulatedUsers).assignees = t.assignees.map(
-        (u) => userMap[u]
-      );
-      return t as unknown as TaskWithPopulatedUsers;
+      const populatedAssignees = t.assignees.map((u) => userMap[u]);
+
+      return {
+        ...t,
+        assignees: populatedAssignees,
+      };
     });
   }, [userMap, tasks]);
 

@@ -19,9 +19,7 @@ const CreateProjectSprintModal = ({ user, project }: Props) => {
 
   const [createSprint, createRes] = useCreateSprintMutation();
 
-  const onCreateSprint = async (
-    values: CreateSprintBody & { filesToRemove: string[] }
-  ) => {
+  const onCreateSprint = async (values: CreateSprintBody) => {
     // console.log(values);
 
     toast.dismiss();

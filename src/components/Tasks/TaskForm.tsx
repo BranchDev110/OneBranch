@@ -46,7 +46,7 @@ interface Props {
   projectId: string;
   sprintId?: string;
   columnId?: string;
-  onSubmit: (sprint: CreateTaskBody) => void;
+  onSubmit: (sprint: CreateTaskBody & { filesToRemove?: string[] }) => void;
   submitRes: UseMutationResult<Task>;
   userId: string;
   memberOptions: AppUserProfile[];

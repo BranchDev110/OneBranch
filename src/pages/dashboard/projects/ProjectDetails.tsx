@@ -40,6 +40,7 @@ import CreateProjectSprintModal from "@/components/Projects/CreateProjectSprintM
 import SprintsContainer from "@/components/Sprints/SprintsContainer";
 import CreateProjectTaskModal from "@/components/Projects/CreateProjectTaskModal";
 import { useGetTasksInProjectQuery } from "@/services/tasks";
+import TasksContainer from "@/components/Tasks/TasksContainer";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -266,11 +267,7 @@ const ProjectDetails = () => {
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
 
-                <code>
-                  <pre className="text-xs whitespace-break-spaces">
-                    {JSON.stringify(tasks, null, 2)}
-                  </pre>
-                </code>
+                <TasksContainer tasks={tasks} users={team} />
               </div>
             </div>
           </div>

@@ -24,7 +24,7 @@ import ChatIcon from "@/icons/ChatIcon";
 import AttachmentIcon from "@/icons/AttachmentIcon";
 import ImportantIcon from "@/icons/ImportantIcon";
 
-import { TASK_MARKER_ClASSES, TASK_STATUS_ClASSES } from "@/constants/colors";
+import { TASK_MARKER_CLASSES, TASK_STATUS_ClASSES } from "@/constants/colors";
 
 import { TASK_STATUS } from "@/constants/task-status";
 
@@ -46,11 +46,11 @@ const DummyTaskCard = ({ description, name, dueDate, status }: Props) => {
       <header className="items-start font-semibold btwn space-x-1.5">
         <ImportantIcon
           className={cn("w-6 h-6", {
-            [TASK_MARKER_ClASSES.Done]:
+            [TASK_MARKER_CLASSES.Done]:
               val === "completed" || TASK_STATUS.DONE === val,
-            [TASK_MARKER_ClASSES.Ongoing]:
+            [TASK_MARKER_CLASSES.Ongoing]:
               val === "today" || TASK_STATUS.ONGOING === val,
-            [TASK_MARKER_ClASSES["To Do"]]:
+            [TASK_MARKER_CLASSES["To Do"]]:
               val === "upcoming" || TASK_STATUS.TODO === val,
           })}
         />
