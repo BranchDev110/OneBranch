@@ -221,7 +221,7 @@ const SprintDetails = () => {
             team={team}
           />
 
-          <div className="my-3">
+          <div className="my-3 -mr-10">
             <SprintBoard
               users={team}
               tasks={filteredTasks}

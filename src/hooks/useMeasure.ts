@@ -29,8 +29,21 @@ const useMeasure = ({ ref, onResize }: Props) => {
       resizeObserver.observe(ref.current);
     }
 
+    const handleWindowResize = () => {
+      if (ref.current) {
+        const { width, height } = ref.current.getBoundingClientRect();
+        setDimensions({ width, height });
+        onResize && onResize({ width, height });
+      }
+    };
+
+    handleWindowResize();
+
+    window.addEventListener("resize", handleWindowResize);
+
     return () => {
       resizeObserver.disconnect();
+      window.removeEventListener("resize", handleWindowResize);
     };
   }, [ref, onResize]);
 

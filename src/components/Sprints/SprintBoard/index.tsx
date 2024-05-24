@@ -97,7 +97,9 @@ const Board = ({
     console.log({ event });
   };
 
-  const { dimensions } = useMeasure({ ref });
+  const { dimensions } = useMeasure({
+    ref,
+  });
 
   const value: ISprintBoard = useMemo(
     () => ({
