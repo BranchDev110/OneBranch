@@ -1,7 +1,5 @@
 import { toast } from "sonner";
-
 import { UpdateTaskStatusArgs } from "@/types/task.types";
-
 import { useUpdateTaskStatusMutation } from "@/services/tasks";
 
 const useUpdateTaskStatus = () => {
