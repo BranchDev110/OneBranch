@@ -4,7 +4,7 @@ export const TASK_STATUS_ClASSES = {
   Done: "text-c2-200 bg-c2-200/10",
 };
 
-export const TASK_MARKER_ClASSES = {
+export const TASK_MARKER_CLASSES = {
   Ongoing: "fill-c4",
   "To Do": "fill-c3",
   Done: "fill-c2",

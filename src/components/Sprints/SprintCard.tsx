@@ -15,7 +15,7 @@ import { isValid } from "date-fns/isValid";
 import { Thing } from "@/types/generic.types";
 import { round } from "@/lib/round";
 import { NavLink } from "react-router-dom";
-import { AppUserProfile } from "firebase/auth";
+import { AppUserProfile } from "@/types/user.types";
 import DeleteSprintModal from "./DeleteSprintModal";
 import EditSprintModal from "./EditSprintModal";
 
