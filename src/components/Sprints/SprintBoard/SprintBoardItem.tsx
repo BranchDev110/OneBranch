@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { TaskWithPopulatedUsers } from "@/types/task.types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 
 interface Props extends PropsWithChildren {
   task: TaskWithPopulatedUsers;

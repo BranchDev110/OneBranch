@@ -14,6 +14,7 @@ interface Props {
 
 const SprintBoardColumn = ({ tasks = [], column }: Props) => {
   const ctx = useSprintBoard();
+
   const { setNodeRef, attributes, listeners, transform, transition } =
     useSortable({
       id: column.id,

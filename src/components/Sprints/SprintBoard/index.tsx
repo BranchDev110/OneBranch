@@ -1,4 +1,11 @@
-import { memo, useRef, useState, createContext, useMemo } from "react";
+import {
+  memo,
+  useRef,
+  useState,
+  createContext,
+  useMemo,
+  useCallback,
+} from "react";
 import { createPortal } from "react-dom";
 
 import usePopulateTasksWithUsers from "@/hooks/usePopulateTasksWithUsers";
@@ -75,46 +82,19 @@ const Board = ({
     null
   );
 
-  const onCreateTask =
-    (newTaskOrder: number, columnId?: string) =>
-    async (values: Omit<CreateTaskBody, "status">) => {
-      try {
-        toast.dismiss();
-        toast.loading("Creating task...");
+  const onCreateTask = useCallback(() => {}, []);
 
-        const body: CreateTaskBodyFull = {
-          name: values.name,
-          description: values.description,
-          sprintId,
-          projectId,
-          columnId,
-          assignees: values.assignees,
-          createdBy: user?.id as string,
-          storyPoint: values.storyPoint,
-          dueDate: values.dueDate,
-          status: TASK_STATUS.TODO,
-          fileUrls: values.fileUrls,
-          order: newTaskOrder,
-        };
-
-        console.log(body);
-
-        //  toast.dismiss();
-        //  toast.success("Created task");
-      } catch (error: any) {
-        toast.dismiss();
-
-        const msg = error?.message || "Unable to create task";
-        toast.error(msg);
-      }
-    };
-
-  const handleDragOver = (event: DragOverEvent) => {};
+  const handleDragOver = (event: DragOverEvent) => {
+    console.log({ event });
+  };
   const handleDragStart = (event: DragStartEvent) => {
+    console.log({ event });
+
     setActiveTask(event.active.data.current.task);
   };
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveTask(null);
+    console.log({ event });
   };
 
   const { dimensions } = useMeasure({ ref });
