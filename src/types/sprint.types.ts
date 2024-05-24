@@ -4,7 +4,7 @@ export interface Sprint {
   description: string;
   endDate: string;
   startDate: string;
-
+  isRemoved?: boolean;
   projectId: string;
   currentPoints: number;
   totalPoints: number;

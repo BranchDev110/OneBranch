@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import Truncatable from "react-truncatable";
 import { format } from "date-fns/format";
 
@@ -15,7 +17,11 @@ import {
   SelectValue,
 } from "@/ui/select";
 import { Button } from "@/ui/button";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/ui/dropdown-menu";
 import { TASK_MARKER_CLASSES, TASK_STATUS_ClASSES } from "@/constants/colors";
 
 import { TASK_STATUS } from "@/constants/task-status";
@@ -23,17 +29,27 @@ import { cn } from "@/lib/utils";
 import { AppUserProfile } from "@/types/user.types";
 import { ROLES } from "@/constants/roles";
 import AvatarStack from "@/ui/avatar-stack";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { DotsVerticalIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import AttachmentIcon from "@/icons/AttachmentIcon";
+import EditTaskModal from "./EditTaskModal";
 
 interface Props {
   task: TaskWithPopulatedUsers;
   onUpdateStatus: (args: UpdateTaskStatusArgs) => void;
   user: AppUserProfile;
   isUpdatingStatus?: boolean;
+  team: AppUserProfile[];
 }
 
-const TaskCard = ({ task, onUpdateStatus, user, isUpdatingStatus }: Props) => {
+const TaskCard = ({
+  task,
+  onUpdateStatus,
+  user,
+  isUpdatingStatus,
+  team = [],
+}: Props) => {
+  const [open, setOpen] = useState(false);
+
   const handleTaskStatusChange = (status: TASK_STATUS) => {
     onUpdateStatus({
       taskId: task.id as string,
@@ -57,6 +73,8 @@ const TaskCard = ({ task, onUpdateStatus, user, isUpdatingStatus }: Props) => {
 
     return disabled;
   };
+
+  const memberOptions = team.filter((t) => t.id !== task.createdBy);
 
   return (
     <article className="bg-white border rounded-xl grid grid-rows-[50px_minmax(0,1fr)_24px_42px] gap-1 p-4">
@@ -100,6 +118,20 @@ const TaskCard = ({ task, onUpdateStatus, user, isUpdatingStatus }: Props) => {
             </SelectGroup>
           </SelectContent>
         </Select>
+
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger className="p-2" aria-label="Task Actions Menu">
+            <DotsVerticalIcon />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="">
+            <EditTaskModal
+              memberOptions={memberOptions}
+              task={task}
+              closeModal={setOpen}
+              user={user}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
       </header>
 
       <Truncatable

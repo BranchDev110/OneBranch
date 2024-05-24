@@ -171,6 +171,7 @@ const FakeSprintDetails = () => {
 
                 <section className="space-y-2">
                   {groupedTasks[c].map((t) => (
+                    //@ts-expect-error dummy data change of shape
                     <DummyTaskCard {...t} key={t.id} />
                   ))}
                 </section>

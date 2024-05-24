@@ -21,6 +21,7 @@ import AppHeaderNav from "@/components/AppHeaderNav";
 import CaseRender from "@/components/CaseRender";
 import LoadingComponent from "@/components/LoadingComponent";
 import ErrorComponent from "@/components/ErrorComponent";
+import { Progress } from "@/ui/progress";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import {
@@ -28,7 +29,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/ui/dropdown-menu";
 
 import TeamIcon from "@/icons/TeamIcon";
 
@@ -41,6 +42,7 @@ import SprintsContainer from "@/components/Sprints/SprintsContainer";
 import CreateProjectTaskModal from "@/components/Projects/CreateProjectTaskModal";
 import { useGetTasksInProjectQuery } from "@/services/tasks";
 import TasksContainer from "@/components/Tasks/TasksContainer";
+import { round } from "@/lib/round";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -124,6 +126,11 @@ const ProjectDetails = () => {
     return [];
   }, [columns, project?.columns]);
 
+  const progressValue = round(
+    (100 * (project?.currentPoints || 0)) / (project?.totalPoints || 1),
+    2
+  );
+
   return (
     <div className="">
       <AppHeaderNav>
@@ -145,13 +152,22 @@ const ProjectDetails = () => {
             </code>
           }
         />
+
+        <ErrorComponent
+          show={!!project?.isRemoved}
+          message={
+            <h3 className="max-w-full text-xl font-bold text-center ">
+              This project has been removed
+            </h3>
+          }
+        />
       </div>
 
-      <CaseRender condition={isSuccess}>
+      <CaseRender condition={isSuccess && !project?.isRemoved}>
         <div className="grid gap-2 grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
           <div className="px-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
+            <div className="gap-8 mb-6 btwn">
+              <div className="flex-1 gap-4 start">
                 {project?.imageUrl ? (
                   <img
                     alt="Project Avatar"
@@ -162,15 +178,20 @@ const ProjectDetails = () => {
                 ) : (
                   <></>
                 )}
-                <h1 className="text-2xl font-bold">{project?.name}</h1>
+                <div className="flex-1">
+                  <h1 className="text-2xl font-bold">{project?.name}</h1>
+                  <div className="mt-2 space-x-1 text-sm btwn">
+                    <p>{progressValue}%</p>
+                    <Progress className="flex-1 h-2" value={progressValue} />
+                  </div>
+                </div>
               </div>
 
               <DropdownMenu open={open} onOpenChange={setOpen}>
                 <DropdownMenuTrigger
-                  className="p-2 space-x-1 font-semibold btwn"
-                  aria-label="Dropdown Menu"
+                  className="p-2 "
+                  aria-label="Project Actions Menu"
                 >
-                  <span>Actions</span>
                   <DotsHorizontalIcon />
                 </DropdownMenuTrigger>
 

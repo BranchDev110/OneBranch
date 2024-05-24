@@ -8,6 +8,7 @@ import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { toast } from "sonner";
+import { useUpdateTaskStatusMutation } from "@/services/tasks";
 
 interface Props {
   users: AppUserProfile[];
@@ -18,16 +19,18 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
   const { user } = useLoggedInUser();
   const { populatedTasks = [] } = usePopulateTasksWithUsers({ tasks, users });
 
+  const [updateStatus, { isLoading }] = useUpdateTaskStatusMutation();
+
   const onUpdateStatus = async (args: UpdateTaskStatusArgs) => {
     try {
-      console.log(args);
+      // console.log(args);
       toast.dismiss();
       toast.loading("Updating task status...");
 
-      setTimeout(() => {
-        toast.dismiss();
-        toast.success("Updating task status [FAKE]");
-      }, 1000);
+      await updateStatus(args).unwrap();
+
+      toast.dismiss();
+      toast.success("Updated task status");
     } catch (error: any) {
       toast.dismiss();
 
@@ -82,7 +85,8 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
                 task={task}
                 onUpdateStatus={onUpdateStatus}
                 user={user as AppUserProfile}
-                isUpdatingStatus={false}
+                isUpdatingStatus={isLoading}
+                team={users}
               />
             ))}
           </>

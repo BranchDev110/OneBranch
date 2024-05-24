@@ -20,10 +20,16 @@ import { db } from "@/firebase/BaseConfig";
 
 import { COLLECTIONS } from "@/constants/collections";
 
-import { CreateTaskBodyFull, Task } from "@/types/task.types";
+import {
+  CreateTaskBodyFull,
+  EditTaskBody,
+  Task,
+  UpdateTaskStatusArgs,
+} from "@/types/task.types";
 import { TASK_STATUS_PERCENT } from "@/constants/task-percentages";
 import { Project } from "@/types/project.types";
 import { Sprint } from "@/types/sprint.types";
+import { TASK_STATUS } from "@/constants/task-status";
 
 const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -91,6 +97,143 @@ const tasksApi = baseApi.injectEndpoints({
           return {
             error: {
               message: e?.message || "Could not create task",
+            },
+          };
+        }
+      },
+    }),
+    updateTask: build.mutation<Task, EditTaskBody>({
+      queryFn: async (task) => {
+        try {
+          const taskRef = doc(db, COLLECTIONS.TASKS, task.id);
+          const t = await getDoc(taskRef);
+
+          if (!t.exists()) {
+            throw new Error("Task does not exist");
+          }
+
+          const batch = writeBatch(db);
+
+          const projectRef = doc(db, COLLECTIONS.PROJECTS, task.projectId);
+          const docRef = await getDoc(projectRef);
+
+          if (!docRef.exists()) {
+            throw new Error("Project does not exist!");
+          }
+
+          const project = docRef.data();
+          const deltaTotal = task.storyPoint - task.oldPoints;
+          let deltaCurrent = 0;
+
+          if (deltaTotal) {
+            deltaCurrent = TASK_STATUS_PERCENT[task.status] * deltaTotal;
+
+            batch.update(projectRef, {
+              currentPoints: project.currentPoints + deltaCurrent,
+              totalPoints: project.totalPoints + deltaTotal,
+            });
+          }
+
+          if (task.sprintId && deltaTotal) {
+            const sprintRef = doc(db, COLLECTIONS.SPRINTS, task.sprintId);
+            const sprintDocRef = await getDoc(sprintRef);
+
+            if (!sprintDocRef.exists()) {
+              throw new Error("Sprint does not exist!");
+            }
+
+            const sprint = sprintDocRef.data();
+
+            batch.update(sprintRef, {
+              currentPoints: sprint.currentPoints + deltaCurrent,
+              totalPoints: sprint.totalPoints + deltaTotal,
+            });
+          }
+
+          batch.update(taskRef, omit(task, "id"));
+
+          await batch.commit();
+
+          const taskDoc = await getDoc(taskRef);
+
+          return {
+            data: {
+              id: taskDoc.id,
+              ...omit(taskDoc.data(), "createdAt"),
+            } as Task,
+          };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not edit task",
+            },
+          };
+        }
+      },
+    }),
+    updateTaskStatus: build.mutation<Task, UpdateTaskStatusArgs>({
+      queryFn: async ({ taskId, status }) => {
+        try {
+          const taskRef = doc(db, COLLECTIONS.TASKS, taskId);
+          const t = await getDoc(taskRef);
+
+          if (!t.exists()) {
+            throw new Error("Task does not exist");
+          }
+          const task = t.data() as Task;
+          const newCurrentPoints =
+            TASK_STATUS_PERCENT[status] * task.storyPoint;
+          const oldCurrentPoints =
+            TASK_STATUS_PERCENT[task.status as TASK_STATUS] * task.storyPoint;
+
+          const delta = newCurrentPoints - oldCurrentPoints;
+
+          const batch = writeBatch(db);
+
+          const projectRef = doc(db, COLLECTIONS.PROJECTS, task.projectId);
+          const docRef = await getDoc(projectRef);
+
+          if (!docRef.exists()) {
+            throw new Error("Project does not exist!");
+          }
+
+          const project = docRef.data();
+
+          batch.update(projectRef, {
+            currentPoints: project.currentPoints + delta,
+          });
+
+          if (task.sprintId) {
+            const sprintRef = doc(db, COLLECTIONS.SPRINTS, task.sprintId);
+            const sprintDocRef = await getDoc(sprintRef);
+
+            if (!sprintDocRef.exists()) {
+              throw new Error("Sprint does not exist!");
+            }
+
+            const sprint = sprintDocRef.data();
+
+            batch.update(sprintRef, {
+              currentPoints: sprint.currentPoints + delta,
+            });
+          }
+
+          batch.update(taskRef, {
+            status,
+          });
+          await batch.commit();
+
+          return {
+            data: {
+              ...omit(task, "createdAt"),
+              id: taskId,
+              status,
+            } as Task,
+          };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not update task status",
             },
           };
         }
@@ -174,5 +317,7 @@ export const {
   useCreateTaskMutation,
   useGetTasksInProjectQuery,
   useGetTasksInSprintQuery,
+  useUpdateTaskMutation,
+  useUpdateTaskStatusMutation,
 } = tasksApi;
 export { tasksApi };

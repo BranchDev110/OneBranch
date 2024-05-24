@@ -14,6 +14,7 @@ export interface Task {
   dueDate: string;
   status: TASK_STATUS | string;
   order: number;
+  isRemoved?: boolean;
 }
 
 export interface TaskWithPopulatedUsers extends Omit<Task, "assignees"> {
@@ -40,4 +41,9 @@ export interface CreateTaskBody {
 
 export interface CreateTaskBodyFull extends CreateTaskBody {
   order: number;
+}
+
+export interface EditTaskBody extends CreateTaskBody {
+  id: string;
+  oldPoints: number;
 }
