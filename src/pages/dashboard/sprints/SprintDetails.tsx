@@ -14,6 +14,9 @@ import LoadingComponent from "@/components/LoadingComponent";
 import ErrorComponent from "@/components/ErrorComponent";
 import CaseRender from "@/components/CaseRender";
 import { cn } from "@/lib/utils";
+import { round } from "@/lib/round";
+import { Progress } from "@/ui/progress";
+import { AvatarImage, Avatar, AvatarFallback } from "@/ui/avatar";
 
 const SprintDetails = () => {
   const { id } = useParams();
@@ -80,11 +83,30 @@ const SprintDetails = () => {
         />
       </div>
 
-      <div className="p-4 bg-white border-b py-7 btwn">
-        <CaseRender condition={isSuccess && !sprint?.isRemoved}>
-          <p>Sprint ID: {sprint?.name}</p>
-        </CaseRender>
-      </div>
+      <CaseRender condition={isSuccess && !sprint?.isRemoved}>
+        <div className="p-4 bg-white border-b py-7 btwn">
+          <div className="basis-1/2 grid items-center gap-2 grid-cols-[40px_minmax(0,1fr)]">
+            <div className="overflow-hidden rounded-full aspect-square bg-c5-200 center">
+              <Avatar>
+                <AvatarImage src={""} alt={sprint?.name} />
+                <AvatarFallback>{sprint?.name[0]}</AvatarFallback>
+              </Avatar>
+            </div>
+            <div>
+              <h5 className="font-bold">{sprint?.name}</h5>
+              <div className="space-x-1 btwn">
+                <Progress
+                  className="bg-c5-50 [&_.bg-primary]:bg-c2-200"
+                  value={progressValue}
+                />
+                <p className="text-xs basis-1/4 text-c1-100">
+                  {progressValue}% Complete
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CaseRender>
     </div>
   );
 };

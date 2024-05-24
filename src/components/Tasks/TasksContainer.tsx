@@ -2,13 +2,12 @@ import { useMemo, useState } from "react";
 import TaskCard from "./TaskCard";
 import usePopulateTasksWithUsers from "@/hooks/usePopulateTasksWithUsers";
 import { AppUserProfile } from "@/types/user.types";
-import { Task, UpdateTaskStatusArgs } from "@/types/task.types";
+import { Task } from "@/types/task.types";
 import { matchSorter } from "match-sorter";
 import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
-import { toast } from "sonner";
-import { useUpdateTaskStatusMutation } from "@/services/tasks";
+import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 
 interface Props {
   users: AppUserProfile[];
@@ -19,25 +18,7 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
   const { user } = useLoggedInUser();
   const { populatedTasks = [] } = usePopulateTasksWithUsers({ tasks, users });
 
-  const [updateStatus, { isLoading }] = useUpdateTaskStatusMutation();
-
-  const onUpdateStatus = async (args: UpdateTaskStatusArgs) => {
-    try {
-      // console.log(args);
-      toast.dismiss();
-      toast.loading("Updating task status...");
-
-      await updateStatus(args).unwrap();
-
-      toast.dismiss();
-      toast.success("Updated task status");
-    } catch (error: any) {
-      toast.dismiss();
-
-      const msg = error?.message || "Unable to update task status";
-      toast.error(msg);
-    }
-  };
+  const { onUpdateStatus, isLoading } = useUpdateTaskStatus();
 
   const [query, setQuery] = useState("");
 
