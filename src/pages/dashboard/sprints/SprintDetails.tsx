@@ -139,7 +139,7 @@ const SprintDetails = () => {
   }, [tasks, query, status]);
 
   return (
-    <div>
+    <div className="">
       <AppHeaderNav className="[&_.children]:basis-1/2">
         <div className="space-x-[10%] btwn">
           <NavLink className={"font-medium text-c5-300"} to={"/sprints"}>

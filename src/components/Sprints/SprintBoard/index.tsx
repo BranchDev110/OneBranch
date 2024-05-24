@@ -129,7 +129,7 @@ const Board = ({
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
       >
-        <div className="relative w-full m-auto" ref={ref}>
+        <div className="relative w-full ml-0" ref={ref}>
           {dimensions.width ? (
             <ScrollArea
               style={{

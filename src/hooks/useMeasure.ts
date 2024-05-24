@@ -17,6 +17,25 @@ const useMeasure = ({ ref, onResize }: Props) => {
   });
 
   useEffect(() => {
+    let resizeTimer: NodeJS.Timeout | null = null;
+
+    const handleResize = () => {
+      if (ref.current) {
+        const { width, height } = ref.current.getBoundingClientRect();
+        setDimensions({ width, height });
+        onResize && onResize({ width, height });
+      }
+    };
+
+    const debouncedHandleResize = () => {
+      if (!resizeTimer) {
+        resizeTimer = setTimeout(() => {
+          handleResize();
+          resizeTimer = null;
+        }, 400);
+      }
+    };
+
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
@@ -27,25 +46,20 @@ const useMeasure = ({ ref, onResize }: Props) => {
 
     if (ref.current) {
       resizeObserver.observe(ref.current);
+
+      handleResize();
     }
 
-    const handleWindowResize = () => {
-      if (ref.current) {
-        const { width, height } = ref.current.getBoundingClientRect();
-        setDimensions({ width, height });
-        onResize && onResize({ width, height });
-      }
-    };
-
-    handleWindowResize();
-
-    window.addEventListener("resize", handleWindowResize);
+    window.addEventListener("resize", debouncedHandleResize);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("resize", debouncedHandleResize);
+      if (resizeTimer) clearTimeout(resizeTimer);
     };
   }, [ref, onResize]);
+
+  console.log({ dimensions });
 
   return { dimensions };
 };
