@@ -187,6 +187,7 @@ const ProjectDetails = () => {
                     user={user}
                     projectId={project?.id as string}
                     closeModal={setOpen}
+                    newTaskOrder={tasks.length || 0}
                   />
                   <CreateProjectSprintModal
                     user={user}

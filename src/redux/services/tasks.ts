@@ -20,20 +20,19 @@ import { db } from "@/firebase/BaseConfig";
 
 import { COLLECTIONS } from "@/constants/collections";
 
-import { CreateTaskBody, Task } from "@/types/task.types";
+import { CreateTaskBodyFull, Task } from "@/types/task.types";
 import { TASK_STATUS_PERCENT } from "@/constants/task-percentages";
 import { Project } from "@/types/project.types";
 import { Sprint } from "@/types/sprint.types";
 
 const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    createTask: build.mutation<Task, CreateTaskBody>({
+    createTask: build.mutation<Task, CreateTaskBodyFull>({
       queryFn: async (task) => {
         try {
           const batch = writeBatch(db);
           (task as any).createdAt = serverTimestamp();
           (task as any).isRemoved = false;
-          (task as any).order = Number.MAX_SAFE_INTEGER;
 
           const projectRef = doc(db, COLLECTIONS.PROJECTS, task.projectId);
           const docRef = await getDoc(projectRef);

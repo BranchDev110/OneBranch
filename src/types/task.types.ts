@@ -37,3 +37,7 @@ export interface CreateTaskBody {
   dueDate: string;
   status: TASK_STATUS;
 }
+
+export interface CreateTaskBodyFull extends CreateTaskBody {
+  order: number;
+}
