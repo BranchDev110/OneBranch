@@ -1,5 +1,5 @@
 import AppHeaderNav from "@/components/AppHeaderNav";
-import {} from "react";
+import { useMemo, useState } from "react";
 import {
   NavLink,
   useParams,
@@ -17,9 +17,29 @@ import { cn } from "@/lib/utils";
 import { round } from "@/lib/round";
 import { Progress } from "@/ui/progress";
 import { AvatarImage, Avatar, AvatarFallback } from "@/ui/avatar";
+import {
+  useGetProjectColumnsQuery,
+  useGetProjectQuery,
+} from "@/services/projects";
+import { useGetUsersInProjectQuery } from "@/services/users";
+import SprintToolBar from "@/components/Sprints/SprintToolBar";
+import { useGetTasksInSprintQuery } from "@/services/tasks";
+import SprintBoard from "@/components/Sprints/SprintBoard";
+import { matchSorter } from "match-sorter";
+import { AppUserProfile } from "@/types/user.types";
+import useLoggedInUser from "@/hooks/useLoggedInUser";
 
 const SprintDetails = () => {
+  const { user } = useLoggedInUser();
   const { id } = useParams();
+
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<TASK_STATUS | "">("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
 
   const {
     data: sprint,
@@ -29,15 +49,94 @@ const SprintDetails = () => {
     error: sprintError,
   } = useGetSprintQuery(id as string, { skip: !id });
 
-  const isLoading = sprintLoading;
-  const isSuccess = sprintSuccess;
-  const isError = sprintIsError;
-  const error = serializeError({ error: sprintError });
+  const {
+    data: tasks = [],
+    isLoading: tasksLoading,
+    isSuccess: tasksSuccess,
+    isError: tasksIsError,
+    error: tasksError,
+  } = useGetTasksInSprintQuery(id as string, { skip: !id });
+
+  const {
+    data: columns = [],
+    isLoading: colLoading,
+    isSuccess: colSuccess,
+    isError: colIsError,
+    error: colError,
+  } = useGetProjectColumnsQuery(sprint?.projectId as string, {
+    skip: !sprint?.projectId,
+  });
+
+  const {
+    data: project,
+    isLoading: projectLoading,
+    isSuccess: projectSuccess,
+    isError: projectError,
+    error: projError,
+  } = useGetProjectQuery(sprint?.projectId as string, {
+    skip: !sprint?.projectId,
+  });
+
+  const {
+    data: team = [],
+    isLoading: teamLoading,
+    isSuccess: teamSuccess,
+    isError: teamIsError,
+    error: teamError,
+  } = useGetUsersInProjectQuery(project?.members as string[], {
+    skip: !project?.members?.length,
+  });
+
+  const isLoading =
+    projectLoading ||
+    colLoading ||
+    sprintLoading ||
+    teamLoading ||
+    tasksLoading;
+  const isSuccess =
+    projectSuccess &&
+    colSuccess &&
+    teamSuccess &&
+    sprintSuccess &&
+    tasksSuccess;
+  const isError =
+    colIsError || teamIsError || sprintIsError || projectError || tasksIsError;
+
+  const error = serializeError({
+    error: sprintError,
+    team: teamError,
+    projectColumns: colError,
+    projectDetails: projError,
+    tasksList: tasksError,
+  });
 
   const progressValue = round(
     (100 * (sprint?.currentPoints || 0)) / (sprint?.totalPoints || 1),
     2
   );
+
+  const orderedColumns = useMemo(() => {
+    if (project?.columns?.length && columns?.length) {
+      return [...columns].sort((a, b) => {
+        return project.columns.indexOf(a.id) - project.columns.indexOf(b.id);
+      });
+    }
+
+    return [];
+  }, [columns, project?.columns]);
+
+  const filteredTasks = useMemo(() => {
+    const allTasks = status ? tasks.filter((t) => t.status === status) : tasks;
+
+    if (query?.trim()) {
+      return matchSorter(allTasks, query, {
+        keys: ["name", "description"],
+        threshold: matchSorter.rankings.CONTAINS,
+      });
+    }
+
+    return allTasks;
+  }, [tasks, query, status]);
 
   return (
     <div>
@@ -51,7 +150,9 @@ const SprintDetails = () => {
               <MagnifyingGlassIcon />
             </i>
             <Input
-              placeholder="Search...."
+              value={query}
+              onChange={handleChange}
+              placeholder="Search tasks..."
               className="block w-full pl-7 bg-c5-50 rounded-xl"
               type="search"
             />
@@ -74,7 +175,7 @@ const SprintDetails = () => {
         />
 
         <ErrorComponent
-          show={!!sprint?.isRemoved}
+          show={!!(sprint?.isRemoved || project?.isRemoved)}
           message={
             <h3 className="max-w-full text-xl font-bold text-center ">
               This sprint has been removed
@@ -83,7 +184,9 @@ const SprintDetails = () => {
         />
       </div>
 
-      <CaseRender condition={isSuccess && !sprint?.isRemoved}>
+      <CaseRender
+        condition={isSuccess && !sprint?.isRemoved && !project?.isRemoved}
+      >
         <div className="p-4 bg-white border-b py-7 btwn">
           <div className="basis-1/2 grid items-center gap-2 grid-cols-[40px_minmax(0,1fr)]">
             <div className="overflow-hidden rounded-full aspect-square bg-c5-200 center">
@@ -104,6 +207,28 @@ const SprintDetails = () => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="p-8 py-3 ">
+          <SprintToolBar
+            status={status}
+            setStatus={setStatus}
+            user={user as AppUserProfile}
+            newTaskOrder={tasks?.length || 0}
+            sprintId={id as string}
+            projectId={project?.id as string}
+            team={team}
+          />
+
+          <div className="my-3">
+            <SprintBoard
+              users={team}
+              tasks={filteredTasks}
+              projectId={project?.id as string}
+              columns={orderedColumns}
+              sprintId={id as string}
+            />
           </div>
         </div>
       </CaseRender>

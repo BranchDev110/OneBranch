@@ -56,6 +56,7 @@ const ProjectDetails = () => {
     isError: projectError,
     error: projError,
   } = useGetProjectQuery(id as string, { skip: !id });
+
   const {
     data: columns = [],
     isLoading: colLoading,

@@ -39,6 +39,7 @@ const tasksApi = baseApi.injectEndpoints({
           const batch = writeBatch(db);
           (task as any).createdAt = serverTimestamp();
           (task as any).isRemoved = false;
+          task.columnId = task.columnId || "";
 
           const projectRef = doc(db, COLLECTIONS.PROJECTS, task.projectId);
           const docRef = await getDoc(projectRef);
@@ -150,7 +151,10 @@ const tasksApi = baseApi.injectEndpoints({
             });
           }
 
-          batch.update(taskRef, omit(task, "id"));
+          batch.update(
+            taskRef,
+            omit(task, ["id", "oldPoints", "filesToRemove"])
+          );
 
           await batch.commit();
 
@@ -166,6 +170,19 @@ const tasksApi = baseApi.injectEndpoints({
           return {
             error: {
               message: e?.message || "Could not edit task",
+            },
+          };
+        }
+      },
+    }),
+    moveTask: build.mutation<any, any>({
+      queryFn: async () => {
+        try {
+          return { data: {} };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not move task",
             },
           };
         }
@@ -319,5 +336,6 @@ export const {
   useGetTasksInSprintQuery,
   useUpdateTaskMutation,
   useUpdateTaskStatusMutation,
+  useMoveTaskMutation,
 } = tasksApi;
 export { tasksApi };

@@ -15,6 +15,7 @@ export interface Task {
   status: TASK_STATUS | string;
   order: number;
   isRemoved?: boolean;
+  columnId: string;
 }
 
 export interface TaskWithPopulatedUsers extends Omit<Task, "assignees"> {
@@ -37,6 +38,7 @@ export interface CreateTaskBody {
   storyPoint: number;
   dueDate: string;
   status: TASK_STATUS;
+  columnId?: string;
 }
 
 export interface CreateTaskBodyFull extends CreateTaskBody {

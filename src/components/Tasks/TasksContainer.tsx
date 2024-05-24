@@ -50,7 +50,7 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
           <Input
             value={query}
             onChange={handleChange}
-            placeholder="Search tasks...."
+            placeholder="Search tasks..."
             className="block w-full pl-7 bg-c5-50 rounded-xl"
             type="search"
           />
