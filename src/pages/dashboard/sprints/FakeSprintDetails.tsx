@@ -22,8 +22,8 @@ import a from "@/assets/a.jpg";
 import b from "@/assets/b.jpg";
 import c from "@/assets/c.jpg";
 import { Button } from "@/ui/button";
-import TaskCard from "@/components/Tasks/TaskCard";
 import SortIcon from "@/icons/SortIcon";
+import DummyTaskCard from "@/components/Tasks/DummyTaskCard";
 
 const avatars = [
   { id: "1", src: b, name: "A" },
@@ -168,9 +168,10 @@ const FakeSprintDetails = () => {
                     <PlusIcon className="stroke-2" />
                   </button>
                 </div>
+
                 <section className="space-y-2">
                   {groupedTasks[c].map((t) => (
-                    <TaskCard {...t} key={t.id} />
+                    <DummyTaskCard {...t} key={t.id} />
                   ))}
                 </section>
               </div>
