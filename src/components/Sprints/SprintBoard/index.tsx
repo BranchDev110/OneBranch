@@ -154,16 +154,27 @@ const Board = ({
         </div>
 
         {createPortal(
-          <DragOverlay>{activeTask ? <p>hELLO</p> : <></>}</DragOverlay>,
+          <DragOverlay>
+            {activeTask ? (
+              <div className="z-10 p-4 bg-white w-80">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Modi
+                quas, illo cupiditate minima blanditiis officia sunt adipisci
+                doloribus, error quaerat cumque dignissimos eum nesciunt
+                accusantium nulla aut, sit dicta tenetur?
+              </div>
+            ) : (
+              <></>
+            )}
+          </DragOverlay>,
           document.body
         )}
       </DndContext>
 
-      <code>
+      {/* <code>
         <pre className="text-xs whitespace-break-spaces">
           {JSON.stringify(tasks, null, 2)}
         </pre>
-      </code>
+      </code> */}
     </SprintBoardContext.Provider>
   );
 };
