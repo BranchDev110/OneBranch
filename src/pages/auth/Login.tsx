@@ -60,7 +60,7 @@ const Login = () => {
       toast.success("Login successful");
 
       //to home page later
-      navigate("/sprints/fake");
+      navigate("/projects");
     } catch (error: any) {
       toast.dismiss();
 

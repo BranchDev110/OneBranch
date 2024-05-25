@@ -40,6 +40,7 @@ import { AppUserProfile } from "@/types/user.types";
 import useUsersMap from "@/hooks/useUsersMap";
 import { round } from "@/lib/round";
 import { Checkbox } from "@/ui/checkbox";
+import { getFileNameFromFirebaseUrl } from "@/lib/getFileNameFromFirebaseUrl";
 
 interface Props {
   task?: Task;
@@ -105,12 +106,15 @@ const TaskForm = ({
 
   const [files, setFiles] = useState<File[]>([]);
 
-  const filesToDel = form.watch("filesToRemove");
+  const filesToDel = form.watch("filesToRemove") || [];
+
+  const maxFiles =
+    10 + (filesToDel?.length || 0) - (task?.id ? task.fileUrls.length : 0);
 
   const { getRootProps, getInputProps, isDragAccept, isDragReject } =
     useDropzone({
       multiple: true,
-      maxFiles: 10 - filesToDel.length,
+      maxFiles,
       onDrop: (acceptedFiles, fileRejections) => {
         const maxFileSize = 10 * 1048576; //10mb
 
@@ -175,7 +179,7 @@ const TaskForm = ({
   useEffect(() => {
     if (task) {
       if (!form.getValues().projectId) {
-        form.reset(task);
+        form.reset({ ...task, fileUrls: [] });
       }
     } else {
       if (!form.getValues().projectId) {
@@ -334,9 +338,7 @@ const TaskForm = ({
                   <input {...getInputProps()} />
                   <p>
                     Choose files.{" "}
-                    {`Max of ${
-                      10 - filesToDel.length
-                    } files . Total size <=10MB`}
+                    {`Max of ${maxFiles} files . Total size <=10MB`}
                   </p>
                 </div>
               </div>
@@ -367,30 +369,32 @@ const TaskForm = ({
                         key={f}
                         control={form.control}
                         name="filesToRemove"
-                        render={({ field }) => (
-                          <FormItem
-                            key={f}
-                            className="flex flex-row items-start space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(f)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, f])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== f
-                                        )
-                                      );
-                                }}
-                              />
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={f}
+                              className="flex flex-row items-start space-x-3 space-y-0"
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(f)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([...field.value, f])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== f
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
                               <FormLabel className="text-sm font-normal">
-                                {f}
+                                {getFileNameFromFirebaseUrl(f)}
                               </FormLabel>
-                            </FormControl>
-                          </FormItem>
-                        )}
+                            </FormItem>
+                          );
+                        }}
                       />
                     ))}
                   </div>
