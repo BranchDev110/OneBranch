@@ -20,6 +20,7 @@ export interface Project extends Omit<CreateProjectBody, "columns"> {
   id: string;
   columns: string[];
   activeSprintId: string;
+  isRemoved?: boolean;
 }
 
 export interface EditProjectBody {

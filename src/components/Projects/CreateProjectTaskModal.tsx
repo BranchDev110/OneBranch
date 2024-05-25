@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { AppUserProfile } from "@/types/user.types";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { CreateTaskBody } from "@/types/task.types";
+import { CreateTaskBody, CreateTaskBodyFull } from "@/types/task.types";
 import { TASK_STATUS } from "@/constants/task-status";
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
   projectId: string;
   team: AppUserProfile[];
   closeModal?: (val: boolean) => void;
+  newTaskOrder: number;
 }
 
 const CreateProjectTaskModal = ({
@@ -23,6 +24,7 @@ const CreateProjectTaskModal = ({
   projectId,
   team = [],
   closeModal,
+  newTaskOrder,
 }: Props) => {
   const [open, setOpen] = useState(false);
   //   const navigate = useNavigate();
@@ -44,7 +46,7 @@ const CreateProjectTaskModal = ({
     toast.loading("Creating task...");
 
     try {
-      const body: CreateTaskBody = {
+      const body: CreateTaskBodyFull = {
         name: values.name,
         description: values.description,
         sprintId: "",
@@ -55,6 +57,7 @@ const CreateProjectTaskModal = ({
         dueDate: values.dueDate,
         status: TASK_STATUS.TODO,
         fileUrls: values.fileUrls,
+        order: newTaskOrder,
       };
 
       await createTask(body).unwrap();

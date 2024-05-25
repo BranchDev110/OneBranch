@@ -101,6 +101,35 @@ const sprintsApi = baseApi.injectEndpoints({
           };
         }
       },
+
+      async onCacheEntryAdded(
+        sprintId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        let unsubscribe = () => {};
+
+        try {
+          await cacheDataLoaded;
+          unsubscribe = onSnapshot(
+            doc(db, COLLECTIONS.SPRINTS, sprintId),
+            (doc) => {
+              updateCachedData(
+                () =>
+                  ({
+                    id: doc.id,
+                    ...omit(doc.data(), "createdAt"),
+                  } as Sprint)
+              );
+            }
+          );
+        } catch (error) {
+          console.log(error);
+          throw new Error("Something went wrong getting the sprint");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
+      },
     }),
 
     deleteSprint: build.mutation<boolean, string>({
@@ -226,5 +255,6 @@ export const {
   useGetAllUserSprintsQuery,
   useUpdateSprintMutation,
   useDeleteSprintMutation,
+  useGetSprintQuery,
 } = sprintsApi;
 export { sprintsApi };

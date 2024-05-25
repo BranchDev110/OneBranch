@@ -2,12 +2,12 @@ import { useMemo, useState } from "react";
 import TaskCard from "./TaskCard";
 import usePopulateTasksWithUsers from "@/hooks/usePopulateTasksWithUsers";
 import { AppUserProfile } from "@/types/user.types";
-import { Task, UpdateTaskStatusArgs } from "@/types/task.types";
+import { Task } from "@/types/task.types";
 import { matchSorter } from "match-sorter";
 import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
-import { toast } from "sonner";
+import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 
 interface Props {
   users: AppUserProfile[];
@@ -18,23 +18,7 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
   const { user } = useLoggedInUser();
   const { populatedTasks = [] } = usePopulateTasksWithUsers({ tasks, users });
 
-  const onUpdateStatus = async (args: UpdateTaskStatusArgs) => {
-    try {
-      console.log(args);
-      toast.dismiss();
-      toast.loading("Updating task status...");
-
-      setTimeout(() => {
-        toast.dismiss();
-        toast.success("Updating task status [FAKE]");
-      }, 1000);
-    } catch (error: any) {
-      toast.dismiss();
-
-      const msg = error?.message || "Unable to update task status";
-      toast.error(msg);
-    }
-  };
+  const { onUpdateStatus, isLoading } = useUpdateTaskStatus();
 
   const [query, setQuery] = useState("");
 
@@ -66,7 +50,7 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
           <Input
             value={query}
             onChange={handleChange}
-            placeholder="Search tasks...."
+            placeholder="Search tasks..."
             className="block w-full pl-7 bg-c5-50 rounded-xl"
             type="search"
           />
@@ -82,7 +66,8 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
                 task={task}
                 onUpdateStatus={onUpdateStatus}
                 user={user as AppUserProfile}
-                isUpdatingStatus={false}
+                isUpdatingStatus={isLoading}
+                team={users}
               />
             ))}
           </>
