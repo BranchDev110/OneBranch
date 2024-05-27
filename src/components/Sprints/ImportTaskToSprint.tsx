@@ -57,7 +57,11 @@ const ImportSprint = ({ sprintId, order, tasks = [] }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={!tasks.length} variant={"outline"}>
+        <Button
+          className="disabled:cursor-not-allowed"
+          disabled={!tasks.length}
+          variant={"outline"}
+        >
           Import from project
         </Button>
       </DialogTrigger>

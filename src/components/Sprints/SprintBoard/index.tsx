@@ -11,15 +11,9 @@ import groupBy from "lodash/groupBy";
 
 import usePopulateTasksWithUsers from "@/hooks/usePopulateTasksWithUsers";
 import { AppUserProfile } from "@/types/user.types";
-import {
-  Task,
-  CreateTaskBody,
-  CreateTaskBodyFull,
-  TaskWithPopulatedUsers,
-  MoveTaskArgs,
-} from "@/types/task.types";
+import { Task, TaskWithPopulatedUsers, MoveTaskArgs } from "@/types/task.types";
 import { ProjectColumn } from "@/types/project.types";
-import { useCreateTaskMutation, useMoveTaskMutation } from "@/services/tasks";
+import { useMoveTaskMutation } from "@/services/tasks";
 import { toast } from "sonner";
 
 import {
@@ -37,7 +31,6 @@ import {
 import { ScrollArea, ScrollBar } from "@/ui/scroll-area";
 import useMeasure from "@/hooks/useMeasure";
 import SprintBoardColumn from "./SprintBoardColumn";
-import { UseMutationResult } from "@/types/rtk.types";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import orderBy from "lodash/orderBy";
 import FloatingTask from "./FloatingTask";
@@ -50,16 +43,9 @@ interface Props {
   sprintId: string;
 }
 
-interface BoardActions {
-  createTask: () => void;
-}
-
-interface BoardState extends Props {
-  creatingState: UseMutationResult<Task>;
-}
+interface BoardState extends Props {}
 
 interface ISprintBoard {
-  actions: BoardActions;
   state: BoardState;
 }
 
@@ -115,16 +101,11 @@ const Board = ({
 
   const { populatedTasks = [] } = usePopulateTasksWithUsers({ tasks, users });
 
-  const [createTask, createRes] = useCreateTaskMutation();
   const [moveTask] = useMoveTaskMutation();
 
   const [activeTask, setActiveTask] = useState<null | TaskWithPopulatedUsers>(
     null
   );
-
-  const onCreateTask = useCallback(() => {
-    createTask;
-  }, [createTask]);
 
   const onMoveTask = useCallback(
     async (args: MoveTaskArgs) => {
@@ -255,13 +236,9 @@ const Board = ({
         projectId,
         sprintId,
         columns,
-        creatingState: createRes,
-      },
-      actions: {
-        createTask: onCreateTask,
       },
     }),
-    [users, tasks, projectId, sprintId, columns, createRes, onCreateTask]
+    [users, tasks, projectId, sprintId, columns]
   );
 
   const groupedTasks = useMemo(() => {

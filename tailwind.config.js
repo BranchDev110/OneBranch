@@ -146,6 +146,7 @@ module.exports = {
         ".start": {
           display: "flex",
           "align-items": "center",
+          "justify-content": "flex-start",
         },
       });
     }),

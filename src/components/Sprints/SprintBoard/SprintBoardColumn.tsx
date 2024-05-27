@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { useMemo } from "react";
 
 import { ProjectColumn } from "@/types/project.types";
-import { TaskWithPopulatedUsers } from "@/types/task.types";
+import { CreateTaskBodyFull, TaskWithPopulatedUsers } from "@/types/task.types";
 import { PlusIcon } from "@radix-ui/react-icons";
 import {
   SortableContext,
@@ -17,6 +18,10 @@ import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { AppUserProfile } from "@/types/user.types";
 import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 import { cn } from "@/lib/utils";
+import CreateTaskInSprintModal from "../CreateTaskInSprintModal";
+import { useCreateTaskMutation } from "@/services/tasks";
+import { toast } from "sonner";
+import { TASK_STATUS } from "@/constants/task-status";
 
 interface Props {
   tasks: TaskWithPopulatedUsers[];
@@ -28,6 +33,7 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
   const { user } = useLoggedInUser();
 
   const { onUpdateStatus, isLoading } = useUpdateTaskStatus();
+  const [createTask, createRes] = useCreateTaskMutation();
 
   const orderedTasks = useMemo(
     () =>
@@ -45,6 +51,36 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
       },
     });
 
+  const onCreateTask = async (
+    values: CreateTaskBodyFull,
+    onDone?: Function
+  ) => {
+    toast.dismiss();
+    toast.loading("Creating task...");
+
+    try {
+      await createTask({
+        ...values,
+        columnId: column.id,
+        projectId: ctx.state.projectId,
+        sprintId: ctx.state.sprintId,
+        status: TASK_STATUS.TODO,
+        order: orderedTasks[tasks.length - 1].order + 1,
+        createdBy: user?.id as string,
+      });
+
+      toast.dismiss();
+      toast.success("Created task");
+
+      onDone && onDone();
+    } catch (error: any) {
+      toast.dismiss();
+
+      const msg = error?.message || "Unable to create task for project";
+      toast.error(msg);
+    }
+  };
+
   if (!ctx?.state) {
     return <></>;
   }
@@ -59,6 +95,8 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
   //   if (orderedTasks.length) {
   //     console.log({ tasks, orderedTasks });
   //   }
+
+  const selectableMembers = ctx.state.users.filter((m) => m.id !== user?.id);
 
   return (
     <div
@@ -82,12 +120,21 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
               {taskLen}
             </span>
           </div>
-          <button
-            type="button"
-            className="text-lg rounded-full w-7 bg-primary text-c5 center aspect-square"
-          >
-            <PlusIcon className="stroke-2" />
-          </button>
+          <CreateTaskInSprintModal
+            onCreateTask={onCreateTask}
+            userId={user?.id as string}
+            team={selectableMembers}
+            submitRes={createRes}
+            projectId={ctx.state.projectId}
+            renderTrigger={() => (
+              <button
+                type="button"
+                className="text-lg rounded-full w-7 bg-primary text-c5 center aspect-square"
+              >
+                <PlusIcon className="stroke-2" />
+              </button>
+            )}
+          />
         </div>
 
         <section {...attributes} {...listeners} className={"space-y-2"}>
