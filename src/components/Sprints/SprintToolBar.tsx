@@ -1,9 +1,14 @@
 import { TASK_STATUS } from "@/constants/task-status";
 import { cn } from "@/lib/utils";
-import { useCreateTaskMutation } from "@/services/tasks";
+import {
+  useCreateTaskMutation,
+  useGetTasksInProjectQuery,
+} from "@/services/tasks";
 import { CreateTaskBody, CreateTaskBodyFull } from "@/types/task.types";
 import { AppUserProfile } from "@/types/user.types";
+import { useMemo } from "react";
 import { toast } from "sonner";
+import ImportTaskToSprint from "./ImportTaskToSprint";
 
 interface Props {
   user?: AppUserProfile;
@@ -25,6 +30,10 @@ const SprintToolBar = ({
   setStatus,
 }: Props) => {
   const [createTask, createRes] = useCreateTaskMutation();
+
+  const { data: allTasks = [] } = useGetTasksInProjectQuery(projectId, {
+    skip: !projectId,
+  });
 
   const selectableMembers = team.filter((m) => m.id !== user?.id);
 
@@ -62,6 +71,10 @@ const SprintToolBar = ({
   };
 
   const onFilter = (val: TASK_STATUS | "") => () => setStatus(val);
+
+  const tasksWithNoSprint = useMemo(() => {
+    return allTasks.filter((t) => t.sprintId === "");
+  }, [allTasks]);
 
   return (
     <>
@@ -111,7 +124,11 @@ const SprintToolBar = ({
             )}
           </div>
 
-          <p className="space-x-1 start text-c5-300">Import from project</p>
+          <ImportTaskToSprint
+            tasks={tasksWithNoSprint}
+            sprintId={sprintId}
+            order={newTaskOrder}
+          />
         </div>
       </div>
     </>

@@ -37,7 +37,10 @@ const EditTaskModal = ({
     }
   };
 
-  const flattenedTask = { ...task, assignees: task.assignees.map((a) => a.id) };
+  const flattenedTask = {
+    ...task,
+    assignees: task.assignees.map((a) => a?.id).filter((a) => a),
+  };
 
   const canEditTask = () => {
     let disabled = true;

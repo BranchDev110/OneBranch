@@ -49,3 +49,15 @@ export interface EditTaskBody extends CreateTaskBody {
   id: string;
   oldPoints: number;
 }
+
+export interface MoveTaskArgs {
+  taskId: string;
+  columnId: string;
+  order: number;
+}
+
+export interface ImportTaskArgs {
+  taskId: string;
+  sprintId: string;
+  order: number;
+}
