@@ -1,10 +1,6 @@
 import AppHeaderNav from "@/components/AppHeaderNav";
 import { useMemo, useState } from "react";
-import {
-  NavLink,
-  useParams,
-  //  , useNavigate
-} from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 
 import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
@@ -28,6 +24,7 @@ import SprintBoard from "@/components/Sprints/SprintBoard";
 import { matchSorter } from "match-sorter";
 import { AppUserProfile } from "@/types/user.types";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { TASK_STATUS } from "@/constants/task-status";
 
 const SprintDetails = () => {
   const { user } = useLoggedInUser();

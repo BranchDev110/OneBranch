@@ -59,7 +59,7 @@ const useMeasure = ({ ref, onResize }: Props) => {
     };
   }, [ref, onResize]);
 
-  console.log({ dimensions });
+  //   console.log({ dimensions });s
 
   return { dimensions };
 };

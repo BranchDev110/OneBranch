@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { TASK_STATUS } from "@/constants/task-status";
 import { cn } from "@/lib/utils";
-import { useCreateTaskMutation } from "@/services/tasks";
+import {
+  useCreateTaskMutation,
+  useGetTasksInProjectQuery,
+} from "@/services/tasks";
 import { CreateTaskBody, CreateTaskBodyFull } from "@/types/task.types";
 import { AppUserProfile } from "@/types/user.types";
+import { useMemo } from "react";
 import { toast } from "sonner";
+import ImportTaskToSprint from "./ImportTaskToSprint";
+import CreateTaskInSprintModal from "./CreateTaskInSprintModal";
 
 interface Props {
   user?: AppUserProfile;
@@ -26,9 +33,16 @@ const SprintToolBar = ({
 }: Props) => {
   const [createTask, createRes] = useCreateTaskMutation();
 
+  const { data: allTasks = [] } = useGetTasksInProjectQuery(projectId, {
+    skip: !projectId,
+  });
+
   const selectableMembers = team.filter((m) => m.id !== user?.id);
 
-  const onCreateTask = (values: Omit<CreateTaskBody, "status">) => {
+  const onCreateTask = async (
+    values: Omit<CreateTaskBody, "status">,
+    callback?: Function
+  ) => {
     toast.dismiss();
     toast.loading("Creating task...");
 
@@ -36,7 +50,7 @@ const SprintToolBar = ({
       const body: CreateTaskBodyFull = {
         name: values.name,
         description: values.description,
-        sprintId: "",
+        sprintId,
         projectId,
         assignees: values.assignees,
         createdBy: user?.id as string,
@@ -45,28 +59,40 @@ const SprintToolBar = ({
         status: TASK_STATUS.TODO,
         fileUrls: values.fileUrls,
         order: newTaskOrder,
+        columnId: "",
       };
 
-      console.log(body);
+      //console.log(body);
 
-      // await createTask(body).unwrap();
+      await createTask(body).unwrap();
 
       toast.dismiss();
       toast.success("Created task");
+      callback && callback();
     } catch (error: any) {
       toast.dismiss();
 
-      const msg = error?.message || "Unable to create task for project";
+      const msg = error?.message || "Unable to create task in sprint";
       toast.error(msg);
     }
   };
 
   const onFilter = (val: TASK_STATUS | "") => () => setStatus(val);
 
+  const tasksWithNoSprint = useMemo(() => {
+    return allTasks.filter((t) => t.sprintId === "");
+  }, [allTasks]);
+
   return (
     <>
       <div className="space-x-3 start">
-        <button>next</button>
+        <CreateTaskInSprintModal
+          onCreateTask={onCreateTask}
+          userId={user?.id as string}
+          team={selectableMembers}
+          submitRes={createRes}
+          projectId={projectId}
+        />
         <div className="flex-1 p-4 bg-white rounded-xl min-h-12 btwn spaxe-x-2">
           <div className="space-x-2 text-sm font-semibold start ">
             <button
@@ -111,7 +137,11 @@ const SprintToolBar = ({
             )}
           </div>
 
-          <p className="space-x-1 start text-c5-300">Import from project</p>
+          <ImportTaskToSprint
+            tasks={tasksWithNoSprint}
+            sprintId={sprintId}
+            order={newTaskOrder}
+          />
         </div>
       </div>
     </>

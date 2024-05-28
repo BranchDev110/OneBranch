@@ -11,6 +11,7 @@ import {
   doc,
   DocumentReference,
   DocumentSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 import omit from "lodash/omit";
 
@@ -23,6 +24,8 @@ import { COLLECTIONS } from "@/constants/collections";
 import {
   CreateTaskBodyFull,
   EditTaskBody,
+  ImportTaskArgs,
+  MoveTaskArgs,
   Task,
   UpdateTaskStatusArgs,
 } from "@/types/task.types";
@@ -175,14 +178,81 @@ const tasksApi = baseApi.injectEndpoints({
         }
       },
     }),
-    moveTask: build.mutation<any, any>({
-      queryFn: async () => {
+    moveTask: build.mutation<Task, MoveTaskArgs>({
+      queryFn: async ({ taskId, columnId, order }) => {
         try {
-          return { data: {} };
+          const taskRef = doc(db, COLLECTIONS.TASKS, taskId);
+          const t = await getDoc(taskRef);
+
+          if (!t.exists()) {
+            throw new Error("Task does not exist");
+          }
+
+          const task = omit(t.data(), "createdAt");
+
+          await updateDoc(taskRef, {
+            columnId,
+            order,
+          });
+
+          task.columnId = columnId;
+          task.order = order;
+
+          return { data: task as Task };
         } catch (e: any) {
           return {
             error: {
               message: e?.message || "Could not move task",
+            },
+          };
+        }
+      },
+    }),
+    importTask: build.mutation<Task, ImportTaskArgs>({
+      queryFn: async ({ taskId, sprintId, order }) => {
+        try {
+          const taskRef = doc(db, COLLECTIONS.TASKS, taskId);
+          const t = await getDoc(taskRef);
+
+          const batch = writeBatch(db);
+
+          if (!t.exists()) {
+            throw new Error("Task does not exist");
+          }
+
+          const task = omit(t.data(), "createdAt");
+
+          const sprintRef = doc(db, COLLECTIONS.SPRINTS, sprintId);
+          const docRef = await getDoc(sprintRef);
+
+          if (!docRef.exists()) {
+            throw new Error("Sprint does not exist!");
+          }
+
+          const sprint = docRef.data();
+
+          batch.update(sprintRef, {
+            currentPoints:
+              sprint.currentPoints +
+              task.storyPoint * TASK_STATUS_PERCENT[task.status as TASK_STATUS],
+            totalPoints: sprint.totalPoints + task.storyPoint,
+          });
+
+          batch.update(taskRef, {
+            sprintId,
+            order,
+          });
+
+          await batch.commit();
+
+          task.sprintId = sprintId;
+          task.order = order;
+
+          return { data: task as Task };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not import task",
             },
           };
         }
@@ -337,5 +407,6 @@ export const {
   useUpdateTaskMutation,
   useUpdateTaskStatusMutation,
   useMoveTaskMutation,
+  useImportTaskMutation,
 } = tasksApi;
 export { tasksApi };
