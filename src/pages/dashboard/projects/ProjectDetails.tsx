@@ -257,7 +257,7 @@ const ProjectDetails = () => {
               </div>
 
               <div>
-                <h2 className="mb-2 text-lg font-semibold">
+                <h2 className="mb-2 text-lg font-semibold ">
                   Project Description
                 </h2>
                 <div className="text-sm text-gray-500 whitespace-pre-line ">
