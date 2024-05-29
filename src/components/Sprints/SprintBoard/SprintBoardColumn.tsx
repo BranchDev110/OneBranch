@@ -150,6 +150,7 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
                   isUpdatingStatus={isLoading}
                   team={ctx.state.users}
                   onUpdateStatus={onUpdateStatus}
+                  projectName={ctx.state.projectName}
                 />
               </SprintBoardItem>
             ))}

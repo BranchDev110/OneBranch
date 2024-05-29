@@ -12,9 +12,10 @@ import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 interface Props {
   users: AppUserProfile[];
   tasks: Task[];
+  projectName: string;
 }
 
-const TasksContainer = ({ tasks = [], users = [] }: Props) => {
+const TasksContainer = ({ tasks = [], users = [], projectName }: Props) => {
   const { user } = useLoggedInUser();
   const { populatedTasks = [] } = usePopulateTasksWithUsers({ tasks, users });
 
@@ -68,6 +69,7 @@ const TasksContainer = ({ tasks = [], users = [] }: Props) => {
                 user={user as AppUserProfile}
                 isUpdatingStatus={isLoading}
                 team={users}
+                projectName={projectName}
               />
             ))}
           </>

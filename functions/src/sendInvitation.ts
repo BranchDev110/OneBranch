@@ -45,6 +45,15 @@ export const sendInvitationEmail = async ({
   try {
     const url = buildUrl(originUrl, projectId, taskId);
 
+    console.log({
+      adminName,
+      emails,
+      originUrl,
+      projectId,
+      taskId,
+      projectName,
+    });
+
     const config = {
       from: `"${adminName}" <${process.env.email}>`,
       to: emails.join(", "),

@@ -37,3 +37,18 @@ export interface EditProjectBody {
   newColumns: ProjectColumn[];
   oldColumns: ProjectColumn[];
 }
+
+export interface AddUserToProjectAndTaskArgs {
+  userId: string;
+  projectId: string;
+  taskId?: string;
+}
+
+export interface SendInviteArgs {
+  emails: string[];
+  projectId: string;
+  taskId?: string;
+  projectName: string;
+  originUrl: string;
+  adminName: string;
+}

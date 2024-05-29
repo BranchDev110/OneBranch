@@ -7,9 +7,7 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import cors from "cors";
-
-import { onRequest } from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 // import * as logger from "firebase-functions/logger";
 import { sendInvitationEmail, SendEmailArgs } from "./sendInvitation";
 
@@ -21,19 +19,19 @@ import { sendInvitationEmail, SendEmailArgs } from "./sendInvitation";
 //   response.send("Hello from Firebase!");
 // });
 
-export const sendProjectInvite = onRequest(async (req, res) => {
-  //restict to deployed url eventually
-  cors()(req, res, async () => {
-    try {
-      const data = req.body as SendEmailArgs;
+export const sendProjectInvite = onCall(async (request) => {
+  const data = request.data as SendEmailArgs;
 
-      await sendInvitationEmail(data);
+  try {
+    await sendInvitationEmail(data);
 
-      res.status(200).send({ message: `Invitations sent` });
-    } catch (error: any) {
-      res
-        .status(500)
-        .json({ message: error.message || "Unable to send invite", error });
-    }
-  });
+    return {
+      message: `Invitations sent`,
+    };
+  } catch (error: any) {
+    throw new HttpsError(
+      "invalid-argument",
+      error.message || "Unable to send invite"
+    );
+  }
 });

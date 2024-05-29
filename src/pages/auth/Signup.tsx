@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import FormHeader from "@/components/auth/FormHeader";
 import { cn } from "@/lib/utils";
 import { useSignUpMutation } from "@/services/auth";
 import { useCreateUserMutation } from "@/services/users";
+import getRedirectUrl from "@/lib/getRedirectUrl";
 
 const formSchema = z
   .object({
@@ -52,7 +53,9 @@ const SignUp = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
 
+  const redirectUrl = getRedirectUrl(location.search);
   const [signup, signupRes] = useSignUpMutation();
   const [createUser, createUserRes] = useCreateUserMutation();
 
@@ -75,7 +78,12 @@ const SignUp = () => {
 
       toast.dismiss();
       toast.success(`${values.name} has been registered.`);
-      navigate("/signin");
+      let url = `/signin`;
+
+      if (redirectUrl) {
+        url = `/signin?callbackUrl=${encodeURIComponent(redirectUrl)}`;
+      }
+      navigate(url);
     } catch (error: any) {
       toast.dismiss();
       const msg = error?.message || "Unable to register";
