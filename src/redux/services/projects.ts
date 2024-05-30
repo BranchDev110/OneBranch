@@ -14,18 +14,22 @@ import {
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
-
-import { db } from "@/firebase/BaseConfig";
+import { db, functions } from "@/firebase/BaseConfig";
 
 import {
+  AddUserToProjectAndTaskArgs,
   CreateProjectBody,
   EditProjectBody,
   Project,
   ProjectColumn,
+  SendInviteArgs,
 } from "@/types/project.types";
+import { Task } from "@/types/task.types";
+
 import omit from "lodash/omit";
 
 import { COLLECTIONS } from "@/constants/collections";
+import { httpsCallable } from "firebase/functions";
 
 const projectsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -203,6 +207,7 @@ const projectsApi = baseApi.injectEndpoints({
         }
       },
     }),
+
     getUsersProjects: build.query<Project[], string>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
@@ -237,6 +242,7 @@ const projectsApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+
     getProjectColumns: build.query<ProjectColumn[], string>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
@@ -268,6 +274,7 @@ const projectsApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+
     getProject: build.query<Project, string>({
       queryFn: async (projectId) => {
         try {
@@ -322,6 +329,87 @@ const projectsApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+    addUserToProjectAndTask: build.mutation<any, AddUserToProjectAndTaskArgs>({
+      queryFn: async ({ projectId, userId, taskId }) => {
+        try {
+          const batch = writeBatch(db);
+
+          const docRef = doc(db, COLLECTIONS.PROJECTS, projectId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const project = docSnap.data() as Project;
+            const users = [...project.members];
+
+            if (users.includes(userId) || project.admin === userId) {
+              throw new Error("User is already part of the project");
+            }
+
+            users.push(userId);
+            batch.update(docRef, { members: users });
+
+            if (taskId) {
+              const taskDocRef = doc(db, COLLECTIONS.TASKS, taskId);
+              const taskDocSnap = await getDoc(taskDocRef);
+
+              if (taskDocSnap.exists()) {
+                const task = taskDocSnap.data() as Task;
+
+                if (
+                  task.assignees.includes(userId) ||
+                  task.createdBy === userId
+                ) {
+                  throw new Error("User is already part of the task");
+                }
+
+                batch.update(docRef, {
+                  assignees: [...task.assignees, userId],
+                });
+              } else {
+                throw new Error("Unable to find task");
+              }
+            }
+
+            await batch.commit();
+
+            return {
+              data: {
+                ...omit(project, "createdAt"),
+                members: users,
+                id: docSnap.id,
+              } as Project,
+            };
+          } else {
+            throw new Error("Unable to find project");
+          }
+        } catch (e: any) {
+          // console.log(e);
+          return {
+            error: {
+              message: e?.message || "Could not add user to project",
+            },
+          };
+        }
+      },
+    }),
+
+    sendInvitationToUsers: build.mutation<any, SendInviteArgs>({
+      queryFn: async (args) => {
+        try {
+          const sendInvite = httpsCallable(functions, "sendProjectInvite");
+
+          const res = await sendInvite(args);
+
+          return { data: res };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not send invites",
+            },
+          };
+        }
+      },
+    }),
   }),
   overrideExisting: true,
 });
@@ -333,5 +421,7 @@ export const {
   useGetProjectColumnsQuery,
   useEditProjectMutation,
   useDeleteProjectMutation,
+  useAddUserToProjectAndTaskMutation,
+  useSendInvitationToUsersMutation,
 } = projectsApi;
 export { projectsApi };

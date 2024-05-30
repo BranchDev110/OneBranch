@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import FormHeader from "@/components/auth/FormHeader";
 import { cn } from "@/lib/utils";
+import getRedirectUrl from "@/lib/getRedirectUrl";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -44,6 +45,10 @@ const Login = () => {
   const [login, loginRes] = useLoginMutation();
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  //on signin redirect to callback url or dashboard
+  const redirectUrl = getRedirectUrl(location.search);
 
   const onSubmit = async (values: Schema) => {
     try {
@@ -59,8 +64,7 @@ const Login = () => {
       toast.dismiss();
       toast.success("Login successful");
 
-      //to home page later
-      navigate("/projects");
+      navigate(redirectUrl || "/projects");
     } catch (error: any) {
       toast.dismiss();
 
@@ -143,7 +147,14 @@ const Login = () => {
           </Button>
           <p className="mt-6 text-sm font-light">
             Don’t have an account yet?{" "}
-            <Link to="/signup" className="font-medium text-primary">
+            <Link
+              to={
+                redirectUrl
+                  ? `/signup?callbackUrl=${encodeURIComponent(redirectUrl)}`
+                  : `/signup`
+              }
+              className="font-medium text-primary"
+            >
               Sign up
             </Link>
           </p>

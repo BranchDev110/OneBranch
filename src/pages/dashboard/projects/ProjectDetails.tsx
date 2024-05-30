@@ -132,6 +132,10 @@ const ProjectDetails = () => {
     2
   );
 
+  const canView =
+    project?.admin === user?.id ||
+    project?.members.includes(user?.id as string);
+
   return (
     <div className="">
       <AppHeaderNav>
@@ -162,9 +166,18 @@ const ProjectDetails = () => {
             </h3>
           }
         />
+
+        <ErrorComponent
+          show={!canView && !isLoading}
+          message={
+            <h3 className="max-w-full text-xl font-bold text-center ">
+              You are not part of this project
+            </h3>
+          }
+        />
       </div>
 
-      <CaseRender condition={isSuccess && !project?.isRemoved}>
+      <CaseRender condition={isSuccess && !project?.isRemoved && !!canView}>
         <div className="grid gap-2 grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
           <div className="px-4">
             <div className="gap-8 mb-6 btwn">
@@ -290,7 +303,11 @@ const ProjectDetails = () => {
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
 
-                <TasksContainer tasks={tasks} users={team} />
+                <TasksContainer
+                  projectName={project?.name as string}
+                  tasks={tasks}
+                  users={team}
+                />
               </div>
             </div>
           </div>
