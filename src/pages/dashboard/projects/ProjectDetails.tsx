@@ -27,7 +27,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 
@@ -43,6 +42,14 @@ import CreateProjectTaskModal from "@/components/Projects/CreateProjectTaskModal
 import { useGetTasksInProjectQuery } from "@/services/tasks";
 import TasksContainer from "@/components/Tasks/TasksContainer";
 import { round } from "@/lib/round";
+import orderBy from "lodash/orderBy";
+import { ScrollArea } from "@/ui/scroll-area";
+import InviteUsersModal from "@/components/Users/InviteUsersModal";
+import { ROLES } from "@/constants/roles";
+import { Button } from "@/ui/button";
+import SetProjectActiveSprintModal from "@/components/Projects/SetProjectActiveSprintModal";
+import SprintCard from "@/components/Sprints/SprintCard";
+import { AppUserProfile } from "@/types/user.types";
 
 const ProjectDetails = () => {
   const { id } = useParams();
@@ -136,6 +143,17 @@ const ProjectDetails = () => {
     project?.admin === user?.id ||
     project?.members.includes(user?.id as string);
 
+  const orderedTeam = useMemo(
+    () => orderBy(team, [(user) => user.name.toLowerCase()], ["asc"]),
+    [team]
+  );
+
+  const activeSprint = useMemo(() => {
+    return sprints.find((s) => s.id === project?.activeSprintId);
+  }, [project?.activeSprintId, sprints]);
+
+  // console.log({ orderedTeam, team });
+
   return (
     <div className="">
       <AppHeaderNav>
@@ -204,7 +222,7 @@ const ProjectDetails = () => {
               <DropdownMenu open={open} onOpenChange={setOpen}>
                 <DropdownMenuTrigger
                   className="p-2 "
-                  aria-label="Project Actions Menu"
+                  aria-label="Project Actions Menu cursor-pointer"
                 >
                   <DotsHorizontalIcon />
                 </DropdownMenuTrigger>
@@ -218,7 +236,7 @@ const ProjectDetails = () => {
                     closeModal={setOpen}
                   />
                   <CreateProjectTaskModal
-                    team={team}
+                    team={orderedTeam}
                     user={user}
                     projectId={project?.id as string}
                     closeModal={setOpen}
@@ -228,7 +246,13 @@ const ProjectDetails = () => {
                     user={user}
                     project={project as Project}
                   />
-                  <DropdownMenuItem>Set Active Sprint</DropdownMenuItem>
+                  <SetProjectActiveSprintModal
+                    closeModal={setOpen}
+                    activeSprintId={project?.activeSprintId as string}
+                    sprints={sprints}
+                    projectId={project?.id as string}
+                    disabled={user?.role !== ROLES.ADMIN}
+                  />
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -291,6 +315,27 @@ const ProjectDetails = () => {
               <div>
                 <h2 className="mb-2 text-lg font-semibold">Project Sprints</h2>
 
+                {activeSprint?.id ? (
+                  <div className="my-4 space-y-2">
+                    <h2 className="text-base font-medium text-c5-300">
+                      Active Sprint
+                    </h2>
+                    <SprintCard
+                      isActive
+                      user={user as AppUserProfile}
+                      sprint={activeSprint}
+                      projects={[
+                        {
+                          id: project?.id as string,
+                          name: project?.name as string,
+                        },
+                      ]}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
+
                 <SprintsContainer
                   sprints={sprints}
                   defaultProject={{
@@ -306,31 +351,49 @@ const ProjectDetails = () => {
                 <TasksContainer
                   projectName={project?.name as string}
                   tasks={tasks}
-                  users={team}
+                  users={orderedTeam}
                 />
               </div>
             </div>
           </div>
 
-          <div className="relative">
+          <div className="relative ">
             <div className="sticky top-0 p-4 rounded-lg bg-c2-100/50">
               <h2 className="mb-4 text-lg font-semibold">Project Team</h2>
 
-              <div className="grid gap-4">
-                {team.map((t) => (
-                  <div key={t.id} className="flex items-center gap-4">
-                    <Avatar>
-                      <AvatarImage alt="Sofia Davis" src={t.avatarUrl} />
-                      <AvatarFallback>{t.name[0].toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">{t.name}</p>
-                      <p className="text-sm text-gray-500 capitalize ">
-                        {t.role?.toLowerCase()}
-                      </p>
-                    </div>
+              <div className="max-h-screen">
+                <ScrollArea className="h-full">
+                  <div className="my-3">
+                    <InviteUsersModal
+                      projectId={project?.id as string}
+                      projectName={project?.name as string}
+                      adminName={user?.name as string}
+                      invitedBy={user?.id as string}
+                      disabled={user?.role !== ROLES.ADMIN}
+                      renderInviteButton={() => <Button>+ Invite users</Button>}
+                    />
                   </div>
-                ))}
+                  <div className="grid gap-4">
+                    {orderedTeam.map((t) => (
+                      <div key={t.id} className="flex items-center gap-4">
+                        <Avatar>
+                          <AvatarImage alt={t.name} src={t.avatarUrl} />
+                          <AvatarFallback>
+                            {t.name[0].toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium capitalize">
+                            {t.name.toLowerCase()}
+                          </p>
+                          <p className="text-sm text-gray-500 capitalize ">
+                            {t.role?.toLowerCase()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
               </div>
             </div>
           </div>

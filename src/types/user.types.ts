@@ -9,6 +9,6 @@ export interface AppUserProfile {
   name: string;
   id: string;
   role: string;
+  avatarUrl: string;
   email: string;
-  avatarUrl: "";
 }

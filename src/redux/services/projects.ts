@@ -23,6 +23,7 @@ import {
   Project,
   ProjectColumn,
   SendInviteArgs,
+  SetActiveSprintForProjectArgs,
 } from "@/types/project.types";
 import { Task } from "@/types/task.types";
 
@@ -208,6 +209,62 @@ const projectsApi = baseApi.injectEndpoints({
       },
     }),
 
+    setActiveSprintForProject: build.mutation<
+      Project,
+      SetActiveSprintForProjectArgs
+    >({
+      queryFn: async ({ projectId, sprintId }) => {
+        try {
+          const projectRef = doc(db, COLLECTIONS.PROJECTS, projectId);
+          const docRef = await getDoc(projectRef);
+
+          if (!docRef.exists()) {
+            throw new Error("Project does not exist!");
+          }
+
+          const sprintRef = doc(db, COLLECTIONS.SPRINTS, sprintId);
+          const sprintSnap = await getDoc(sprintRef);
+
+          if (!sprintSnap.exists()) {
+            throw new Error("Sprint does not exist!");
+          }
+
+          await updateDoc(projectRef, {
+            activeSprintId: sprintId,
+          });
+
+          return {
+            data: {
+              ...omit(docRef.data(), "createdAt"),
+              activeSprintId: sprintId,
+            } as Project,
+          };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not set active sprint for project",
+            },
+          };
+        }
+      },
+      async onQueryStarted({ projectId }, { dispatch, queryFulfilled }) {
+        try {
+          const { data: updatedProject } = await queryFulfilled;
+          dispatch(
+            projectsApi.util.updateQueryData(
+              "getProject",
+              projectId,
+              (draft) => {
+                Object.assign(draft, updatedProject);
+              }
+            )
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      },
+    }),
+
     getUsersProjects: build.query<Project[], string>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
@@ -329,10 +386,24 @@ const projectsApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+
     addUserToProjectAndTask: build.mutation<any, AddUserToProjectAndTaskArgs>({
-      queryFn: async ({ projectId, userId, taskId }) => {
+      queryFn: async ({ projectId, userId, taskId, email, verifyToken }) => {
         try {
           const batch = writeBatch(db);
+
+          const inviteRef = doc(db, COLLECTIONS.INVITATIONS, verifyToken);
+          const inviteDocSnap = await getDoc(inviteRef);
+
+          if (!inviteDocSnap.exists()) {
+            throw new Error("Unable to find inviation");
+          }
+
+          const invite = inviteDocSnap.data();
+
+          if (!invite?.invitees?.includes(email)) {
+            throw new Error(`Unable to verify invitation for ${email}`);
+          }
 
           const docRef = doc(db, COLLECTIONS.PROJECTS, projectId);
           const docSnap = await getDoc(docRef);
@@ -396,6 +467,17 @@ const projectsApi = baseApi.injectEndpoints({
     sendInvitationToUsers: build.mutation<any, SendInviteArgs>({
       queryFn: async (args) => {
         try {
+          const invitationRef = await addDoc(
+            collection(db, COLLECTIONS.INVITATIONS),
+            {
+              invitees: args.emails,
+              invitedBy: args.invitedBy,
+              createdAt: serverTimestamp(),
+            }
+          );
+
+          (args as any).inviteId = invitationRef.id;
+
           const sendInvite = httpsCallable(functions, "sendProjectInvite");
 
           const res = await sendInvite(args);
@@ -423,5 +505,6 @@ export const {
   useDeleteProjectMutation,
   useAddUserToProjectAndTaskMutation,
   useSendInvitationToUsersMutation,
+  useSetActiveSprintForProjectMutation,
 } = projectsApi;
 export { projectsApi };

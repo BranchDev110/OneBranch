@@ -15,6 +15,9 @@ import { CreateNewUserBody, AppUserProfile } from "@/types/user.types";
 
 import { db } from "@/firebase/BaseConfig";
 import { ROLES } from "@/constants/roles";
+import { updateEmail } from "firebase/auth";
+
+updateEmail;
 
 const usersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -25,8 +28,9 @@ const usersApi = baseApi.injectEndpoints({
             name,
             role: ROLES.USER,
             avatarUrl: "",
+            email,
           });
-          return { data: { name, email } };
+          return { data: { name, email, role: ROLES.USER, id, avatarUrl: "" } };
         } catch (e: any) {
           return {
             error: {
@@ -85,6 +89,7 @@ const usersApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+    //update profile
   }),
   overrideExisting: import.meta.env.DEV,
 });

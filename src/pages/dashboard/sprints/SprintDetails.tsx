@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
 import { Input } from "@/ui/input";
-import { MagnifyingGlassIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useGetSprintQuery } from "@/services/sprints";
 import { serializeError } from "serialize-error";
 import LoadingComponent from "@/components/LoadingComponent";
@@ -26,11 +26,9 @@ import { AppUserProfile } from "@/types/user.types";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { TASK_STATUS } from "@/constants/task-status";
 import AvatarStack from "@/ui/avatar-stack";
-import InviteUsersForm from "@/components/Users/InviteUsersForm";
-import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
-import { Button } from "@/ui/button";
-import { ScrollArea } from "@/ui/scroll-area";
+
 import { ROLES } from "@/constants/roles";
+import InviteUsersModal from "@/components/Users/InviteUsersModal";
 
 const SprintDetails = () => {
   const { user } = useLoggedInUser();
@@ -235,27 +233,14 @@ const SprintDetails = () => {
               }))}
               limit={4}
             />
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  disabled={user?.role !== ROLES.ADMIN}
-                  className="text-c5-400"
-                  variant="ghost"
-                  size={"icon"}
-                >
-                  <PlusCircledIcon className="w-7 h-7" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="w-3/4 max-w-xl  pt-10 px-8 h-[70vh]">
-                <ScrollArea className="h-full">
-                  <InviteUsersForm
-                    projectName={project?.name as string}
-                    adminName={user?.name as string}
-                    projectId={project?.id as string}
-                  />
-                </ScrollArea>
-              </DialogContent>
-            </Dialog>
+
+            <InviteUsersModal
+              projectName={project?.name as string}
+              adminName={user?.name as string}
+              projectId={project?.id as string}
+              disabled={user?.role !== ROLES.ADMIN}
+              invitedBy={user?.id as string}
+            />
           </div>
         </div>
 

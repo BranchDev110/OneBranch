@@ -3,6 +3,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { v4 as uuid } from "uuid";
 
 import { auth } from "@/firebase/BaseConfig";
 import { baseApi } from "./base";
@@ -71,9 +72,29 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    sendForgotPassordEmail: build.mutation<any, any>({
+      queryFn: async () => {
+        //check that user email exists
+        //proceed if true
+        //maybe add an expiry period?
+        return { data: {} };
+      },
+    }),
+    resetUserPassword: build.mutation<any, any>({
+      queryFn: async () => {
+        //do some verifications
+
+        return { data: {} };
+      },
+    }),
   }),
   overrideExisting: import.meta.env.DEV,
 });
-export const { useSignUpMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useSignUpMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useSendForgotPassordEmailMutation,
+  useResetUserPasswordMutation,
+} = authApi;
 export { authApi };
