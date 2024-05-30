@@ -6,13 +6,13 @@ import { onAuthStateChanged } from "firebase/auth";
 
 const AuthWrapper = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
-  const [triggerGetUserProfile] = useLazyGetUserByIdQuery();
+  const [triggerGetAppUserProfile] = useLazyGetUserByIdQuery();
 
   useEffect(() => {
     setLoading(true);
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        triggerGetUserProfile(user.uid);
+        triggerGetAppUserProfile(user.uid);
         setLoading(false);
       } else {
         setLoading(false);
@@ -20,7 +20,7 @@ const AuthWrapper = ({ children }: PropsWithChildren) => {
     });
 
     return () => unsubscribe();
-  }, [triggerGetUserProfile]);
+  }, [triggerGetAppUserProfile]);
 
   if (loading) {
     return <></>;

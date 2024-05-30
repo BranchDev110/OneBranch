@@ -19,6 +19,7 @@ export interface CreateProjectBody {
 export interface Project extends Omit<CreateProjectBody, "columns"> {
   id: string;
   columns: string[];
+  activeSprintId: string;
 }
 
 export interface EditProjectBody {
@@ -32,7 +33,6 @@ export interface EditProjectBody {
   currentPoints: number;
   totalPoints: number;
   imageUrl: string;
-
   newColumns: ProjectColumn[];
   oldColumns: ProjectColumn[];
 }

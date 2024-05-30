@@ -11,7 +11,7 @@ import {
 
 import { baseApi } from "./base";
 
-import { CreateNewUserBody, UserProfile } from "@/types/user.types";
+import { CreateNewUserBody, AppUserProfile } from "@/types/user.types";
 
 import { db } from "@/firebase/BaseConfig";
 import { ROLES } from "@/constants/roles";
@@ -36,12 +36,12 @@ const usersApi = baseApi.injectEndpoints({
         }
       },
     }),
-    getUserById: build.query<UserProfile, string>({
+    getUserById: build.query<AppUserProfile, string>({
       queryFn: async (userId) => {
         try {
           const docSnap = await getDoc(doc(db, "users", userId));
           if (docSnap.exists()) {
-            const result = { id: userId, ...docSnap.data() } as UserProfile;
+            const result = { id: userId, ...docSnap.data() } as AppUserProfile;
             return { data: result };
           } else {
             throw new Error("Unable to find profile info");
@@ -51,7 +51,7 @@ const usersApi = baseApi.injectEndpoints({
         }
       },
     }),
-    getUsersInProject: build.query<UserProfile[], string[]>({
+    getUsersInProject: build.query<AppUserProfile[], string[]>({
       queryFn: async () => ({ data: [] }),
       async onCacheEntryAdded(
         members,
@@ -73,7 +73,7 @@ const usersApi = baseApi.injectEndpoints({
               return snapshot?.docs?.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-              })) as UserProfile[];
+              })) as AppUserProfile[];
             });
           });
         } catch (error: any) {
