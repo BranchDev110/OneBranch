@@ -29,6 +29,7 @@ import FakeSprintDetails from "./pages/dashboard/sprints/FakeSprintDetails";
 import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
 import CreateProject from "./pages/dashboard/projects/CreateProject";
 import AppErrorBoundary from "./components/AppErrorBoundary";
+import AcceptInvitation from "./pages/dashboard/invitation/AcceptInvitation";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -49,6 +50,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                 <Route path="/projects/new" element={<CreateProject />} />
 
                 <Route path="/projects/:id" element={<ProjectDetails />} />
+
+                <Route path="/invitation" element={<AcceptInvitation />} />
               </Route>
 
               <Route path="/signin" element={<Login />} />

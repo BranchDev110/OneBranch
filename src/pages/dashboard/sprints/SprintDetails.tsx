@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
 
 import { Input } from "@/ui/input";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { useGetSprintQuery } from "@/services/sprints";
 import { serializeError } from "serialize-error";
 import LoadingComponent from "@/components/LoadingComponent";
@@ -25,6 +25,12 @@ import { matchSorter } from "match-sorter";
 import { AppUserProfile } from "@/types/user.types";
 import useLoggedInUser from "@/hooks/useLoggedInUser";
 import { TASK_STATUS } from "@/constants/task-status";
+import AvatarStack from "@/ui/avatar-stack";
+import InviteUsersForm from "@/components/Users/InviteUsersForm";
+import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
+import { Button } from "@/ui/button";
+import { ScrollArea } from "@/ui/scroll-area";
+import { ROLES } from "@/constants/roles";
 
 const SprintDetails = () => {
   const { user } = useLoggedInUser();
@@ -135,6 +141,10 @@ const SprintDetails = () => {
     return allTasks;
   }, [tasks, query, status]);
 
+  const canView =
+    project?.admin === user?.id ||
+    project?.members.includes(user?.id as string);
+
   return (
     <div className="">
       <AppHeaderNav className="[&_.children]:basis-1/2">
@@ -179,10 +189,21 @@ const SprintDetails = () => {
             </h3>
           }
         />
+
+        <ErrorComponent
+          show={!canView && !isLoading}
+          message={
+            <h3 className="max-w-full text-xl font-bold text-center ">
+              You are not part of this project
+            </h3>
+          }
+        />
       </div>
 
       <CaseRender
-        condition={isSuccess && !sprint?.isRemoved && !project?.isRemoved}
+        condition={
+          isSuccess && !sprint?.isRemoved && !project?.isRemoved && !!canView
+        }
       >
         <div className="p-4 bg-white border-b py-7 btwn">
           <div className="basis-1/2 grid items-center gap-2 grid-cols-[40px_minmax(0,1fr)]">
@@ -192,7 +213,7 @@ const SprintDetails = () => {
                 <AvatarFallback>{sprint?.name[0]}</AvatarFallback>
               </Avatar>
             </div>
-            <div>
+            <div className="">
               <h5 className="font-bold">{sprint?.name}</h5>
               <div className="space-x-1 btwn">
                 <Progress
@@ -204,6 +225,37 @@ const SprintDetails = () => {
                 </p>
               </div>
             </div>
+          </div>
+
+          <div className="start">
+            <AvatarStack
+              avatars={team.map((a) => ({
+                name: a?.name || "",
+                src: a?.avatarUrl || "",
+              }))}
+              limit={4}
+            />
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  disabled={user?.role !== ROLES.ADMIN}
+                  className="text-c5-400"
+                  variant="ghost"
+                  size={"icon"}
+                >
+                  <PlusCircledIcon className="w-7 h-7" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="w-3/4 max-w-xl  pt-10 px-8 h-[70vh]">
+                <ScrollArea className="h-full">
+                  <InviteUsersForm
+                    projectName={project?.name as string}
+                    adminName={user?.name as string}
+                    projectId={project?.id as string}
+                  />
+                </ScrollArea>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -225,6 +277,7 @@ const SprintDetails = () => {
               projectId={project?.id as string}
               columns={orderedColumns}
               sprintId={id as string}
+              projectName={project?.name as string}
             />
           </div>
         </div>

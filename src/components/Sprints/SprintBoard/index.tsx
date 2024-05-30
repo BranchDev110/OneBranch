@@ -40,6 +40,7 @@ interface Props {
   tasks: Task[];
   columns: ProjectColumn[];
   projectId: string;
+  projectName: string;
   sprintId: string;
 }
 
@@ -95,6 +96,7 @@ const Board = ({
   users = [],
   projectId,
   sprintId,
+  projectName,
   columns = [],
 }: Props) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -236,9 +238,10 @@ const Board = ({
         projectId,
         sprintId,
         columns,
+        projectName,
       },
     }),
-    [users, tasks, projectId, sprintId, columns]
+    [users, tasks, projectId, sprintId, columns, projectName]
   );
 
   const groupedTasks = useMemo(() => {

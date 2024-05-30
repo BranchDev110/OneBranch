@@ -33,12 +33,17 @@ import { DotsVerticalIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import AttachmentIcon from "@/icons/AttachmentIcon";
 import EditTaskModal from "./EditTaskModal";
 
+import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
+import InviteUsersForm from "../Users/InviteUsersForm";
+import { ScrollArea } from "@/ui/scroll-area";
+
 interface Props {
   task: TaskWithPopulatedUsers;
   onUpdateStatus: (args: UpdateTaskStatusArgs) => void;
   user: AppUserProfile;
   isUpdatingStatus?: boolean;
   team: AppUserProfile[];
+  projectName: string;
 }
 
 const TaskCard = ({
@@ -47,6 +52,7 @@ const TaskCard = ({
   user,
   isUpdatingStatus,
   team = [],
+  projectName,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -155,9 +161,28 @@ const TaskCard = ({
             limit={3}
           />
           {/* chnage to modal later */}
-          <Button className="text-c5-400" variant="ghost" size={"icon"}>
-            <PlusCircledIcon className="w-7 h-7" />
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                disabled={user.role !== ROLES.ADMIN}
+                className="text-c5-400"
+                variant="ghost"
+                size={"icon"}
+              >
+                <PlusCircledIcon className="w-7 h-7" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="w-3/4 max-w-xl  pt-10 px-8 h-[70vh]">
+              <ScrollArea className="h-full">
+                <InviteUsersForm
+                  projectName={projectName}
+                  adminName={user.name}
+                  taskId={task.id as string}
+                  projectId={task.projectId}
+                />
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="space-x-2 text-xs end">
