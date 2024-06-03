@@ -2,13 +2,19 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  verifyPasswordResetCode,
 } from "firebase/auth";
-import { v4 as uuid } from "uuid";
 
-import { auth } from "@/firebase/BaseConfig";
+import { auth, functions } from "@/firebase/BaseConfig";
 import { baseApi } from "./base";
 
-import { AuthBody, SignUpAuthRes } from "@/types/auth.types";
+import {
+  AuthBody,
+  ForgotPasswordBody,
+  ResetPasswordBody,
+  SignUpAuthRes,
+} from "@/types/auth.types";
+import { httpsCallable } from "firebase/functions";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -72,19 +78,45 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
-    sendForgotPassordEmail: build.mutation<any, any>({
-      queryFn: async () => {
-        //check that user email exists
-        //proceed if true
-        //maybe add an expiry period?
-        return { data: {} };
+    sendForgotPassordEmail: build.mutation<any, ForgotPasswordBody>({
+      queryFn: async ({ email, originUrl }) => {
+        try {
+          const sendResetEmail = httpsCallable(
+            functions,
+            "initiatePasswordReset"
+          );
+          const res = await sendResetEmail({ email, originUrl });
+
+          return { data: res };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not initiate password reset",
+            },
+          };
+        }
       },
     }),
-    resetUserPassword: build.mutation<any, any>({
-      queryFn: async () => {
-        //do some verifications
+    resetUserPassword: build.mutation<any, ResetPasswordBody>({
+      queryFn: async ({ password, oobCode }) => {
+        try {
+          const email = await verifyPasswordResetCode(auth, oobCode);
 
-        return { data: {} };
+          const completePasswordReset = httpsCallable(
+            functions,
+            "completePasswordReset"
+          );
+
+          await completePasswordReset({ email, password });
+
+          return { data: true };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not reset password",
+            },
+          };
+        }
       },
     }),
   }),

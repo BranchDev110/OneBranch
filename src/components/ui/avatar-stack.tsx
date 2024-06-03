@@ -15,7 +15,11 @@ const AvatarStack = ({ avatars = [], limit = 0 }: Props) => {
     <div className="-space-x-3 btwn">
       {avatars.slice(0, limit ? limit : avatars.length).map((a, i) => (
         <Avatar className="border-2 border-white" key={i}>
-          <AvatarImage src={a.src} alt={a.name} />
+          <AvatarImage
+            className="object-cover object-center"
+            src={a.src}
+            alt={a.name}
+          />
           <AvatarFallback>{a?.name?.[0]?.toUpperCase()}</AvatarFallback>
         </Avatar>
       ))}

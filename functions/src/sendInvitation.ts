@@ -1,3 +1,5 @@
+//
+
 import * as nodemailer from "nodemailer";
 
 export interface SendEmailArgs {
@@ -95,8 +97,8 @@ export const sendInvitationEmail = async ({
     await transporter.sendMail(config);
 
     return true;
-  } catch (e) {
-    let error = new Error("Unable to send invitation");
+  } catch (e: any) {
+    let error = new Error(e?.message || "Unable to send invitation");
     (error as any).details = e;
 
     throw error;

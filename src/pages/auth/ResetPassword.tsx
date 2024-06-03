@@ -17,6 +17,8 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/ui/password-input";
+import { useResetUserPasswordMutation } from "@/services/auth";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   password: z.string().min(8),
@@ -36,10 +38,38 @@ const ResetPassword = () => {
     defaultValues,
   });
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [reset, resetRes] = useResetUserPasswordMutation();
+
   const onSubmit = async (values: Schema) => {
     try {
-      console.log(values);
-      toast.success("TO DO: reset");
+      toast.dismiss();
+      const url = new URLSearchParams(location.search);
+
+      const id = toast.loading("Resetting password...");
+      const oobCode = url.get("oobCode");
+
+      if (!oobCode) {
+        toast.dismiss();
+        toast.dismiss(id);
+        throw new Error("Missing reset code");
+      }
+      await reset({
+        password: values.password,
+        oobCode,
+      }).unwrap();
+
+      toast.dismiss();
+      toast.dismiss(id);
+
+      toast.success(
+        `Password reset success. You will be redirected to login soon`
+      );
+
+      setTimeout(() => {
+        navigate("/signin");
+      }, 1200);
     } catch (error: any) {
       toast.dismiss();
       const msg = error?.message || "Unable to reset password";
@@ -96,10 +126,9 @@ const ResetPassword = () => {
             />
 
             <Button
-              // disabled={signupRes.isLoading || createUserRes.isLoading}
+              disabled={resetRes.isLoading}
               className={cn("w-full mt-6", {
-                // ["animate-pulse cursor-not-allowed"]:
-                //   signupRes.isLoading || createUserRes.isLoading,
+                ["animate-pulse cursor-not-allowed"]: resetRes.isLoading,
               })}
               type="submit"
             >

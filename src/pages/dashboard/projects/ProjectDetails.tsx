@@ -377,7 +377,11 @@ const ProjectDetails = () => {
                     {orderedTeam.map((t) => (
                       <div key={t.id} className="flex items-center gap-4">
                         <Avatar>
-                          <AvatarImage alt={t.name} src={t.avatarUrl} />
+                          <AvatarImage
+                            className="object-cover object-center"
+                            alt={t.name}
+                            src={t.avatarUrl}
+                          />
                           <AvatarFallback>
                             {t.name[0].toUpperCase()}
                           </AvatarFallback>

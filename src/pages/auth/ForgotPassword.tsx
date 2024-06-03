@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useSendForgotPassordEmailMutation } from "@/services/auth";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -34,10 +35,23 @@ const ForgotPassword = () => {
     defaultValues,
   });
 
+  const [send, sendRes] = useSendForgotPassordEmailMutation();
+
   const onSubmit = async (values: Schema) => {
     try {
-      console.log(values);
-      toast.success("TO DO: forgot");
+      toast.dismiss();
+      const id = toast.loading("Initiating a password reset...");
+      await send({
+        email: values.email,
+        originUrl: `${window.location.origin}/reset`,
+      }).unwrap();
+
+      toast.dismiss();
+      toast.dismiss(id);
+
+      toast.success(
+        `Password reset initiated. An email was sent to ${values.email}`
+      );
     } catch (error: any) {
       toast.dismiss();
       const msg = error?.message || "Unable to reset password";
@@ -84,9 +98,9 @@ const ForgotPassword = () => {
             />
 
             <Button
-              // disabled={loginRes.isLoading}
+              disabled={sendRes.isLoading}
               className={cn("w-full mt-6", {
-                //["animate-pulse cursor-not-allowed"]: loginRes.isLoading,
+                ["animate-pulse cursor-not-allowed"]: sendRes.isLoading,
               })}
               type="submit"
             >

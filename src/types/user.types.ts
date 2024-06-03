@@ -12,3 +12,11 @@ export interface AppUserProfile {
   avatarUrl: string;
   email: string;
 }
+
+export interface UpdateUserProfileBody {
+  name: string;
+  id: string;
+  avatarUrl: string;
+  email: string;
+  oldEmail: string;
+}
