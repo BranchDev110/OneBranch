@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { AppUserProfile } from "firebase/auth";
+import { AppUserProfile } from "@/types/user.types";
 import { ROLES } from "@/constants/roles";
 import { useUpdateSprintMutation } from "@/services/sprints";
 import SprintForm from "./SprintForm";
@@ -66,7 +66,7 @@ const EditSprintModal = ({
           <span>Edit Sprint</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-2xl w-11/12 pt-10 px-8 h-[80vh]">
         <ScrollArea className="h-full">
           <SprintForm
             userId={sprint.createdBy}

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { ScrollArea } from "@/ui/scroll-area";
-import { AppUserProfile } from "firebase/auth";
+import { AppUserProfile } from "@/types/user.types";
 import { ROLES } from "@/constants/roles";
 import { Label } from "@/ui/label";
 import { useDeleteSprintMutation } from "@/services/sprints";

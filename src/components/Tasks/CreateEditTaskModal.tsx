@@ -102,7 +102,7 @@ const CreateEditTaskModal = ({
         </DialogTrigger>
       )}
 
-      <DialogContent className="max-w-2xl h-[80vh]">
+      <DialogContent className="max-w-2xl w-11/12 h-[80vh]">
         <ScrollArea className="w-full h-full p-2.5">
           <DialogHeader>
             <DialogTitle className="my-2 text-2xl font-bold">

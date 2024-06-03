@@ -7,10 +7,10 @@ interface CaseProps {
 
 const CaseRender = ({ condition, children }: CaseProps) => {
   if (typeof condition === "boolean") {
-    return condition ? <>{children}</> : null;
+    return condition ? <>{children}</> : <></>;
   }
 
-  return condition() ? <>{children}</> : null;
+  return condition() ? <>{children}</> : <></>;
 };
 
 export default CaseRender;
