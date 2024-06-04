@@ -1,4 +1,4 @@
-import {} from "react";
+import { useState } from "react";
 import AppHeaderNav from "@/components/AppHeaderNav";
 import {
   Select,
@@ -10,8 +10,31 @@ import {
 } from "@/ui/select";
 import { cn } from "@/lib/utils";
 import { CaretDownIcon } from "@radix-ui/react-icons";
+import { endOfDay } from "date-fns/endOfDay";
+import { addDays } from "date-fns/addDays";
+import { useGetUserTasksProgressQuery } from "@/services/dashboard";
+
+addDays;
+
+const today = endOfDay(new Date());
 
 const Home = () => {
+  const [endDate, setEndDate] = useState(addDays(today, -7));
+  const [range, setRange] = useState(`7`);
+
+  const { data: tasksData } = useGetUserTasksProgressQuery({
+    endDate: endDate.toISOString(),
+    startDate: today.toISOString(),
+    prevRangeEndDate: addDays(endDate, -+range).toISOString(),
+  });
+
+  const onRangeUpdate = (val: string) => {
+    if (+val) {
+      setEndDate(addDays(today, -+val));
+      setRange(val);
+    }
+  };
+
   return (
     <div>
       <AppHeaderNav>
@@ -22,11 +45,7 @@ const Home = () => {
         <div className="space-x-2 btwn">
           <h3>Overview</h3>
 
-          <Select
-            // onValueChange={}
-            // value={}
-            defaultValue="b"
-          >
+          <Select onValueChange={onRangeUpdate} value={range} defaultValue="b">
             <SelectTrigger
               renderCaret={() => <CaretDownIcon className="ml-1.5" />}
               className={cn(
@@ -38,9 +57,9 @@ const Home = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value={"a"}>Last 7 days</SelectItem>
-                <SelectItem value={"b"}>Last 30 days</SelectItem>
-                <SelectItem value={"c"}>Last 3 months</SelectItem>
+                <SelectItem value={"7"}>Last 7 days</SelectItem>
+                <SelectItem value={"30"}>Last 30 days</SelectItem>
+                <SelectItem value={"90"}>Last 90 days</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
