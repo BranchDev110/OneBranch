@@ -252,7 +252,11 @@ const ProjectForm = ({
             <div className="relative w-12 mx-auto overflow-hidden border-2 rounded-full aspect-square border-primary">
               <img
                 className="absolute object-cover object-center w-full h-full"
-                src={project?.imageUrl || URL.createObjectURL(acceptedFiles[0])}
+                src={
+                  acceptedFiles?.[0]
+                    ? URL.createObjectURL(acceptedFiles?.[0])
+                    : project?.imageUrl
+                }
               />
             </div>
           ) : (

@@ -30,12 +30,16 @@ const AcceptInvitation = () => {
         throw new Error("Missing invite params");
       }
 
+      if (!params?.verifyToken) {
+        throw new Error("Invalid invitation");
+      }
       const id = toast.loading("Verifying invitation...");
 
       // console.log(params);
       await addUser({
         ...params,
         userId: user?.id as string,
+        email: user?.email as string,
       } as unknown as AddUserToProjectAndTaskArgs).unwrap();
 
       toast.dismiss();
@@ -46,7 +50,7 @@ const AcceptInvitation = () => {
       const msg = error?.message || "Unable to add you to project";
       toast.error(msg);
     }
-  }, [user?.id, addUser, params]);
+  }, [user?.id, user?.email, addUser, params]);
 
   useEffect(() => {
     toast.dismiss();

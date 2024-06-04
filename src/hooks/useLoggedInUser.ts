@@ -13,6 +13,7 @@ const useLoggedInUser = () => {
   } = useGetUserByIdQuery(auth?.currentUser?.uid as unknown as string, {
     skip: !auth?.currentUser?.uid,
   });
+
   return {
     user,
     isLoading: isLoading || isFetching,
