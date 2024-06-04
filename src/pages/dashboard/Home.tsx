@@ -9,23 +9,34 @@ import {
   SelectValue,
 } from "@/ui/select";
 import { cn } from "@/lib/utils";
-import { CaretDownIcon } from "@radix-ui/react-icons";
+import { CaretDownIcon, ClockIcon } from "@radix-ui/react-icons";
 import { endOfDay } from "date-fns/endOfDay";
 import { addDays } from "date-fns/addDays";
-import { useGetUserTasksProgressQuery } from "@/services/dashboard";
+import { startOfDay } from "date-fns/startOfDay";
 
-addDays;
+import { useGetUserTasksProgressQuery } from "@/services/dashboard";
+import StatCard from "@/components/Dashboard/StatCard";
+import DBTaskProgressIcon from "@/icons/DBTaskProgressIcon";
+import BriefCaseIcon from "@/icons/BriefCaseIcon";
+import UserIcon from "@/icons/UserIcon";
+import CircularProgressBar from "@/components/Dashboard/CircularProgressBar";
 
 const today = endOfDay(new Date());
+
+const phrase: Record<string, string> = {
+  7: "from last week",
+  30: "from last month",
+  90: "from last 3 months",
+};
 
 const Home = () => {
   const [endDate, setEndDate] = useState(addDays(today, -7));
   const [range, setRange] = useState(`7`);
 
   const { data: tasksData } = useGetUserTasksProgressQuery({
-    endDate: endDate.toISOString(),
+    endDate: startOfDay(endDate).toISOString(),
     startDate: today.toISOString(),
-    prevRangeEndDate: addDays(endDate, -+range).toISOString(),
+    prevRangeEndDate: startOfDay(addDays(endDate, -+range)).toISOString(),
   });
 
   const onRangeUpdate = (val: string) => {
@@ -66,15 +77,61 @@ const Home = () => {
         </div>
 
         <div className="grid gap-2 my-2 md:grid-cols-2 md:gap-4 xl:grid-cols-4">
-          <div className="p-1 border center min-h-[100px]">Tasks progress</div>
-          <div className="p-1 border center min-h-[100px]">Task priority</div>
-          <div className="p-1 border center min-h-[100px]">Active projects</div>
-          <div className="p-1 border center min-h-[100px]">Members</div>
+          <StatCard
+            icon={<DBTaskProgressIcon />}
+            phrase={phrase[range]}
+            label="Task Progress"
+            iconClass="bg-[#D398E7]"
+            rate={12}
+            isRatio
+            pre={100}
+            post={50}
+          />
+          <StatCard
+            icon={<BriefCaseIcon />}
+            phrase={phrase[range]}
+            label="Urgent Tasks"
+            iconClass="bg-[#E89271]"
+            rate={10}
+            val={5}
+          />
+          <StatCard
+            icon={<ClockIcon className="w-5 h-5" />}
+            phrase={phrase[range]}
+            label="Active Projects"
+            iconClass="bg-[#70A1E5]"
+            rate={-8}
+            val={5}
+          />
+          <StatCard
+            icon={<UserIcon />}
+            phrase={phrase[range]}
+            label="Members"
+            iconClass="bg-[#F0C274]"
+            rate={12}
+            isRatio
+            pre={120}
+            post={100}
+          />
         </div>
 
         <div className="grid gap-2 grid-cols-[minmax(0,1fr)_25%]">
-          <div className="space-y-5=3">
-            <div className="min-h-[30vh]">table</div>
+          <div className="space-y-5 ">
+            <div className="min-h-[30vh]">
+              {/* <div className="w-8 h-8">
+                <CircularProgressBar
+                  total={100}
+                  value={75}
+                  guageClass={cn("stroke-c2", {})}
+                />
+              </div>
+
+              <CircularProgressBar
+                total={100}
+                value={25}
+                guageClass={cn("stroke-c2", {})}
+              /> */}
+            </div>
             <div className="min-h-[30vh]">chart section</div>
           </div>
           <div>compasses</div>
