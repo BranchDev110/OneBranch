@@ -9,6 +9,14 @@ export interface AppUserProfile {
   name: string;
   id: string;
   role: string;
+  avatarUrl: string;
   email: string;
-  avatarUrl: "";
+}
+
+export interface UpdateUserProfileBody {
+  name: string;
+  id: string;
+  avatarUrl: string;
+  email: string;
+  oldEmail: string;
 }

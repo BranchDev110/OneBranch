@@ -12,11 +12,13 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import DeleteIcon from "@/icons/DeleteIcon";
 
-interface Props {
+export interface Props {
   projectId: string;
   taskId?: string;
   projectName: string;
   adminName: string;
+  invitedBy: string;
+  onSuccessCallback?: () => void;
 }
 
 const formSchema = z.object({
@@ -38,9 +40,11 @@ const defaultValues: Schema = {
 
 const InviteUsersForm = ({
   projectId,
+  invitedBy,
   projectName,
   adminName,
   taskId,
+  onSuccessCallback,
 }: Props) => {
   const form = useForm<Schema>({
     resolver: zodResolver(formSchema),
@@ -58,8 +62,9 @@ const InviteUsersForm = ({
         projectName,
         adminName,
         taskId,
+        invitedBy,
         emails: values.emails.map((m) => m.val).filter((p) => p),
-        originUrl: `${window.location.origin}/invitations`,
+        originUrl: `${window.location.origin}/invitation`,
       };
 
       //   console.log({ body, values });
@@ -68,6 +73,8 @@ const InviteUsersForm = ({
       toast.dismiss();
       toast.dismiss(id);
       toast.success("Invitations sent");
+
+      onSuccessCallback && onSuccessCallback();
     } catch (error: any) {
       toast.dismiss();
 

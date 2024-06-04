@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/ui/select";
-import { Button } from "@/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,13 +28,11 @@ import { cn } from "@/lib/utils";
 import { AppUserProfile } from "@/types/user.types";
 import { ROLES } from "@/constants/roles";
 import AvatarStack from "@/ui/avatar-stack";
-import { DotsVerticalIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import AttachmentIcon from "@/icons/AttachmentIcon";
 import EditTaskModal from "./EditTaskModal";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
-import InviteUsersForm from "../Users/InviteUsersForm";
-import { ScrollArea } from "@/ui/scroll-area";
+import InviteUsersModal from "@/components/Users/InviteUsersModal";
 
 interface Props {
   task: TaskWithPopulatedUsers;
@@ -142,7 +139,7 @@ const TaskCard = ({
 
       <Truncatable
         className="text-xs text-c5-300 min-h-[50px]"
-        as="section"
+        as="p"
         content={task.description}
       />
 
@@ -161,28 +158,14 @@ const TaskCard = ({
             limit={3}
           />
           {/* chnage to modal later */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                disabled={user.role !== ROLES.ADMIN}
-                className="text-c5-400"
-                variant="ghost"
-                size={"icon"}
-              >
-                <PlusCircledIcon className="w-7 h-7" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="w-3/4 max-w-xl  pt-10 px-8 h-[70vh]">
-              <ScrollArea className="h-full">
-                <InviteUsersForm
-                  projectName={projectName}
-                  adminName={user.name}
-                  taskId={task.id as string}
-                  projectId={task.projectId}
-                />
-              </ScrollArea>
-            </DialogContent>
-          </Dialog>
+          <InviteUsersModal
+            projectName={projectName}
+            adminName={user.name}
+            taskId={task.id as string}
+            projectId={task.projectId}
+            disabled={user.role !== ROLES.ADMIN}
+            invitedBy={user?.id as string}
+          />
         </div>
 
         <div className="space-x-2 text-xs end">
