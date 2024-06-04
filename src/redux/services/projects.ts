@@ -151,7 +151,7 @@ const projectsApi = baseApi.injectEndpoints({
             );
           }
 
-          batch.update(doc(db, COLLECTIONS.PROJECTS, project.id), {
+          batch.update(projectRef, {
             name: project.name,
             description: project.description,
             startDate: project.startDate,
@@ -291,6 +291,35 @@ const projectsApi = baseApi.injectEndpoints({
             },
           };
         }
+      },
+
+      async onCacheEntryAdded(
+        projectId,
+        { updateCachedData, cacheDataLoaded, cacheEntryRemoved }
+      ) {
+        let unsubscribe = () => {};
+
+        try {
+          await cacheDataLoaded;
+          unsubscribe = onSnapshot(
+            doc(db, COLLECTIONS.PROJECTS, projectId),
+            (doc) => {
+              updateCachedData(
+                () =>
+                  ({
+                    id: doc.id,
+                    ...omit(doc.data(), "createdAt"),
+                  } as Project)
+              );
+            }
+          );
+        } catch (error) {
+          console.log(error);
+          throw new Error("Something went wrong getting the project");
+        }
+
+        await cacheEntryRemoved;
+        unsubscribe && unsubscribe();
       },
     }),
   }),
