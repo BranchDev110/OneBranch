@@ -47,7 +47,8 @@ const CircularProgressBar = ({
         y="50"
         textAnchor="middle"
         dominantBaseline="central"
-        className={cn("text-sm", labelClass)}
+        fontSize={"1.35rem"}
+        className={cn("font-bold", labelClass)}
       >
         {val}%
       </text>

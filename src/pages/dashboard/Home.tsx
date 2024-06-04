@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AppHeaderNav from "@/components/AppHeaderNav";
 import {
   Select,
@@ -20,6 +20,113 @@ import DBTaskProgressIcon from "@/icons/DBTaskProgressIcon";
 import BriefCaseIcon from "@/icons/BriefCaseIcon";
 import UserIcon from "@/icons/UserIcon";
 import CircularProgressBar from "@/components/Dashboard/CircularProgressBar";
+import DashboardProjectsProvider from "@/components/Dashboard/DashboardProjectsProvider";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
+  SortingState,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+  getFilteredRowModel,
+  ColumnFiltersState,
+  Row,
+  createColumnHelper,
+} from "@tanstack/react-table";
+
+const projects = [
+  {
+    id: 1,
+    name: "Phasellus in felis.",
+    totalPoints: 69,
+    currentPoints: 35,
+    managerName: "Gordie Alwood",
+    dueDate: "29-Sep-2022",
+  },
+  {
+    id: 2,
+    name: "Cras non velit nec .",
+    totalPoints: 77,
+    currentPoints: 10,
+    managerName: "Ellswerth D'Elias",
+    dueDate: "21-Jul-2022",
+  },
+  {
+    id: 3,
+    name: "Morbi ut odio.",
+    totalPoints: 36,
+    currentPoints: 36,
+    managerName: "Micheline Willmott",
+    dueDate: "02-Jun-2022",
+  },
+  {
+    id: 4,
+    name: "Proin eu mi.",
+    totalPoints: 43,
+    currentPoints: 2,
+    managerName: "Marguerite Dalton",
+    dueDate: "19-Dec-2022",
+  },
+  {
+    id: 5,
+    name: "Nulla facilisi.",
+    totalPoints: 24,
+    currentPoints: 3,
+    managerName: "Allie Fitzsimmons",
+    dueDate: "12-Nov-2022",
+  },
+  {
+    id: 6,
+    name: "Dapibus at, diam.",
+    totalPoints: 91,
+    currentPoints: 51,
+    managerName: "Minnie France",
+    dueDate: "28-Nov-2022",
+  },
+  {
+    id: 7,
+    name: "Mauris ullamcorper nulla.",
+    totalPoints: 53,
+    currentPoints: 26,
+    managerName: "Berti Suggett",
+    dueDate: "15-Jul-2022",
+  },
+  {
+    id: 8,
+    name: "Nulla nisl.",
+    totalPoints: 150,
+    currentPoints: 80,
+    managerName: "Riannon Cullabine",
+    dueDate: "28-Aug-2022",
+  },
+  {
+    id: 9,
+    name: "Donec posuere .",
+    totalPoints: 70,
+    currentPoints: 39,
+    managerName: "Toddy Standingford",
+    dueDate: "27-Jan-2022",
+  },
+  {
+    id: 10,
+    name: "Vivamus pellentesque.",
+    totalPoints: 60,
+    currentPoints: 59,
+    managerName: "Lynn Enrique",
+    dueDate: "08-Dec-2022",
+  },
+];
+
+const columnHelper = createColumnHelper<any>();
 
 const today = endOfDay(new Date());
 
@@ -45,6 +152,56 @@ const Home = () => {
       setRange(val);
     }
   };
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "managerName",
+        header: "Project Manager",
+      },
+      {
+        accessorKey: "dueDate",
+        header: "Due Date",
+      },
+      columnHelper.display({
+        id: "status",
+        header: "Status",
+        cell: (props) => {
+          // console.log(props);
+          return "In progress";
+        },
+      }),
+      {
+        accessorKey: "currentPoints",
+        header: "Progress",
+        cell: (props: any) => {
+          const data = props.row.original;
+          return (
+            <div className="w-8 h-8">
+              <CircularProgressBar
+                total={data.totalPoints}
+                value={data.currentPoints}
+                guageClass={cn("stroke-c2")}
+              />
+            </div>
+          );
+        },
+      },
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    columns,
+    data: projects,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+  });
 
   return (
     <div>
@@ -118,6 +275,81 @@ const Home = () => {
         <div className="grid gap-2 grid-cols-[minmax(0,1fr)_25%]">
           <div className="space-y-5 ">
             <div className="min-h-[30vh]">
+              <DashboardProjectsProvider
+                startDate={today}
+                endDate={endDate}
+                label="Project summary"
+                prevRangeEndDate={startOfDay(addDays(endDate, -+range))}
+                renderChildren={({}) => (
+                  <div className="">
+                    <Table>
+                      <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                          <TableRow
+                            className="hover:bg-inherit"
+                            key={headerGroup.id}
+                          >
+                            {headerGroup.headers.map((header) => {
+                              return (
+                                <TableHead key={header.id}>
+                                  {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                      )}
+                                </TableHead>
+                              );
+                            })}
+                          </TableRow>
+                        ))}
+                      </TableHeader>
+                      <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                          table.getRowModel().rows.map((row) => (
+                            <TableRow
+                              key={row.id}
+                              className="cursor-pointer"
+                              data-state={row.getIsSelected() && "selected"}
+                            >
+                              {row.getVisibleCells().map((cell) => (
+                                <TableCell key={cell.id}>
+                                  {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
+                                  )}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={columns.length}
+                              className="h-24 text-center"
+                            >
+                              No results.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              />
+
+              <DashboardProjectsProvider
+                startDate={today}
+                endDate={endDate}
+                label="Project workload"
+                prevRangeEndDate={startOfDay(addDays(endDate, -+range))}
+                renderChildren={({ projects }) => (
+                  <div>
+                    <p>projects chart</p>
+                  </div>
+                )}
+              />
+
               {/* <div className="w-8 h-8">
                 <CircularProgressBar
                   total={100}
