@@ -20,7 +20,6 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import Home from "./pages/dashboard/Home";
-
 import AllSprints from "./pages/dashboard/sprints/AllSprints";
 import UserDetails from "./pages/dashboard/settings/UserDetails";
 import AllProjects from "./pages/dashboard/projects/AllProjects";
