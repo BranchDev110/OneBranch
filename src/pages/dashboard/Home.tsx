@@ -21,6 +21,7 @@ import BriefCaseIcon from "@/icons/BriefCaseIcon";
 import UserIcon from "@/icons/UserIcon";
 import DashboardProjectsProvider from "@/components/Dashboard/DashboardProjectsProvider";
 import DBProjectsTable from "@/components/Dashboard/DBProjectsTable";
+import CompassGuage from "@/components/Dashboard/CompassGuage";
 
 const today = endOfDay(new Date());
 
@@ -116,7 +117,7 @@ const Home = () => {
           />
         </div>
 
-        <div className="grid gap-2 grid-cols-[minmax(0,1fr)_25%] pt-10">
+        <div className="grid  md:min-h-[60vh]  gap-3 md:grid-cols-[minmax(0,1fr)_28%] pt-10">
           <div className="space-y-8 ">
             <DashboardProjectsProvider
               startDate={today}
@@ -141,8 +142,8 @@ const Home = () => {
             />
           </div>
           <div className="space-y-2">
-            <div className="min-h-32">compass 1</div>
-            <div className="min-h-32">compass 2</div>
+            <CompassGuage amount={72} label="Opened Tasks" />
+            <CompassGuage amount={72} label="Performance" />
           </div>
         </div>
       </div>

@@ -73,7 +73,7 @@ const projects = [
     totalPoints: 69,
     currentPoints: 0,
     managerName: "Filberto Birkhead",
-    dueDate: "29-Sep-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 2,
@@ -81,7 +81,7 @@ const projects = [
     totalPoints: 77,
     currentPoints: 10,
     managerName: "Ester Soltan",
-    dueDate: "21-Jul-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 3,
@@ -89,7 +89,7 @@ const projects = [
     totalPoints: 36,
     currentPoints: 36,
     managerName: "Filberto Birkhead",
-    dueDate: "02-Jun-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 4,
@@ -97,7 +97,7 @@ const projects = [
     totalPoints: 43,
     currentPoints: 43,
     managerName: "Ester Soltan",
-    dueDate: "19-Dec-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 5,
@@ -105,7 +105,7 @@ const projects = [
     totalPoints: 24,
     currentPoints: 3,
     managerName: "Martynne Juggins",
-    dueDate: "12-Nov-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 6,
@@ -113,7 +113,7 @@ const projects = [
     totalPoints: 91,
     currentPoints: 51,
     managerName: "Caresse Trew",
-    dueDate: "28-Nov-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 7,
@@ -121,7 +121,7 @@ const projects = [
     totalPoints: 53,
     currentPoints: 26,
     managerName: "Corey Vater",
-    dueDate: "15-Jul-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 8,
@@ -129,7 +129,7 @@ const projects = [
     totalPoints: 150,
     currentPoints: 80,
     managerName: "Ester Soltan",
-    dueDate: "28-Aug-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 9,
@@ -137,7 +137,7 @@ const projects = [
     totalPoints: 70,
     currentPoints: 0,
     managerName: "Breena Twelves",
-    dueDate: "27-Jan-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
   {
     id: 10,
@@ -145,7 +145,7 @@ const projects = [
     totalPoints: 60,
     currentPoints: 59,
     managerName: "Breena Twelves",
-    dueDate: "08-Dec-2022",
+    dueDate: "2024-07-05T16:39:39.834Z",
   },
 ];
 
@@ -225,7 +225,7 @@ const DashboardProjectsProvider = ({
     <div className="space-y-2 min-h-52">
       <header className="space-x-1 btwn">
         <h3>{label}</h3>
-        <div className="space-x-1 end">
+        <div className="space-x-2 end">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger
               asChild
@@ -272,7 +272,7 @@ const DashboardProjectsProvider = ({
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value={"all"}>All</SelectItem>
+                <SelectItem value={"all"}>Status</SelectItem>
                 <SelectItem value={TASK_STATUS.TODO}>
                   {TASK_STATUS.TODO}
                 </SelectItem>
