@@ -6,9 +6,9 @@ import { Button } from "@/ui/button";
 import { useMemo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Project } from "@/types/project.types";
+import { format } from "date-fns/format";
 
 import {
-  ColumnDef,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -16,6 +16,7 @@ import {
   useReactTable,
   getFilteredRowModel,
   ColumnFiltersState,
+  Row,
 } from "@tanstack/react-table";
 
 import {
@@ -31,6 +32,30 @@ import { Input } from "@/ui/input";
 import { cn } from "@/lib/utils";
 import { ROLES } from "@/constants/roles";
 
+import { createColumnHelper } from "@tanstack/react-table";
+import { round } from "@/lib/round";
+
+const columnHelper = createColumnHelper<Project>();
+
+const sortByEndDate = (rowA: Row<Project>, rowB: Row<Project>) => {
+  const endA = rowA.original.endDate;
+  const endB = rowB.original.endDate;
+
+  return new Date(endA).getTime() - new Date(endB).getTime();
+};
+
+const sortByProgress = (rowA: Row<Project>, rowB: Row<Project>) => {
+  const progA =
+    (100 * rowA.original.currentPoints || 0) / (rowA.original.totalPoints || 1);
+
+  const progB =
+    (100 * rowB.original.currentPoints || 0) / (rowB.original.totalPoints || 1);
+
+  // console.log({ progA, progB });
+
+  return progA - progB;
+};
+
 const AllProjects = () => {
   const { user } = useLoggedInUser();
 
@@ -45,7 +70,7 @@ const AllProjects = () => {
     []
   );
 
-  const columns: ColumnDef<Project>[] = useMemo(
+  const columns = useMemo(
     () => [
       {
         accessorKey: "name",
@@ -53,6 +78,7 @@ const AllProjects = () => {
           return (
             <Button
               variant="ghost"
+              className="w-full start"
               onClick={() =>
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
@@ -63,6 +89,49 @@ const AllProjects = () => {
           );
         },
       },
+      {
+        accessorKey: "endDate",
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              className="w-full start"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Due on
+              <CaretSortIcon className="w-4 h-4 ml-2" />
+            </Button>
+          );
+        },
+        cell: ({ row }) =>
+          format(new Date(row.original.endDate), "eo LLLL yyyy"),
+        sortingFn: sortByEndDate,
+      },
+      columnHelper.accessor("currentPoints", {
+        header: ({ column }) => {
+          return (
+            <Button
+              variant="ghost"
+              className="w-full start"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Progress
+              <CaretSortIcon className="w-4 h-4 ml-2" />
+            </Button>
+          );
+        },
+        sortingFn: sortByProgress,
+        cell: ({ row }) =>
+          `${round(
+            (100 * row.original.currentPoints || 0) /
+              (row.original.totalPoints || 1),
+            2
+          )}%`,
+      }),
       {
         accessorKey: "imageUrl",
         header: "Cover",
@@ -144,7 +213,7 @@ const AllProjects = () => {
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow className="hover:bg-inherit" key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead key={header.id}>

@@ -35,8 +35,8 @@ const SprintBoardItem = ({ children, task }: Props) => {
       style={style}
       {...attributes}
       {...listeners}
-      className={cn("p-4 bg-white rounded-xl min-h-28 transition-opacity", {
-        ["opacity-80"]: isDragging,
+      className={cn("transition-opacity", {
+        ["opacity-50"]: isDragging,
       })}
     >
       {children}
