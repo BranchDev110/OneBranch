@@ -17,6 +17,7 @@ import {
   getFilteredRowModel,
   ColumnFiltersState,
   Row,
+  createColumnHelper,
 } from "@tanstack/react-table";
 
 import {
@@ -32,7 +33,6 @@ import { Input } from "@/ui/input";
 import { cn } from "@/lib/utils";
 import { ROLES } from "@/constants/roles";
 
-import { createColumnHelper } from "@tanstack/react-table";
 import { round } from "@/lib/round";
 
 const columnHelper = createColumnHelper<Project>();

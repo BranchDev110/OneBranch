@@ -46,6 +46,7 @@ module.exports = {
           200: "#131313",
           300: "#636E72",
           400: "#BDBDBD",
+          500: "#797979",
         },
 
         border: "hsl(var(--border))",
@@ -109,6 +110,9 @@ module.exports = {
         toggler: 10800,
         modal: 10900,
         notif: 11000,
+      },
+      spacing: {
+        11.5: "2.875rem",
       },
     },
   },
