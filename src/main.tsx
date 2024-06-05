@@ -8,6 +8,11 @@ import ReactDOM from "react-dom/client";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { Toaster } from "@/components/ui/sonner";
+import { store } from "./redux/store";
+
+import AppLayout from "./components/AppLayout";
+import AuthWrapper from "./components/AuthWrapper";
+import AppErrorBoundary from "./components/AppErrorBoundary";
 
 import Login from "./pages/auth/Login";
 import Signup from "./pages/auth/Signup";
@@ -16,21 +21,14 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 
 import Home from "./pages/dashboard/Home";
 
-import AppLayout from "./components/AppLayout";
-
-import { store } from "./redux/store";
-
-import AuthWrapper from "./components/AuthWrapper";
 import AllSprints from "./pages/dashboard/sprints/AllSprints";
+import UserDetails from "./pages/dashboard/settings/UserDetails";
 import AllProjects from "./pages/dashboard/projects/AllProjects";
 import SprintDetails from "./pages/dashboard/sprints/SprintDetails";
-import FakeSprintDetails from "./pages/dashboard/sprints/FakeSprintDetails";
-
 import ProjectDetails from "./pages/dashboard/projects/ProjectDetails";
 import CreateProject from "./pages/dashboard/projects/CreateProject";
-import AppErrorBoundary from "./components/AppErrorBoundary";
 import AcceptInvitation from "./pages/dashboard/invitation/AcceptInvitation";
-import UserDetails from "./pages/dashboard/settings/UserDetails";
+import FakeSprintDetails from "./pages/dashboard/sprints/FakeSprintDetails";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
