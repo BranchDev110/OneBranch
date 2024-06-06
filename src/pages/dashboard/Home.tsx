@@ -1,5 +1,4 @@
 import { useState } from "react";
-import AppHeaderNav from "@/components/AppHeaderNav";
 import {
   Select,
   SelectContent,
@@ -10,19 +9,22 @@ import {
 } from "@/ui/select";
 import { cn } from "@/lib/utils";
 import { CaretDownIcon, ClockIcon } from "@radix-ui/react-icons";
-import { endOfDay } from "date-fns/endOfDay";
 import { addDays } from "date-fns/addDays";
+import { endOfDay } from "date-fns/endOfDay";
 import { startOfDay } from "date-fns/startOfDay";
 
 // import { useGetUserTasksProgressQuery } from "@/services/dashboard";
+import AppHeaderNav from "@/components/AppHeaderNav";
 import StatCard from "@/components/Dashboard/StatCard";
-import DBTaskProgressIcon from "@/icons/DBTaskProgressIcon";
-import BriefCaseIcon from "@/icons/BriefCaseIcon";
+
 import UserIcon from "@/icons/UserIcon";
-import DashboardProjectsProvider from "@/components/Dashboard/DashboardProjectsProvider";
-import DBProjectsTable from "@/components/Dashboard/DBProjectsTable";
-import CompassGuage from "@/components/Dashboard/CompassGuage";
+import BriefCaseIcon from "@/icons/BriefCaseIcon";
+import DBTaskProgressIcon from "@/icons/DBTaskProgressIcon";
+
 import LineChart from "@/components/Dashboard/LineChart";
+import CompassGuage from "@/components/Dashboard/CompassGuage";
+import DBProjectsTable from "@/components/Dashboard/DBProjectsTable";
+import DashboardProjectsProvider from "@/components/Dashboard/DashboardProjectsProvider";
 
 const today = endOfDay(new Date());
 
