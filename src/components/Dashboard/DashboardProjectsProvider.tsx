@@ -223,15 +223,15 @@ const DashboardProjectsProvider = ({
 
   return (
     <div className="space-y-2 min-h-52">
-      <header className="space-x-1 btwn">
+      <header className="flex-wrap gap-2 md:flex-nowrap btwn">
         <h3>{label}</h3>
-        <div className="space-x-2 end">
+        <div className="flex-wrap gap-2 md:flex-nowrap end">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger
               asChild
               className="text-sm font-normal !text-black !bg-white border-transparent rounded-full"
             >
-              <Button className="space-x-1">
+              <Button className="space-x-1 w-unset">
                 <span>{usersMap?.[manager]?.name || "Project Manager"}</span>
                 <CaretDownIcon />
               </Button>

@@ -42,10 +42,13 @@ const DBProjectsTable = ({ projects = [] }: Props) => {
       {
         accessorKey: "dueDate",
         header: "Due Date",
-        cell: (props: any) =>
-          isValid(new Date(props.row.original.dueDate))
-            ? format(new Date(props.row.original.dueDate), "LLL dd, yyyy")
-            : "-",
+        cell: (props: any) => (
+          <span className="min-w-[100px] inline-block">
+            {isValid(new Date(props.row.original.dueDate))
+              ? format(new Date(props.row.original.dueDate), "LLL dd, yyyy")
+              : "-"}
+          </span>
+        ),
       },
       columnHelper.display({
         id: "status",
@@ -57,7 +60,7 @@ const DBProjectsTable = ({ projects = [] }: Props) => {
 
             case data.currentPoints === data.totalPoints:
               return (
-                <span className="inline-block p-1 px-2 text-xs font-medium rounded-full text-c2 bg-c2/20">
+                <span className="inline-block p-1 text-center min-w-[80px] ]px-2 text-xs font-medium rounded-full text-c2 bg-c2/20">
                   Completed
                 </span>
               );
@@ -65,14 +68,14 @@ const DBProjectsTable = ({ projects = [] }: Props) => {
             case data.currentPoints > 0 &&
               data.currentPoints < data.totalPoints:
               return (
-                <span className="inline-block p-1 px-2 text-xs font-medium rounded-full text-c3 bg-c3/20">
+                <span className="inline-block p-1 text-center min-w-[80px] ]px-2 text-xs font-medium rounded-full text-c3 bg-c3/20">
                   In Progress
                 </span>
               );
 
             default:
               return (
-                <span className="inline-block p-1 px-2 text-xs font-medium rounded-full text-c4 bg-c4/20">
+                <span className="inline-block p-1 text-center min-w-[80px] ]px-2 text-xs font-medium rounded-full text-c4 bg-c4/20">
                   Not Started
                 </span>
               );
@@ -112,8 +115,8 @@ const DBProjectsTable = ({ projects = [] }: Props) => {
   });
 
   return (
-    <div className="">
-      <Table>
+    <div className="max-w-full overflow-x-auto">
+      <Table className="">
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow className="hover:bg-inherit" key={headerGroup.id}>

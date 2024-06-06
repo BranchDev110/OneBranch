@@ -196,7 +196,7 @@ const ProjectDetails = () => {
       </div>
 
       <CaseRender condition={isSuccess && !project?.isRemoved && !!canView}>
-        <div className="grid gap-2 grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
           <div className="px-4">
             <div className="gap-8 mb-6 btwn">
               <div className="flex-1 gap-4 start">
@@ -358,7 +358,7 @@ const ProjectDetails = () => {
           </div>
 
           <div className="relative ">
-            <div className="sticky top-0 p-4 rounded-lg bg-c2-100/50">
+            <div className="p-4 rounded-lg lg:sticky lg:top-0 bg-c2-100/50">
               <h2 className="mb-4 text-lg font-semibold">Project Team</h2>
 
               <div className="max-h-screen">

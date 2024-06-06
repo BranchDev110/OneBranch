@@ -58,7 +58,7 @@ const TasksContainer = ({ tasks = [], users = [], projectName }: Props) => {
         </div>
       </div>
 
-      <div className="gap-2 mt-4 grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] grid-flow-dense">
+      <div className="gap-2 mt-4 grid grid-cols-[minmax(0,1fr)] md:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] grid-flow-dense">
         {data?.length ? (
           <>
             {data.map((task) => (

@@ -22,6 +22,7 @@ import UserIcon from "@/icons/UserIcon";
 import DashboardProjectsProvider from "@/components/Dashboard/DashboardProjectsProvider";
 import DBProjectsTable from "@/components/Dashboard/DBProjectsTable";
 import CompassGuage from "@/components/Dashboard/CompassGuage";
+import LineChart from "@/components/Dashboard/LineChart";
 
 const today = endOfDay(new Date());
 
@@ -55,14 +56,14 @@ const Home = () => {
       </AppHeaderNav>
 
       <div className="p-4 space-y-4">
-        <div className="space-x-2 btwn">
+        <div className="flex-wrap space-x-2 btwn">
           <h3>Overview</h3>
 
-          <Select onValueChange={onRangeUpdate} value={range} defaultValue="b">
+          <Select onValueChange={onRangeUpdate} value={range}>
             <SelectTrigger
               renderCaret={() => <CaretDownIcon className="ml-1.5" />}
               className={cn(
-                "rounded-full w-unset min-w-[150px] text-sm px-4 font-medium bg-white",
+                "rounded-full w-unset md:min-w-[150px] text-sm px-4 font-medium bg-white",
                 {}
               )}
             >
@@ -117,7 +118,7 @@ const Home = () => {
           />
         </div>
 
-        <div className="grid  md:min-h-[60vh]  gap-3 md:grid-cols-[minmax(0,1fr)_28%] pt-10">
+        <div className="grid grid-cols-[minmax(0,1fr)]  md:min-h-[60vh]  gap-3 xl:grid-cols-[minmax(0,1fr)_38%] pt-10">
           <div className="space-y-8 ">
             <DashboardProjectsProvider
               startDate={today}
@@ -135,15 +136,29 @@ const Home = () => {
               label="Project workload"
               prevRangeEndDate={startOfDay(addDays(endDate, -+range))}
               renderChildren={() => (
-                <div>
-                  <p>projects chart</p>
+                <div className="py-2 h-52">
+                  <LineChart />
                 </div>
               )}
             />
           </div>
           <div className="space-y-2">
-            <CompassGuage amount={72} label="Opened Tasks" />
-            <CompassGuage amount={72} label="Performance" />
+            <CompassGuage
+              total={95}
+              completed={26}
+              delayed={35}
+              ongoing={35}
+              amount={72}
+              label="Opened Tasks"
+            />
+            <CompassGuage
+              total={95}
+              completed={26}
+              delayed={35}
+              ongoing={35}
+              amount={72}
+              label="Performance"
+            />
           </div>
         </div>
       </div>
