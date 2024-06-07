@@ -12,7 +12,7 @@ interface Props {
 const ErrorComponent = ({ show, message }: Props) => {
   return (
     <CaseRender condition={show}>
-      <Alert variant="destructive">
+      <Alert className="p-4" variant="destructive">
         <ExclamationTriangleIcon className="w-4 h-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
