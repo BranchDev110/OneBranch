@@ -43,7 +43,7 @@ const SprintsContainer = ({
   return (
     <div>
       <div className="end">
-        <div className="relative basis-2/3">
+        <div className="relative basis-full md:basis-2/3">
           <i className="absolute -translate-y-1/2 left-2 top-1/2">
             <MagnifyingGlassIcon />
           </i>
@@ -57,7 +57,7 @@ const SprintsContainer = ({
         </div>
       </div>
 
-      <div className="gap-2 mt-4 grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] grid-flow-dense">
+      <div className="gap-2 mt-4 grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
         {data?.length ? (
           <>
             {data.map((sprint) => (

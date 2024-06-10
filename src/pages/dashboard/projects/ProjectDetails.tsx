@@ -162,247 +162,259 @@ const ProjectDetails = () => {
         </NavLink>
       </AppHeaderNav>
 
-      <div className="p-4">
-        <LoadingComponent show={isLoading} />
+      <div className="p-2.5 py-4 md:p-4">
+        <div className="space-y-4">
+          <LoadingComponent show={isLoading} />
 
-        <ErrorComponent
-          show={isError}
-          message={
-            <code className="block w-full">
-              <pre className="max-w-full text-sm break-all whitespace-break-spaces ">
-                {JSON.stringify(error, null, 2)}
-              </pre>
-            </code>
-          }
-        />
+          <ErrorComponent
+            show={isError}
+            message={
+              <code className="block w-full">
+                <pre className="max-w-full text-sm break-all whitespace-break-spaces ">
+                  {JSON.stringify(error, null, 2)}
+                </pre>
+              </code>
+            }
+          />
 
-        <ErrorComponent
-          show={!!project?.isRemoved}
-          message={
-            <h3 className="max-w-full text-xl font-bold text-center ">
-              This project has been removed
-            </h3>
-          }
-        />
+          <ErrorComponent
+            show={!!project?.isRemoved}
+            message={
+              <h3 className="max-w-full text-xl font-bold text-center ">
+                This project has been removed
+              </h3>
+            }
+          />
 
-        <ErrorComponent
-          show={!canView && !isLoading}
-          message={
-            <h3 className="max-w-full text-xl font-bold text-center ">
-              You are not part of this project
-            </h3>
-          }
-        />
-      </div>
-
-      <CaseRender condition={isSuccess && !project?.isRemoved && !!canView}>
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)] p-4">
-          <div className="px-4">
-            <div className="gap-8 mb-6 btwn">
-              <div className="flex-1 gap-4 start">
-                {project?.imageUrl ? (
-                  <img
-                    alt="Project Avatar"
-                    className="object-cover object-center w-16 rounded-full aspect-square"
-                    height={64}
-                    src={project?.imageUrl}
-                  />
-                ) : (
-                  <></>
-                )}
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold">{project?.name}</h1>
-                  <div className="mt-2 space-x-1 text-sm btwn">
-                    <p>{progressValue}%</p>
-                    <Progress className="flex-1 h-2" value={progressValue} />
-                  </div>
-                </div>
-              </div>
-
-              <DropdownMenu open={open} onOpenChange={setOpen}>
-                <DropdownMenuTrigger
-                  className="p-2 "
-                  aria-label="Project Actions Menu cursor-pointer"
-                >
-                  <DotsHorizontalIcon />
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent className="">
-                  <EditProjectModal
-                    project={project as Project}
-                    columns={columns}
-                    orderedColumns={orderedColumns}
-                    user={user}
-                    closeModal={setOpen}
-                  />
-                  <CreateProjectTaskModal
-                    team={orderedTeam}
-                    user={user}
-                    projectId={project?.id as string}
-                    closeModal={setOpen}
-                    newTaskOrder={tasks.length || 0}
-                  />
-                  <CreateProjectSprintModal
-                    user={user}
-                    project={project as Project}
-                  />
-                  <SetProjectActiveSprintModal
-                    closeModal={setOpen}
-                    activeSprintId={project?.activeSprintId as string}
-                    sprints={sprints}
-                    projectId={project?.id as string}
-                    disabled={user?.role !== ROLES.ADMIN}
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="grid gap-6">
-              <div>
-                <h2 className="mb-2 text-lg font-semibold">Project Details</h2>
-                <div className="grid gap-4 text-sm">
-                  <div className="flex items-center gap-2">
-                    <CalendarIcon className="text-gray-500 " />
-                    <span className="text-gray-500 ">
-                      Started on{" "}
-                      {isValid(new Date(project?.startDate as string))
-                        ? format(
-                            new Date(project?.startDate as string),
-                            "LLLL dd, yyyy"
-                          )
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <ClockIcon className="text-gray-500 " />
-                    <span className="text-gray-500 ">
-                      Ends on{" "}
-                      {isValid(new Date(project?.endDate as string))
-                        ? format(
-                            new Date(project?.endDate as string),
-                            "LLLL dd, yyyy"
-                          )
-                        : ""}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <TeamIcon className="text-gray-500 " />
-                    <span className="text-gray-500 ">
-                      {team?.length} team member{team?.length > 1 ? "s" : ""}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-lg font-semibold ">
-                  Project Description
-                </h2>
-                <div className="text-sm text-gray-500 whitespace-pre-line ">
-                  <p>{project?.description}</p>
-                </div>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-lg font-semibold">Project Columns</h2>
-
-                <ol className="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
-                  {orderedColumns.map((col) => (
-                    <li key={col.id}>{col.name}</li>
-                  ))}
-                </ol>
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-lg font-semibold">Project Sprints</h2>
-
-                {activeSprint?.id ? (
-                  <div className="my-4 space-y-2">
-                    <h2 className="text-base font-medium text-c5-300">
-                      Active Sprint
-                    </h2>
-                    <SprintCard
-                      isActive
-                      user={user as AppUserProfile}
-                      sprint={activeSprint}
-                      projects={[
-                        {
-                          id: project?.id as string,
-                          name: project?.name as string,
-                        },
-                      ]}
-                    />
-                  </div>
-                ) : (
-                  <></>
-                )}
-
-                <SprintsContainer
-                  sprints={sprints}
-                  defaultProject={{
-                    id: project?.id as string,
-                    name: project?.name as string,
-                  }}
-                />
-              </div>
-
-              <div>
-                <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
-
-                <TasksContainer
-                  projectName={project?.name as string}
-                  tasks={tasks}
-                  users={orderedTeam}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="relative ">
-            <div className="p-4 rounded-lg lg:sticky lg:top-0 bg-c2-100/50">
-              <h2 className="mb-4 text-lg font-semibold">Project Team</h2>
-
-              <div className="max-h-screen">
-                <ScrollArea className="h-full">
-                  <div className="my-3">
-                    <InviteUsersModal
-                      projectId={project?.id as string}
-                      projectName={project?.name as string}
-                      adminName={user?.name as string}
-                      invitedBy={user?.id as string}
-                      disabled={user?.role !== ROLES.ADMIN}
-                      renderInviteButton={() => <Button>+ Invite users</Button>}
-                    />
-                  </div>
-                  <div className="grid gap-4">
-                    {orderedTeam.map((t) => (
-                      <div key={t.id} className="flex items-center gap-4">
-                        <Avatar>
-                          <AvatarImage
-                            className="object-cover object-center"
-                            alt={t.name}
-                            src={t.avatarUrl}
-                          />
-                          <AvatarFallback>
-                            {t.name[0].toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium capitalize">
-                            {t.name.toLowerCase()}
-                          </p>
-                          <p className="text-sm text-gray-500 capitalize ">
-                            {t.role?.toLowerCase()}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
-          </div>
+          <ErrorComponent
+            show={!canView && !isLoading}
+            message={
+              <h3 className="max-w-full text-xl font-bold text-center ">
+                You are not part of this project
+              </h3>
+            }
+          />
         </div>
-      </CaseRender>
+
+        <CaseRender condition={isSuccess && !project?.isRemoved && !!canView}>
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(50px,0.35fr)]">
+            <div className="px-2 md:px-4">
+              <div className="gap-2 mb-6 md:gap-8 btwn">
+                <div className="flex-1 gap-1 md:gap-4 start">
+                  {project?.imageUrl ? (
+                    <img
+                      alt="Project Avatar"
+                      className="self-start object-cover object-center w-10 rounded-full md:w-16 aspect-square"
+                      height={64}
+                      src={project?.imageUrl}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                  <div className="flex-1">
+                    <h1 className="text-xl font-bold md:text-2xl">
+                      {project?.name}
+                    </h1>
+                    <div className="mt-2 space-x-1 text-sm btwn">
+                      <p>{progressValue}%</p>
+                      <Progress className="flex-1 h-2" value={progressValue} />
+                    </div>
+                  </div>
+                </div>
+
+                <DropdownMenu open={open} onOpenChange={setOpen}>
+                  <DropdownMenuTrigger
+                    className="self-start p-2 cursor-pointer"
+                    aria-label="Project Actions Menu"
+                  >
+                    <DotsHorizontalIcon />
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent className="-translate-x-[10%]">
+                    <EditProjectModal
+                      project={project as Project}
+                      columns={columns}
+                      orderedColumns={orderedColumns}
+                      user={user}
+                      closeModal={setOpen}
+                    />
+                    <CreateProjectTaskModal
+                      team={orderedTeam}
+                      user={user}
+                      projectId={project?.id as string}
+                      closeModal={setOpen}
+                      newTaskOrder={tasks.length || 0}
+                    />
+                    <CreateProjectSprintModal
+                      user={user}
+                      project={project as Project}
+                    />
+                    <SetProjectActiveSprintModal
+                      closeModal={setOpen}
+                      activeSprintId={project?.activeSprintId as string}
+                      sprints={sprints}
+                      projectId={project?.id as string}
+                      disabled={user?.role !== ROLES.ADMIN}
+                    />
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <div className="grid gap-6">
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold">
+                    Project Details
+                  </h2>
+                  <div className="grid gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <CalendarIcon className="text-gray-500 " />
+                      <span className="text-gray-500 ">
+                        Started on{" "}
+                        {isValid(new Date(project?.startDate as string))
+                          ? format(
+                              new Date(project?.startDate as string),
+                              "LLLL dd, yyyy"
+                            )
+                          : ""}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ClockIcon className="text-gray-500 " />
+                      <span className="text-gray-500 ">
+                        Ends on{" "}
+                        {isValid(new Date(project?.endDate as string))
+                          ? format(
+                              new Date(project?.endDate as string),
+                              "LLLL dd, yyyy"
+                            )
+                          : ""}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <TeamIcon className="text-gray-500 " />
+                      <span className="text-gray-500 ">
+                        {team?.length} team member{team?.length > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold ">
+                    Project Description
+                  </h2>
+                  <div className="text-sm text-gray-500 whitespace-pre-line ">
+                    <p>{project?.description}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold">
+                    Project Columns
+                  </h2>
+
+                  <ol className="max-w-md space-y-1 text-gray-500 list-decimal list-inside">
+                    {orderedColumns.map((col) => (
+                      <li key={col.id}>{col.name}</li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold">
+                    Project Sprints
+                  </h2>
+
+                  {activeSprint?.id ? (
+                    <div className="my-4 space-y-2">
+                      <h2 className="text-base font-medium text-c5-300">
+                        Active Sprint
+                      </h2>
+                      <SprintCard
+                        isActive
+                        user={user as AppUserProfile}
+                        sprint={activeSprint}
+                        projects={[
+                          {
+                            id: project?.id as string,
+                            name: project?.name as string,
+                          },
+                        ]}
+                      />
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+
+                  <SprintsContainer
+                    sprints={sprints}
+                    defaultProject={{
+                      id: project?.id as string,
+                      name: project?.name as string,
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <h2 className="mb-2 text-lg font-semibold">Project Tasks</h2>
+
+                  <TasksContainer
+                    projectName={project?.name as string}
+                    tasks={tasks}
+                    users={orderedTeam}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="relative px-3 md:px-4 lg:px-0 ">
+              <div className="p-4 rounded-lg max-w-64 lg:max-w-unset lg:sticky lg:top-0 bg-c2-100/50">
+                <h2 className="mb-4 text-lg font-semibold">Project Team</h2>
+
+                <div className="max-h-screen">
+                  <ScrollArea className="h-full">
+                    <div className="my-3">
+                      <InviteUsersModal
+                        projectId={project?.id as string}
+                        projectName={project?.name as string}
+                        adminName={user?.name as string}
+                        invitedBy={user?.id as string}
+                        disabled={user?.role !== ROLES.ADMIN}
+                        renderInviteButton={() => (
+                          <Button>+ Invite users</Button>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-4">
+                      {orderedTeam.map((t) => (
+                        <div key={t.id} className="flex items-center gap-4">
+                          <Avatar>
+                            <AvatarImage
+                              className="object-cover object-center"
+                              alt={t.name}
+                              src={t.avatarUrl}
+                            />
+                            <AvatarFallback>
+                              {t.name[0].toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium capitalize">
+                              {t.name.toLowerCase()}
+                            </p>
+                            <p className="text-sm text-gray-500 capitalize ">
+                              {t.role?.toLowerCase()}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CaseRender>
+      </div>
     </div>
   );
 };

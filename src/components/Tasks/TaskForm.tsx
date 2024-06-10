@@ -197,7 +197,7 @@ const TaskForm = ({
   return (
     <Form {...form}>
       <form
-        className="p-4 mx-auto bg-white"
+        className="p-2.5 md:p-4 mx-auto bg-white"
         onSubmit={form.handleSubmit(handleSubmit, handleErrors)}
       >
         <h1 className="my-3 text-3xl font-bold text-center">

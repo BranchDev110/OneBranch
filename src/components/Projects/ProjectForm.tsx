@@ -189,10 +189,10 @@ const ProjectForm = ({
   return (
     <Form {...form}>
       <form
-        className="p-4 mx-auto bg-white"
+        className="p-2 mx-auto bg-white md:p-4"
         onSubmit={form.handleSubmit(handleSubmit, handleErrors)}
       >
-        <h1 className="my-3 text-3xl font-bold text-center">
+        <h1 className="my-3 text-2xl font-bold text-center md:text-3xl">
           {project?.id ? "Edit project" : "Create a new project"}
         </h1>
         <div className="space-y-6">
