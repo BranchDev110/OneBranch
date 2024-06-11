@@ -74,6 +74,7 @@
   }
   body {
     @apply min-h-screen overflow-x-hidden bg-c2/10 text-foreground text-c5-200;
+    scrollbar-gutter: stable;
   }
 
   button {
