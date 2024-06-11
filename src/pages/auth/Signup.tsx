@@ -55,11 +55,12 @@ const SignUp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectUrl = getRedirectUrl(location.search);
   const [signup, signupRes] = useSignUpMutation();
   const [createUser, createUserRes] = useCreateUserMutation();
 
   const onSubmit = async (values: Schema) => {
+    const redirectUrl = getRedirectUrl(location.search);
+
     try {
       // console.log(values);
       toast.dismiss();
@@ -79,6 +80,8 @@ const SignUp = () => {
       toast.dismiss();
       toast.success(`${values.name} has been registered.`);
       let url = `/signin`;
+
+      // console.log(redirectUrl);
 
       if (redirectUrl) {
         url = `/signin?callbackUrl=${encodeURIComponent(redirectUrl)}`;

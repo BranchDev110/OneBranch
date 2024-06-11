@@ -40,8 +40,10 @@ export interface EditProjectBody {
 
 export interface AddUserToProjectAndTaskArgs {
   userId: string;
+  email: string;
   projectId: string;
   taskId?: string;
+  verifyToken: string;
 }
 
 export interface SendInviteArgs {
@@ -51,4 +53,10 @@ export interface SendInviteArgs {
   projectName: string;
   originUrl: string;
   adminName: string;
+  invitedBy: string;
+}
+
+export interface SetActiveSprintForProjectArgs {
+  projectId: string;
+  sprintId: string;
 }

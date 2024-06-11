@@ -22,7 +22,7 @@ export const auth = getAuth(app);
 export const functions = getFunctions(app);
 
 if (window.location.hostname === "localhost") {
-  console.log(77);
+  // console.log(77);
   connectFunctionsEmulator(functions, "127.0.0.1", 5001);
 }
 

@@ -2,12 +2,19 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  verifyPasswordResetCode,
 } from "firebase/auth";
 
-import { auth } from "@/firebase/BaseConfig";
+import { auth, functions } from "@/firebase/BaseConfig";
 import { baseApi } from "./base";
 
-import { AuthBody, SignUpAuthRes } from "@/types/auth.types";
+import {
+  AuthBody,
+  ForgotPasswordBody,
+  ResetPasswordBody,
+  SignUpAuthRes,
+} from "@/types/auth.types";
+import { httpsCallable } from "firebase/functions";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -71,9 +78,55 @@ const authApi = baseApi.injectEndpoints({
         }
       },
     }),
+    sendForgotPassordEmail: build.mutation<any, ForgotPasswordBody>({
+      queryFn: async ({ email, originUrl }) => {
+        try {
+          const sendResetEmail = httpsCallable(
+            functions,
+            "initiatePasswordReset"
+          );
+          const res = await sendResetEmail({ email, originUrl });
+
+          return { data: res };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not initiate password reset",
+            },
+          };
+        }
+      },
+    }),
+    resetUserPassword: build.mutation<any, ResetPasswordBody>({
+      queryFn: async ({ password, oobCode }) => {
+        try {
+          const email = await verifyPasswordResetCode(auth, oobCode);
+
+          const completePasswordReset = httpsCallable(
+            functions,
+            "completePasswordReset"
+          );
+
+          await completePasswordReset({ email, password });
+
+          return { data: true };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not reset password",
+            },
+          };
+        }
+      },
+    }),
   }),
   overrideExisting: import.meta.env.DEV,
 });
-export const { useSignUpMutation, useLoginMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useSignUpMutation,
+  useLoginMutation,
+  useLogoutMutation,
+  useSendForgotPassordEmailMutation,
+  useResetUserPasswordMutation,
+} = authApi;
 export { authApi };

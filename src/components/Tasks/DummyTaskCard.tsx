@@ -92,7 +92,11 @@ const DummyTaskCard = ({ description, name, dueDate, status }: Props) => {
           <div className="-space-x-3 btwn">
             {avatars.map((a) => (
               <Avatar className="border-2 border-white" key={a.id}>
-                <AvatarImage src={a.src} alt={a.name} />
+                <AvatarImage
+                  className="object-cover object-center"
+                  src={a.src}
+                  alt={a.name}
+                />
                 <AvatarFallback>{a.name[0]}</AvatarFallback>
               </Avatar>
             ))}

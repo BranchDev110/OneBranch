@@ -1,3 +1,5 @@
+//
+
 import * as nodemailer from "nodemailer";
 
 export interface SendEmailArgs {
@@ -7,6 +9,7 @@ export interface SendEmailArgs {
   projectName: string;
   originUrl: string;
   adminName: string;
+  inviteId: string;
 }
 
 const transporter = nodemailer.createTransport({
@@ -19,7 +22,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const buildUrl = (originUrl: string, projectId: string, taskId?: string) => {
+const buildUrl = (
+  originUrl: string,
+  projectId: string,
+  inviteId: string,
+  taskId?: string
+) => {
   let url = `${originUrl}`;
 
   if (originUrl.includes("?")) {
@@ -31,6 +39,8 @@ const buildUrl = (originUrl: string, projectId: string, taskId?: string) => {
   if (taskId) {
     url = `${url}&taskId=${taskId}`;
   }
+
+  url = `${url}&verifyToken=${inviteId}`;
   return url;
 };
 
@@ -41,24 +51,25 @@ export const sendInvitationEmail = async ({
   projectId,
   taskId,
   projectName,
+  inviteId,
 }: SendEmailArgs) => {
   try {
-    const url = buildUrl(originUrl, projectId, taskId);
+    const url = buildUrl(originUrl, projectId, inviteId, taskId);
 
-    console.log({
-      adminName,
-      emails,
-      originUrl,
-      projectId,
-      taskId,
-      projectName,
-    });
+    // console.log({
+    //   adminName,
+    //   emails,
+    //   originUrl,
+    //   projectId,
+    //   taskId,
+    //   projectName,
+    // });
 
-    const config = {
-      from: `"${adminName}" <${process.env.email}>`,
+    let config = {
+      from: `"${adminName}" <${process.env.EMAIL}>`,
       to: emails.join(", "),
-      subject: "Project Invitation", // Subject line
-      text: `${adminName} has invited you to join the project "${projectName}"\n Click this link ${url} and get started.`, // plain text body
+      subject: "Project Invitation",
+      text: `${adminName} has invited you to join the project "${projectName}"\n Click this link ${url} and get started.`,
       html: `<table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td align="center">
@@ -86,8 +97,8 @@ export const sendInvitationEmail = async ({
     await transporter.sendMail(config);
 
     return true;
-  } catch (e) {
-    let error = new Error("Unable to send invitation");
+  } catch (e: any) {
+    let error = new Error(e?.message || "Unable to send invitation");
     (error as any).details = e;
 
     throw error;

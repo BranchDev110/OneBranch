@@ -5,7 +5,7 @@ import useLoggedInUser from "@/hooks/useLoggedInUser";
 const ProtectedRoute = ({ children }: PropsWithChildren) => {
   const { isLoading, user } = useLoggedInUser();
   const location = useLocation();
-  const url = encodeURIComponent(`${location.pathname}?${location.search}`);
+  const url = encodeURIComponent(`${location.pathname}${location.search}`);
 
   if (isLoading) {
     return <></>;

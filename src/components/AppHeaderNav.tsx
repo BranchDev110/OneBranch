@@ -14,13 +14,20 @@ const AppHeaderNav = ({ className = "", children, ...rest }: Props) => {
 
   return (
     <div
-      className={cn("btwn px-4 py-4 space-x-1 bg-white border", className)}
+      className={cn(
+        "btwn px-4 py-4 flex-wrap space-x-1 bg-white border",
+        className
+      )}
       {...rest}
     >
       <div className="children">{children}</div>
       <div className="space-x-2 end">
         <Avatar>
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
+          <AvatarImage
+            className="object-cover object-center"
+            src={user.avatarUrl}
+            alt={user.name}
+          />
           <AvatarFallback>{user.name[0]}</AvatarFallback>
         </Avatar>
         <div>

@@ -4,4 +4,5 @@ export const enum COLLECTIONS {
   TASKS = "tasks",
   USERS = "users",
   COLUMNS = "columns",
+  INVITATIONS = "invitations",
 }

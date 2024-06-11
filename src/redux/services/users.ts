@@ -7,26 +7,36 @@ import {
   where,
   onSnapshot,
   documentId,
+  updateDoc,
 } from "firebase/firestore";
 
 import { baseApi } from "./base";
 
-import { CreateNewUserBody, AppUserProfile } from "@/types/user.types";
+import {
+  CreateNewUserBody,
+  AppUserProfile,
+  UpdateUserProfileBody,
+} from "@/types/user.types";
 
-import { db } from "@/firebase/BaseConfig";
+import { db, functions } from "@/firebase/BaseConfig";
 import { ROLES } from "@/constants/roles";
+import { COLLECTIONS } from "@/constants/collections";
+
+import omit from "lodash/omit";
+import { httpsCallable } from "firebase/functions";
 
 const usersApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     createUser: build.mutation<any, CreateNewUserBody>({
       queryFn: async ({ id, name, email }) => {
         try {
-          await setDoc(doc(db, "users", id), {
+          await setDoc(doc(db, COLLECTIONS.USERS, id), {
             name,
             role: ROLES.USER,
             avatarUrl: "",
+            email,
           });
-          return { data: { name, email } };
+          return { data: { name, email, role: ROLES.USER, id, avatarUrl: "" } };
         } catch (e: any) {
           return {
             error: {
@@ -39,7 +49,7 @@ const usersApi = baseApi.injectEndpoints({
     getUserById: build.query<AppUserProfile, string>({
       queryFn: async (userId) => {
         try {
-          const docSnap = await getDoc(doc(db, "users", userId));
+          const docSnap = await getDoc(doc(db, COLLECTIONS.USERS, userId));
           if (docSnap.exists()) {
             const result = { id: userId, ...docSnap.data() } as AppUserProfile;
             return { data: result };
@@ -64,7 +74,7 @@ const usersApi = baseApi.injectEndpoints({
         try {
           await cacheDataLoaded;
           const q = query(
-            collection(db, "users"),
+            collection(db, COLLECTIONS.USERS),
             where(documentId(), "in", members)
           );
 
@@ -85,6 +95,56 @@ const usersApi = baseApi.injectEndpoints({
         unsubscribe && unsubscribe();
       },
     }),
+    //update profile
+    editProfile: build.mutation<AppUserProfile, UpdateUserProfileBody>({
+      queryFn: async ({ id, email, oldEmail, avatarUrl, name }) => {
+        try {
+          console.log({ id, email, oldEmail, avatarUrl, name });
+
+          if (oldEmail !== email) {
+            const updateUserEmail = httpsCallable(functions, "updateUserEmail");
+
+            await updateUserEmail({ email, oldEmail });
+          }
+
+          const userRef = doc(db, COLLECTIONS.USERS, id);
+
+          await updateDoc(userRef, {
+            name,
+            avatarUrl: avatarUrl || "",
+            email,
+          });
+
+          const userDoc = await getDoc(userRef);
+
+          if (!userDoc.exists()) {
+            throw new Error("User does not exist!");
+          }
+
+          return {
+            data: omit(userDoc.data(), "createdAt") as AppUserProfile,
+          };
+        } catch (e: any) {
+          return {
+            error: {
+              message: e?.message || "Could not update user",
+            },
+          };
+        }
+      },
+      async onQueryStarted({ id }, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            usersApi.util.updateQueryData("getUserById", id, (draft) => {
+              Object.assign(draft, data);
+            })
+          );
+        } catch (e) {
+          console.error(e);
+        }
+      },
+    }),
   }),
   overrideExisting: import.meta.env.DEV,
 });
@@ -93,5 +153,6 @@ export const {
   useGetUserByIdQuery,
   useLazyGetUserByIdQuery,
   useGetUsersInProjectQuery,
+  useEditProfileMutation,
 } = usersApi;
 export { usersApi };
