@@ -145,8 +145,8 @@ const SprintDetails = () => {
 
   return (
     <div className="">
-      <AppHeaderNav className="[&_.children]:basis-1/2">
-        <div className="space-x-[10%] btwn">
+      <AppHeaderNav className="[&_.children]:md:basis-1/2 gap-2">
+        <div className="gap-[10%] flex-wrap btwn ">
           <NavLink className={"font-medium text-c5-300"} to={"/sprints"}>
             All Sprints
           </NavLink>
@@ -203,8 +203,8 @@ const SprintDetails = () => {
           isSuccess && !sprint?.isRemoved && !project?.isRemoved && !!canView
         }
       >
-        <div className="p-4 bg-white border-b py-7 btwn">
-          <div className="basis-1/2 grid items-center gap-2 grid-cols-[40px_minmax(0,1fr)]">
+        <div className="flex-wrap p-4 bg-white border-b py-7 btwn">
+          <div className="md:basis-1/2 basis-full grid items-center gap-2 grid-cols-[40px_minmax(0,1fr)]">
             <div className="overflow-hidden rounded-full aspect-square bg-c5-200 center">
               <Avatar>
                 <AvatarImage src={""} alt={sprint?.name} />
@@ -225,7 +225,7 @@ const SprintDetails = () => {
             </div>
           </div>
 
-          <div className="start">
+          <div className="flex-wrap gap-2 btwn md:start">
             <AvatarStack
               avatars={team.map((a) => ({
                 name: a?.name || "",
@@ -244,7 +244,7 @@ const SprintDetails = () => {
           </div>
         </div>
 
-        <div className="p-8 py-3 ">
+        <div className="p-2 py-3 lg:p-8 ">
           <SprintToolBar
             status={status}
             setStatus={setStatus}

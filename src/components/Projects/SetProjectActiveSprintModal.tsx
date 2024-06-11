@@ -104,14 +104,14 @@ const SetProjectActiveSprintModal = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl pt-12 px-8 h-[70vh]">
+      <DialogContent className="max-w-2xl w-11/12 rounded-md pt-12 px-2 md:px-8 h-[70vh]">
         <ScrollArea className="h-full">
           <h1 className="my-3 text-3xl font-bold text-center">
             Update active sprint
           </h1>
 
           <div className="space-y-6">
-            <div className="px-2 end">
+            <div className="px-2 md:end">
               <div className="relative my-3 basis-2/3">
                 <i className="absolute -translate-y-1/2 left-2 top-1/2">
                   <MagnifyingGlassIcon />
@@ -126,7 +126,7 @@ const SetProjectActiveSprintModal = ({
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="px-2 space-y-1 md:px-0">
               <RadioGroup value={sprintId} onValueChange={setSprintId}>
                 {data.map((s) => (
                   <div key={s.id} className="flex items-center space-x-2">
@@ -137,7 +137,7 @@ const SetProjectActiveSprintModal = ({
               </RadioGroup>
             </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 px-2 md:px-0">
               <Button
                 onClick={handleSubmit}
                 disabled={res.isLoading}

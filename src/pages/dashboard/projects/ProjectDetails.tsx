@@ -248,6 +248,7 @@ const ProjectDetails = () => {
                     <CreateProjectSprintModal
                       user={user}
                       project={project as Project}
+                      closeModal={setOpen}
                     />
                     <SetProjectActiveSprintModal
                       closeModal={setOpen}

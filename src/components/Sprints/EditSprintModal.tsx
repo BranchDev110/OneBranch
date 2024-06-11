@@ -66,7 +66,7 @@ const EditSprintModal = ({
           <span>Edit Sprint</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl w-11/12 pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-2xl w-11/12 pt-10 md:px-8 px-2 rounded-md h-[80vh]">
         <ScrollArea className="h-full">
           <SprintForm
             userId={sprint.createdBy}

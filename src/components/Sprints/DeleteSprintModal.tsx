@@ -69,23 +69,23 @@ const DeleteSprintModal = ({ sprint, closeModal, user }: Props) => {
           <span>Delete Sprint</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-xl pt-10 px-8 h-[50vh]">
+      <DialogContent className="max-w-xl rounded-md w-11/12 pt-10 px-2 md:px-8 h-[50vh]">
         <ScrollArea className="h-full">
           <form onSubmit={onSubmit} className="p-4 mx-auto bg-white">
             <h1 className="my-3 text-3xl font-bold text-center">
-              Delete Project?
+              Delete Sprint?
             </h1>
 
             <h3 className="my-2 text-lg">
               Sprint Title : <strong>{sprint.name}</strong>
             </h3>
 
-            <div className="space-y-2">
-              <Label htmlFor={id}>Sprint Title</Label>
+            <div className="mt-4 space-y-2">
+              <Label htmlFor={id}>Type Title</Label>
               <Input
                 id={id}
                 autoFocus
-                placeholder="Sprint Title"
+                placeholder="Sprint title"
                 value={name}
                 onChange={handleChange}
               />

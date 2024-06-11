@@ -1,3 +1,4 @@
+import { useState } from "react";
 import SprintForm from "@/components/Sprints/SprintForm";
 import { Dialog, DialogContent, DialogTrigger } from "@/ui/dialog";
 import { Button } from "@/ui/button";
@@ -12,10 +13,12 @@ import { useNavigate } from "react-router-dom";
 interface Props {
   user?: AppUserProfile;
   project: Project;
+  closeModal?: (val: boolean) => void;
 }
 
-const CreateProjectSprintModal = ({ user, project }: Props) => {
+const CreateProjectSprintModal = ({ user, project, closeModal }: Props) => {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const [createSprint, createRes] = useCreateSprintMutation();
 
@@ -38,8 +41,16 @@ const CreateProjectSprintModal = ({ user, project }: Props) => {
     }
   };
 
+  const handleOpenChange = (val: boolean) => {
+    setOpen(val);
+
+    if (!val) {
+      closeModal && closeModal(false);
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
           variant={"ghost"}
