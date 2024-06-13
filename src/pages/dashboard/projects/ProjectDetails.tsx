@@ -381,7 +381,12 @@ const ProjectDetails = () => {
                         invitedBy={user?.id as string}
                         disabled={user?.role !== ROLES.ADMIN}
                         renderInviteButton={() => (
-                          <Button>+ Invite users</Button>
+                          <Button
+                            className="disabled:cursor-not-allowed"
+                            disabled={user?.role !== ROLES.ADMIN}
+                          >
+                            + Invite users
+                          </Button>
                         )}
                       />
                     </div>

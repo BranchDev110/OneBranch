@@ -16,6 +16,7 @@ import {
   useReactTable,
   getFilteredRowModel,
   ColumnFiltersState,
+  getPaginationRowModel,
   Row,
   createColumnHelper,
 } from "@tanstack/react-table";
@@ -34,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { ROLES } from "@/constants/roles";
 
 import { round } from "@/lib/round";
+import { DataTablePagination } from "@/ui/data-table-pagination";
 
 const columnHelper = createColumnHelper<Project>();
 
@@ -159,6 +161,7 @@ const AllProjects = () => {
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -260,6 +263,10 @@ const AllProjects = () => {
                 )}
               </TableBody>
             </Table>
+
+            <div className="mt-5 end">
+              <DataTablePagination table={table} />
+            </div>
           </div>
         </div>
       </div>

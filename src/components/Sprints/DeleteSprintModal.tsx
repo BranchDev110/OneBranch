@@ -56,12 +56,21 @@ const DeleteSprintModal = ({ sprint, closeModal, user }: Props) => {
     }
   };
 
+  const disableDelete = () => {
+    if (user?.role === ROLES.ADMIN) {
+      return false;
+    }
+
+    if (sprint.createdBy === user?.id) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger
-        disabled={user?.role !== ROLES.ADMIN || sprint.createdBy !== user?.id}
-        asChild
-      >
+      <DialogTrigger disabled={disableDelete()} asChild>
         <Button
           variant={"ghost"}
           className="block w-full pl-2 font-normal text-start h-unset"

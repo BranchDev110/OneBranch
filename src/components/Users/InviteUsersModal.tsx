@@ -31,7 +31,7 @@ const InviteUsersModal = ({
         ) : (
           <Button
             disabled={disabled}
-            className="text-c5-400"
+            className="text-c5-400 disabled:cursor-not-allowed"
             variant="ghost"
             size={"icon"}
           >

@@ -55,11 +55,23 @@ const EditSprintModal = ({
     }
   };
 
+  const disableEdit = () => {
+    if (user?.role === ROLES.ADMIN) {
+      return false;
+    }
+
+    if (sprint.createdBy === user?.id) {
+      return false;
+    }
+
+    return true;
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button
-          disabled={user?.role !== ROLES.ADMIN || sprint.createdBy !== user?.id}
+          disabled={disableEdit()}
           variant={"ghost"}
           className="block w-full pl-2 font-normal text-start h-unset"
         >

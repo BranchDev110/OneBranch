@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSendForgotPassordEmailMutation } from "@/services/auth";
+import { NavLink, useSearchParams } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -34,6 +35,10 @@ const ForgotPassword = () => {
     resolver: zodResolver(formSchema),
     defaultValues,
   });
+
+  const [searchParams] = useSearchParams();
+
+  const url = searchParams.get("allowBack") === "true" ? "/settings" : "/";
 
   const [send, sendRes] = useSendForgotPassordEmailMutation();
 
@@ -97,15 +102,21 @@ const ForgotPassword = () => {
               )}
             />
 
-            <Button
-              disabled={sendRes.isLoading}
-              className={cn("w-full mt-6", {
-                ["animate-pulse cursor-not-allowed"]: sendRes.isLoading,
-              })}
-              type="submit"
-            >
-              Submit
-            </Button>
+            <div className="mt-6 space-y-3">
+              <Button
+                disabled={sendRes.isLoading}
+                className={cn("w-full", {
+                  ["animate-pulse cursor-not-allowed"]: sendRes.isLoading,
+                })}
+                type="submit"
+              >
+                Submit
+              </Button>
+
+              <Button asChild variant={"outline"} className="w-full">
+                <NavLink to={url}>Cancel</NavLink>
+              </Button>
+            </div>
           </div>
         </form>
       </Form>
