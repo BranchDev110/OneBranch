@@ -47,6 +47,7 @@ module.exports = {
           300: "#636E72",
           400: "#BDBDBD",
           500: "#797979",
+          600: "#EEEEEE",
         },
 
         border: "hsl(var(--border))",
