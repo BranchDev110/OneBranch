@@ -56,7 +56,7 @@ const CreateNewSprint = ({ user }: Props) => {
         <Button className="font-normal text-start h-unset">+ New Sprint</Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl w-11/12 pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-2xl w-11/12 pt-10 px-2.5 md:px-8 h-[80vh]">
         <ScrollArea className="h-full">
           <LoadingComponent show={isLoading} />
           <ErrorComponent

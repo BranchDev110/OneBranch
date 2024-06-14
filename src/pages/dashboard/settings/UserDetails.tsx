@@ -92,7 +92,7 @@ const UserDetails = () => {
 
       const body: UpdateUserProfileBody = {
         ...values,
-        avatarUrl: "",
+        avatarUrl: user?.avatarUrl || "",
         oldEmail: user?.email as string,
         id: user?.id as string,
       };
@@ -148,7 +148,7 @@ const UserDetails = () => {
         <h6 className="font-medium text-c5-300 ">Profile</h6>
       </AppHeaderNav>
 
-      <div className="p-4 [&_form]:max-w-3xl">
+      <div className="p-2.5 md:p-4 [&_form]:max-w-3xl">
         <LoadingComponent show={isLoading} />
         <ErrorComponent
           show={isError}
@@ -237,7 +237,10 @@ const UserDetails = () => {
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="flex items-center justify-between">
-                    <NavLink to="/forgot" className="text-sm underline">
+                    <NavLink
+                      to="/forgot?allowBack=true"
+                      className="text-sm underline"
+                    >
                       Reset password
                     </NavLink>
                   </div>

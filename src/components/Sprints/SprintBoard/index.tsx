@@ -111,15 +111,20 @@ const Board = ({
 
   const onMoveTask = useCallback(
     async (args: MoveTaskArgs) => {
+      toast.dismiss();
+
+      const id = toast.loading("Moving task...");
+
       try {
-        toast.dismiss();
-        toast.loading("Moving task...");
         await moveTask(args).unwrap();
 
         toast.dismiss();
+        toast.dismiss(id);
+
         toast.success("Moved task");
       } catch (error: any) {
         toast.dismiss();
+        toast.dismiss(id);
 
         const msg = error?.message || "Unable to move task";
         toast.error(msg);

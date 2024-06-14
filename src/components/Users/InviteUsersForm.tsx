@@ -97,7 +97,7 @@ const InviteUsersForm = ({
   return (
     <Form {...form}>
       <form
-        className="p-4 mx-auto bg-white"
+        className="p-2.5 mx-auto bg-white md:p-4"
         onSubmit={form.handleSubmit(handleSubmit, handleErrors)}
       >
         <h1 className="my-3 text-3xl font-bold text-center">Invite Users</h1>
