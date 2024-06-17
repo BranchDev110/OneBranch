@@ -4,9 +4,9 @@ import "./index.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-
-import { Routes, Route, BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
+
+import { Routes, Route, BrowserRouter } from "react-rgit aouter-dom";
 import { Toaster } from "@/components/ui/sonner";
 import { store } from "./redux/store";
 
