@@ -80,17 +80,17 @@ const TaskCard = ({
   const memberOptions = team.filter((t) => t.id !== task.createdBy);
 
   return (
-    <article className="bg-white border rounded-xl grid grid-rows-[50px_minmax(0,1fr)_24px_42px] gap-1 p-4">
-      <header className="items-start font-semibold btwn space-x-1.5">
+    <article className="bg-white border rounded-lg md:rounded-xl grid grid-rows-[_minmax(50px,auto)_minmax(0,1fr)_24px__minmax(45px,auto)] gap-1 p-2.5 md:p-4">
+      <header className="items-start font-semibold btwn gap-1.5 flex-wrap">
         <ImportantIcon
-          className={cn("w-6 h-6", {
+          className={cn("aspect-square w-3 md:w-6", {
             [TASK_MARKER_CLASSES.Done]: TASK_STATUS.DONE === task.status,
             [TASK_MARKER_CLASSES.Ongoing]: TASK_STATUS.ONGOING === task.status,
             [TASK_MARKER_CLASSES["To Do"]]: TASK_STATUS.TODO === task.status,
           })}
         />
 
-        <h5 className="flex-1">{task.name}</h5>
+        <h5 className="flex-1 text-base">{task.name}</h5>
 
         <Select
           disabled={disableTaskStatus()}
@@ -98,12 +98,16 @@ const TaskCard = ({
           value={task.status}
         >
           <SelectTrigger
-            className={cn("rounded-full w-unset", {
-              [TASK_STATUS_ClASSES.Done]: TASK_STATUS.DONE === task.status,
-              [TASK_STATUS_ClASSES.Ongoing]:
-                TASK_STATUS.ONGOING === task.status,
-              [TASK_STATUS_ClASSES["To Do"]]: TASK_STATUS.TODO === task.status,
-            })}
+            className={cn(
+              "rounded-full w-unset p-2 text-xs md:text-sm h-auto md:px-3 md:h-9 ",
+              {
+                [TASK_STATUS_ClASSES.Done]: TASK_STATUS.DONE === task.status,
+                [TASK_STATUS_ClASSES.Ongoing]:
+                  TASK_STATUS.ONGOING === task.status,
+                [TASK_STATUS_ClASSES["To Do"]]:
+                  TASK_STATUS.TODO === task.status,
+              }
+            )}
           >
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
@@ -148,7 +152,7 @@ const TaskCard = ({
         <span>: {format(new Date(task.dueDate), "eo LLLL yyyy")}</span>
       </p>
 
-      <footer className="btwn">
+      <footer className="flex-wrap gap-1 btwn">
         <div className="start">
           <AvatarStack
             avatars={task.assignees.map((a) => ({

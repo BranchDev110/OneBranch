@@ -105,7 +105,7 @@ const EditTaskModal = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl w-11/12 pt-10 px-8 h-[80vh]">
+      <DialogContent className="w-10/12 md:w-3/4 max-w-xl pt-10 px-2 md:px-8 h-[80vh] rounded-md">
         <ScrollArea className="h-full">
           <TaskForm
             userId={user?.id as string}

@@ -37,7 +37,7 @@ const CreateTaskInSprintModal = ({
         ) : (
           <Button
             variant={"secondary"}
-            className="font-medium text-c5-200 border-primary !bg-c2/40"
+            className="font-medium text-c5-200 border-primary self-start md:self-center !bg-c2/40"
           >
             + Create Task
           </Button>

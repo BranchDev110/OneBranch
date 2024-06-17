@@ -37,10 +37,10 @@ const CreateProject = () => {
       <AppHeaderNav>
         <NavLink className={"font-medium text-c5-300"} to={"/projects"}>
           Back
-        </NavLink>{" "}
+        </NavLink>
       </AppHeaderNav>
 
-      <div className="p-4 [&_form]:max-w-3xl">
+      <div className="p-2 md:p-4 [&_form]:max-w-3xl">
         <ProjectForm
           onSubmit={handleCreate}
           submitRes={res}

@@ -98,7 +98,7 @@ const EditProjectModal = ({
           <span>Edit Project</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-4xl w-11/12 pt-10 px-2 md:px-8 rounded-md h-[80vh]">
         <ScrollArea className="h-full">
           <ProjectForm
             submitRes={editRes}

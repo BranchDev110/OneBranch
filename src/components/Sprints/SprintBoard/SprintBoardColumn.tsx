@@ -56,7 +56,7 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
     onDone?: Function
   ) => {
     toast.dismiss();
-    toast.loading("Creating task...");
+    const id = toast.loading("Creating task...");
 
     try {
       await createTask({
@@ -65,16 +65,19 @@ const SprintBoardColumn = ({ tasks = [], column }: Props) => {
         projectId: ctx.state.projectId,
         sprintId: ctx.state.sprintId,
         status: TASK_STATUS.TODO,
-        order: orderedTasks[tasks.length - 1].order + 1,
+        order: (orderedTasks[tasks.length - 1]?.order || 1) + 1,
         createdBy: user?.id as string,
       });
 
       toast.dismiss();
+      toast.dismiss(id);
+
       toast.success("Created task");
 
       onDone && onDone();
     } catch (error: any) {
       toast.dismiss();
+      toast.dismiss(id);
 
       const msg = error?.message || "Unable to create task for project";
       toast.error(msg);

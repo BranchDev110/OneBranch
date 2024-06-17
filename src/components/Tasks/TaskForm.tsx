@@ -197,7 +197,7 @@ const TaskForm = ({
   return (
     <Form {...form}>
       <form
-        className="p-4 mx-auto bg-white"
+        className="p-2.5 md:p-4 mx-auto bg-white"
         onSubmit={form.handleSubmit(handleSubmit, handleErrors)}
       >
         <h1 className="my-3 text-3xl font-bold text-center">
@@ -345,7 +345,7 @@ const TaskForm = ({
             </div>
             <div className="space-y-2">
               <Label>File List</Label>
-              <ul className="space-y-1.5 list-disc">
+              <ul className="space-y-1.5 list-disc list-inside">
                 {files.map((a, i) => (
                   <li key={i} className="mx-1 text-xs font-medium">
                     {a.name}
