@@ -31,7 +31,7 @@ const InviteUsersModal = ({
         ) : (
           <Button
             disabled={disabled}
-            className="text-c5-400"
+            className="text-c5-400 disabled:cursor-not-allowed"
             variant="ghost"
             size={"icon"}
           >
@@ -39,7 +39,7 @@ const InviteUsersModal = ({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="w-3/4 max-w-xl  pt-10 px-8 h-[70vh]">
+      <DialogContent className="w-10/12 md:w-3/4 max-w-xl pt-10 px-2 md:px-8 h-[70vh] rounded-md">
         <ScrollArea className="h-full">
           <InviteUsersForm
             invitedBy={invitedBy}

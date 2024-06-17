@@ -85,7 +85,7 @@ const CreateProjectTaskModal = ({
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl w-11/12 pt-10 px-8 h-[80vh]">
+      <DialogContent className="max-w-3xl w-11/12 pt-10  px-2 md:px-8 rounded-md h-[80vh]">
         <ScrollArea className="h-full">
           <TaskForm
             userId={user?.id as string}

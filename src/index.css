@@ -63,6 +63,8 @@
     --border: 0 0% 20%;
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
+
+    --radius: 0.5rem;
   }
 }
 
@@ -72,6 +74,7 @@
   }
   body {
     @apply min-h-screen overflow-x-hidden bg-c2/10 text-foreground text-c5-200;
+    scrollbar-gutter: stable;
   }
 
   button {

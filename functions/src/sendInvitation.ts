@@ -67,7 +67,7 @@ export const sendInvitationEmail = async ({
 
     let config = {
       from: `"${adminName}" <${process.env.EMAIL}>`,
-      to: emails.join(", "),
+      bcc: emails.join(", "),
       subject: "Project Invitation",
       text: `${adminName} has invited you to join the project "${projectName}"\n Click this link ${url} and get started.`,
       html: `<table width="100%" border="0" cellspacing="0" cellpadding="0">

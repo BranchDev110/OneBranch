@@ -15,7 +15,7 @@ const AppHeaderNav = ({ className = "", children, ...rest }: Props) => {
   return (
     <div
       className={cn(
-        "btwn px-4 py-4 flex-wrap space-x-1 bg-white border",
+        "btwn px-2 md:px-4 py-4 flex-wrap gap-1 bg-white border",
         className
       )}
       {...rest}

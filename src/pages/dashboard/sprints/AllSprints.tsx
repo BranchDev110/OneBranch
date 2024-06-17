@@ -44,7 +44,7 @@ const AllSprints = () => {
         <h3 className={"font-medium text-c5-300"}>All Sprints</h3>
       </AppHeaderNav>
 
-      <div className="p-4">
+      <div className="px-2.5 md:p-4">
         <LoadingComponent show={isLoading} />
         <ErrorComponent
           show={isError}
@@ -58,7 +58,7 @@ const AllSprints = () => {
         />
 
         <CaseRender condition={isSuccess}>
-          <div className="w-full my-3 btwn">
+          <div className="flex-wrap w-full gap-2.5 my-3 flex-col md:flex-row btwn">
             <h1 className="text-xl font-bold">
               Total sprints: {sprints.length}
             </h1>

@@ -82,7 +82,7 @@ const SprintCard = ({
           </div>
         </div>
         <DropdownMenu open={openMenu} onOpenChange={setOpenMenu}>
-          <DropdownMenuTrigger aria-label="Toggle menu">
+          <DropdownMenuTrigger className="self-start" aria-label="Toggle menu">
             <DotsHorizontalIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

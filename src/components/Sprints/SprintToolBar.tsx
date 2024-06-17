@@ -85,7 +85,7 @@ const SprintToolBar = ({
 
   return (
     <>
-      <div className="space-x-3 start">
+      <div className="flex-wrap gap-3 start">
         <CreateTaskInSprintModal
           onCreateTask={onCreateTask}
           userId={user?.id as string}
@@ -93,8 +93,8 @@ const SprintToolBar = ({
           submitRes={createRes}
           projectId={projectId}
         />
-        <div className="flex-1 p-4 bg-white rounded-xl min-h-12 btwn spaxe-x-2">
-          <div className="space-x-2 text-sm font-semibold start ">
+        <div className="flex-wrap flex-1 gap-2 p-4 bg-white rounded-xl min-h-12 btwn">
+          <div className="flex-wrap gap-2 text-sm font-semibold start ">
             <button
               onClick={onFilter("")}
               type="button"
