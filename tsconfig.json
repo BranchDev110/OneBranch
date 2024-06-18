@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "esModuleInterop": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -22,6 +23,7 @@
 
     "baseUrl": ".",
     "paths": {
+      "@/mocks/*": ["./__mocks__/*"],
       "@/pages/*": ["./src/pages/*"],
       "@/types/*": ["./src/types/*"],
       "@/icons/*": ["./src/components/icons/*"],
@@ -32,6 +34,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "jest.setup.ts", "__mocks__"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
