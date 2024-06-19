@@ -23,9 +23,8 @@ describe("Login Component", () => {
     jest.resetAllMocks();
   });
 
-  it("renders the login form and submits correctly", async () => {
+  test("renders the login form and submits correctly", async () => {
     const user = userEvent.setup();
-
     const mockLogin = jest.fn(() => ({
       unwrap: jest.fn().mockResolvedValue({}),
     }));
