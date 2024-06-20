@@ -6,7 +6,7 @@ import { screen, render } from "@testing-library/react";
 
 import { useUpdateSprintMutation } from "@/services/sprints";
 
-jest.mock("@/services/auth", () => ({
+jest.mock("@/services/sprints", () => ({
   useUpdateSprintMutation: jest.fn(),
 }));
 
@@ -14,6 +14,8 @@ const mockSprint = {
   id: "sprint-id",
   name: "Sprint One",
   createdBy: "user-id",
+  description: "sprint desc",
+  projectId: "id",
 };
 
 const mockUser = {
