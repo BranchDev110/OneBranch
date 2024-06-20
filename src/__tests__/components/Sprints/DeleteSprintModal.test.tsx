@@ -6,11 +6,6 @@ import { screen, render } from "@testing-library/react";
 
 import { useDeleteSprintMutation } from "@/services/sprints";
 
-export class ResizeObserver {
-  observe() {}
-  unobserve() {}
-}
-
 jest.mock("@/services/sprints", () => ({
   useDeleteSprintMutation: jest.fn(),
 }));

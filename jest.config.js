@@ -23,6 +23,4 @@ export default {
   },
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   transformIgnorePatterns: ["node_modules/(?!(serialize-error)/)"],
-
-  collectCoverageFrom: ["!<rootDir>/src/components/ui/"],
 };
