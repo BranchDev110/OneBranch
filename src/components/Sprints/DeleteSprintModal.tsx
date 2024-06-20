@@ -97,6 +97,7 @@ const DeleteSprintModal = ({ sprint, closeModal, user }: Props) => {
                 placeholder="Sprint title"
                 value={name}
                 onChange={handleChange}
+                data-testid="Type Title"
               />
             </div>
 
