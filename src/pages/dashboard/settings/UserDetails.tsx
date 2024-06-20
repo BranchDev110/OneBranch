@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import AppHeaderNav from "@/components/AppHeaderNav";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { NavLink } from "react-router-dom";
 import { uploadBytes, getDownloadURL, ref } from "firebase/storage";
 import { useDropzone } from "react-dropzone";

@@ -1,6 +1,6 @@
 import AppHeaderNav from "@/components/AppHeaderNav";
 import ProjectForm from "@/components/Projects/ProjectForm";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useCreateProjectMutation } from "@/services/projects";
 import { CreateProjectBody } from "@/types/project.types";
 import { NavLink, useNavigate } from "react-router-dom";

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import { useGetUsersProjectsQuery } from "@/services/projects";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 const ProjectSideBar = () => {

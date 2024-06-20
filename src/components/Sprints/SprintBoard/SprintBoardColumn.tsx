@@ -14,7 +14,7 @@ import { useSprintBoard } from "./useSprintBoard";
 import TaskCard from "@/components/Tasks/TaskCard";
 import SprintBoardItem from "./SprintBoardItem";
 import orderBy from "lodash/orderBy";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { AppUserProfile } from "@/types/user.types";
 import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 import { cn } from "@/lib/utils";

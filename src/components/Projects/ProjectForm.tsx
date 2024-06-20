@@ -145,6 +145,7 @@ const ProjectForm = ({
         toast.loading("Uploading image...");
 
         const snapshot = await uploadBytes(storageRef, acceptedFiles[0]);
+
         const url = await getDownloadURL(snapshot.ref);
 
         toast.dismiss();
@@ -231,7 +232,7 @@ const ProjectForm = ({
           />
 
           <div className="space-y-2">
-            <Label>Project Image</Label>
+            <Label htmlFor="upload-image">Project Image</Label>
             <div
               className={cn(
                 "text-center border-dashed rounded-lg p-2 border text-c5-300 h-24",
@@ -242,7 +243,11 @@ const ProjectForm = ({
               )}
             >
               <div className="h-full center" {...getRootProps()}>
-                <input {...getInputProps()} />
+                <input
+                  data-testid="upload-image"
+                  id="upload-image"
+                  {...getInputProps()}
+                />
                 <p>Upload an image file. {"(<=1MB)"}</p>
               </div>
             </div>
@@ -324,6 +329,7 @@ const ProjectForm = ({
                 <Input
                   {...form.register(`columns.${index}.name` as const)}
                   className="pr-10"
+                  data-testid={`Column ${index + 1}`}
                   placeholder={`Column ${index + 1}`}
                 />
                 <small className="text-[0.8rem] text-destructive italic block">

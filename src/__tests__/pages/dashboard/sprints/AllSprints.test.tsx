@@ -1,21 +1,43 @@
-import AllProjects from "@/pages/dashboard/projects/AllProjects";
-
+import AllSprints from "@/pages/dashboard/sprints/AllSprints";
 import { MemoryRouter } from "react-router-dom";
-import { screen, render, waitFor } from "@testing-library/react";
 
-import { useGetUsersProjectsQuery } from "@/services/projects";
+import { screen, render, waitFor } from "@testing-library/react";
 import * as router from "react-router";
-import { ROLES } from "@/constants/roles";
+
 import { useLoggedInUser } from "@/hooks/useLoggedInUser";
+import { useGetUsersProjectsQuery } from "@/services/projects";
+import {
+  useCreateSprintMutation,
+  useGetAllUserSprintsQuery,
+} from "@/services/sprints";
+import { ROLES } from "@/constants/roles";
 
 const mockNavigate = jest.fn();
+
+jest.mock("@/hooks/useLoggedInUser", () => ({
+  useLoggedInUser: jest.fn(),
+}));
 
 jest.mock("@/services/projects", () => ({
   useGetUsersProjectsQuery: jest.fn(),
 }));
 
-jest.mock("@/hooks/useLoggedInUser", () => ({
-  useLoggedInUser: jest.fn(),
+jest.mock("@/services/sprints", () => ({
+  useGetAllUserSprintsQuery: jest.fn(),
+  useCreateSprintMutation: jest.fn(),
+}));
+
+const mockSprints = [1, 2].map((s) => ({
+  id: `sid-${s}`,
+  createdBy: "hhh",
+  description: "Sssssssssssssssssssssssssss sssssssssssss",
+  isRemoved: false,
+  endDate: "2024-07-04T18:51:40.791Z",
+  startDate: "2024-06-13T18:27:21.661Z",
+  name: `name ${s}`,
+  totalPoints: 7,
+  currentPoints: 5.5,
+  projectId: `p-id`,
 }));
 
 const generateFakeProjects = (numProjects: number) => {
@@ -48,7 +70,7 @@ const generateFakeProjects = (numProjects: number) => {
   return fakeProjects;
 };
 
-describe("Allprojects", () => {
+describe("AllSprints component", () => {
   beforeEach(() => {
     jest.spyOn(router, "useNavigate").mockImplementation(() => mockNavigate);
   });
@@ -57,11 +79,7 @@ describe("Allprojects", () => {
     jest.resetAllMocks();
   });
 
-  test("should render projects of logged in user", async () => {
-    // const user = userEvent.setup();
-
-    const mockProjects = generateFakeProjects(5);
-
+  test("renders correctly", async () => {
     (useLoggedInUser as jest.Mock).mockReturnValue({
       user: {
         name: "name",
@@ -78,20 +96,39 @@ describe("Allprojects", () => {
     });
 
     (useGetUsersProjectsQuery as jest.Mock).mockReturnValue({
-      data: mockProjects,
+      data: generateFakeProjects(1),
       isLoading: false,
       isError: false,
+      isSuccess: true,
     });
+
+    (useGetAllUserSprintsQuery as jest.Mock).mockReturnValue({
+      data: mockSprints,
+      isLoading: false,
+      isError: false,
+      isSuccess: true,
+    });
+
+    const mockCreate = jest.fn(() => ({
+      unwrap: jest.fn().mockResolvedValue({}),
+    }));
+
+    (useCreateSprintMutation as jest.Mock).mockReturnValue([
+      mockCreate,
+      { isLoading: false },
+    ]);
 
     render(
       <MemoryRouter>
-        <AllProjects />
+        <AllSprints />
       </MemoryRouter>
     );
 
     await waitFor(() => {
       expect(
-        screen.getByText(`${mockProjects.length} projects`, { exact: true })
+        screen.getByText(`Total sprints: ${mockSprints.length}`, {
+          exact: true,
+        })
       ).toBeInTheDocument();
     });
   });

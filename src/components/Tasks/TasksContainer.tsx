@@ -6,7 +6,7 @@ import { Task } from "@/types/task.types";
 import { matchSorter } from "match-sorter";
 import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import useUpdateTaskStatus from "@/hooks/useUpdateTaskStatus";
 
 interface Props {

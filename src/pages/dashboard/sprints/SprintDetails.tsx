@@ -23,7 +23,7 @@ import { useGetTasksInSprintQuery } from "@/services/tasks";
 import SprintBoard from "@/components/Sprints/SprintBoard";
 import { matchSorter } from "match-sorter";
 import { AppUserProfile } from "@/types/user.types";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { TASK_STATUS } from "@/constants/task-status";
 import AvatarStack from "@/ui/avatar-stack";
 

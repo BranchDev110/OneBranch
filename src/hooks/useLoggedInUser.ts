@@ -24,4 +24,4 @@ const useLoggedInUser = () => {
   };
 };
 
-export default useLoggedInUser;
+export { useLoggedInUser };

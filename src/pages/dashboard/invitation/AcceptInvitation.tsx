@@ -1,5 +1,5 @@
 import AppHeaderNav from "@/components/AppHeaderNav";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useAddUserToProjectAndTaskMutation } from "@/services/projects";
 import { NavLink, useSearchParams } from "react-router-dom";
 
