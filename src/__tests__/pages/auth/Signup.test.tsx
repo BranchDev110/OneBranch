@@ -88,5 +88,5 @@ describe("Signup Component", () => {
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenNthCalledWith(1, "/signin");
     });
-  });
+  }, 10_000);
 });

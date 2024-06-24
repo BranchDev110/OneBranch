@@ -81,7 +81,7 @@ const ImportSprint = ({ sprintId, order, tasks = [] }: Props) => {
                 <SelectLabel>Choose Task</SelectLabel>
 
                 {tasks.map((t) => (
-                  <SelectItem key={t.id} value={`${t.id}`}>
+                  <SelectItem data-testid={t.id} key={t.id} value={`${t.id}`}>
                     {t.name}
                   </SelectItem>
                 ))}

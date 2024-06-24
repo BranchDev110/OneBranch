@@ -31,7 +31,7 @@ describe("EditSprintModal", () => {
     jest.resetAllMocks();
   });
 
-  test("should first", async () => {
+  test("should render correctly", async () => {
     const user = userEvent.setup();
 
     const mockUpdate = jest.fn(() => ({
