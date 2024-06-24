@@ -94,5 +94,8 @@ describe("Allprojects", () => {
         screen.getByText(`${mockProjects.length} projects`, { exact: true })
       ).toBeInTheDocument();
     });
+
+    const tableHeaders = await screen.findAllByRole("columnheader");
+    expect(tableHeaders.length).toBe(4);
   });
 });
