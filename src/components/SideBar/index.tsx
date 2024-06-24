@@ -11,7 +11,7 @@ import ChartIcon from "@/icons/ChartIcon";
 import SettingsIcon from "@/icons/SettingsIcon";
 
 import LogoutIcon from "@/icons/LogoutIcon";
-import useLogout from "@/hooks/useLogout";
+import { useLogout } from "@/hooks/useLogout";
 import ProjectSideBar from "./ProjectSideBar";
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
