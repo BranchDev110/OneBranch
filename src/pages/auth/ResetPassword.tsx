@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import { PasswordInput } from "@/ui/password-input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useResetUserPasswordMutation } from "@/services/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 

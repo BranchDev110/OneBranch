@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 
 const ProtectedRoute = ({ children }: PropsWithChildren) => {
   const { isLoading, user } = useLoggedInUser();

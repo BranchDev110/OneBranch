@@ -5,7 +5,7 @@ import { Input } from "@/ui/input";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { Thing } from "@/types/generic.types";
 import SprintCard from "@/components/Sprints/SprintCard";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { AppUserProfile } from "@/types/user.types";
 
 interface Props {

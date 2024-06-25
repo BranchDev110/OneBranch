@@ -2,7 +2,7 @@ import AppHeaderNav from "@/components/AppHeaderNav";
 import CaseRender from "@/components/CaseRender";
 import ErrorComponent from "@/components/ErrorComponent";
 import LoadingComponent from "@/components/LoadingComponent";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useGetUsersProjectsQuery } from "@/services/projects";
 import { useGetAllUserSprintsQuery } from "@/services/sprints";
 import SprintsContainer from "@/components/Sprints/SprintsContainer";

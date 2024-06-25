@@ -1,6 +1,6 @@
 import React from "react";
 import AppHeaderNav from "@/components/AppHeaderNav";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useGetUsersProjectsQuery } from "@/services/projects";
 import { Button } from "@/ui/button";
 import { useMemo } from "react";

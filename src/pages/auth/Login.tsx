@@ -53,6 +53,9 @@ const Login = () => {
   const onSubmit = async (values: Schema) => {
     try {
       // console.log(values);
+
+      console.log("success");
+
       toast.dismiss();
       toast.loading("Logging you in...");
 
@@ -73,6 +76,10 @@ const Login = () => {
     }
   };
 
+  const handleFail = (...data: any) => {
+    console.log(data);
+  };
+
   return (
     <main className="flex-col min-h-screen p-1 center bg-c2-100">
       <FormHeader />
@@ -80,7 +87,7 @@ const Login = () => {
       <Form {...form}>
         <form
           className="w-full max-w-sm px-4 py-6 bg-white rounded-lg border-c5"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit, handleFail)}
         >
           <h3 className="mb-5 text-2xl font-bold leading-tight tracking-tight">
             Sign in to your account

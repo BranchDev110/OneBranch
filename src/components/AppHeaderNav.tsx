@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 
 interface Props extends ComponentPropsWithoutRef<"header"> {}
 

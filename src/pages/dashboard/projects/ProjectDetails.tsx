@@ -32,7 +32,7 @@ import {
 
 import TeamIcon from "@/icons/TeamIcon";
 
-import useLoggedInUser from "@/hooks/useLoggedInUser";
+import { useLoggedInUser } from "@/hooks/useLoggedInUser";
 import { useGetSprintsInProjectQuery } from "@/services/sprints";
 import EditProjectModal from "@/components/Projects/EditProjectModal";
 import { Project } from "@/types/project.types";
